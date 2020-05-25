@@ -2,7 +2,7 @@
 
 Application. that let's you test note combination by using **custom** syntax. It lets an user create chords from a text formatted by custom syntax standards, which is written below. 
 
-[TOC]
+//todo: Table of Contents
 
 ## Features
 
@@ -10,7 +10,8 @@ Application. that let's you test note combination by using **custom** syntax. It
 - Generated guitar chord diagram
 - Frequency based on [equal-tempered scales](https://pages.mtu.edu/~suits/notefreqs.html)
 
-
+## How To Run
+// todo: link here
 
 ## How To Use
 
@@ -51,7 +52,7 @@ Settings for
 
 ### Graphical User Interface
 
-todo
+// todo
 
 ### Text prompt syntax
 
