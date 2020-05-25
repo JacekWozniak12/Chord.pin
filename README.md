@@ -76,15 +76,12 @@ Settings for
 * Examples 
 
   * `A4` 
-
     Note A4
 
   * `Ab4` 
-
     Note Ab4 / G#3
 
   * `G#4` 
-
     Note G#4 / Ab5 
 
     
@@ -100,24 +97,15 @@ Settings for
 * `<<` Find option / chord under name specified after symbol and apply it
 
 
-
 ##### Note / default options
 
 * `(` Start option group
-
 * `)` End option group
-
 * `,` Next parameter
-
 * `:` Set option value
-
 * `t` Time of note (in seconds)
-
 * `d` Delay of note (in seconds)
-
 * `v` Volume of note (from 0 to 1)
-
-  
 
 #####  Global options
 
@@ -125,7 +113,6 @@ Settings for
 * `bn` Base note *(default is **A4**)*
 
  
-
 #### Examples
 
 `full content of text prompt`
@@ -133,55 +120,42 @@ Settings for
 ##### Default option setting
 
 * `(bf: 440, bn: A4)`
-
   Base frequency set to **440Hz** and base note set to **A4**.
 
 * `(t: 1)`
-
   Default time of note set to **1** second
 
 * `(t: 1, d: 0.33)`
-
   Default time of note set to **1** second and default delay to **0.33** s
 
 * `(t: 1, d: 2, v: 1)`
-
   Default time of note set to **1** second, default delay to **0.33** s and default volume set at **max**
-
 
 
 ##### Single note (default options)
 
 * `A4` 
-
   Note **A4**
 
 * `A4 + 5` 
-
   Note **D4**
 
 * `A4 - 1` 
-
   Note **Ab4 / G#4**
-
-  
+ 
 
 ##### Single note with options
 
 * `A4 (t: 1)` 
-
   Note **A4** lasting **1** second
 
 * `A5 (d: 1)` 
-
   Note **A5** delayed **1** second
 
 * `A6 (d: 1, t: 2)` 
-
   Note **A6** delayed **1** second and lasting **2** seconds
 
 * `A7 (t: 1, d: 2, v: 1)` 
-
   Note **A7** delayed **2** seconds, lasting **1** second and played at **max volume**
 
   
@@ -189,35 +163,27 @@ Settings for
 ##### Chord with notes (default options)
 
 * `D4 ^ A4` 
-
   Note **D4** and **A4**
 
 * `{D5 ^ A5}` 
-
   Note **D5** and **A5**
 
 * `A4 + 5 ^ A4` 
-
   Note **D4** and **A4**
 
 * `A4 - 1 ^ A4 + 5 ^ A5` 
-
   Note **Ab4** / **G#4**, **D4** and **A5**
-
-  
+ 
 
 ##### Chord with notes and options
 
 * `D4 (t: 1) ^ A4` 
-
   Note **D4** and **A4** played in same time, where **D4** is lasting **1** second and **A4** uses default settings
 
 * `D4 (t: 1) ^ A4 (t: 2)` 
-
   Note **D4** and **A4** played in same time, where **D4** is lasting **1** second and **A4** is lasting **2** seconds
 
 * `{D4 ^ A4} (t: 2) ^ E4` 
-
   Note **D4**, **A4** and **E4** played in same time, where **D4** and **A4** is lasting **2** second and **E4** uses default settings
 
 
@@ -228,15 +194,12 @@ Settings for
   Find and apply chord / option called **C3 Minor**
 
 * `A4 ^ D4 >> A4 Powerchord` 
-
   Save chord consisted of notes **A4** and **D4** as **A4 Powerchord**
-
 
 
 ## Used Software / Libraries
 
 * App is written in TypeScript. 
-
 
 
 ## Legal
