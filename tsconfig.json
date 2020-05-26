@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "lib": ["es5", "es6"],
+        "outFile": "App.js",
+        "sourceMap": true,
+        "module": "system"
+    },
+    "include": [
+        "src/./*.ts", "src/ts/audio.ts", "src/ts/app.ts", "src/ts/prompt.ts", "src/ts/definitions.ts"
+    ]
+}

@@ -65,8 +65,6 @@ Settings for
   * Soft enter
 * Close brackets
 
-
-
 #### Symbols
 
 ##### Note
@@ -74,7 +72,7 @@ Settings for
 * To specify a note, use a syntax **[A - G]** **[#/b] [0 - 9]**
 
 * Examples 
-
+  
   * `A4` 
     Note A4
 
@@ -84,8 +82,7 @@ Settings for
   * `G#4` 
     Note G#4 / Ab5 
 
-    
-
+  
 ##### Chord base
 
 * `+` Add semitone amount
@@ -95,7 +92,6 @@ Settings for
 * `}` End note group
 * `>>` Save option / chord under name specified after symbol
 * `<<` Find option / chord under name specified after symbol and apply it
-
 
 ##### Note / default options
 
@@ -112,7 +108,7 @@ Settings for
 * `bf` Base frequency (*default is **440hz***)
 * `bn` Base note *(default is **A4**)*
 
- 
+
 #### Examples
 
 `full content of text prompt`
@@ -130,7 +126,6 @@ Settings for
 
 * `(t: 1, d: 2, v: 1)`
   Default time of note set to **1** second, default delay to **0.33** s and default volume set at **max**
-
 
 ##### Single note (default options)
 
@@ -200,6 +195,7 @@ Settings for
 ## Used Software / Libraries
 
 * App is written in TypeScript. 
+* Audio framework provided by [Tone.js](https://tonejs.github.io/)
 
 
 ## Legal
