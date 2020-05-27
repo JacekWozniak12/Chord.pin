@@ -2,7 +2,14 @@
 
 Application. that let's you test note combination by using **custom** syntax. It lets an user create chords from a text formatted by custom syntax standards, which is written below. 
 
-//todo: Table of Contents
+- [Features](#features)
+- [How To Run](#how-to-run)
+- [How To Use](#how-to-use)
+  - [Objects](#objects)
+  - [Graphical interface](#graphical-interface)
+  - [Text Prompt Syntax](#text-prompt-syntax)
+- [Used software](#used-software--libraries)
+- [Legal](#legal)
 
 ## Features
 
@@ -26,13 +33,6 @@ One sound, that have predefined name based on European letter notation. Sound ha
 * Time of playing
 * Delay
 
-#### Root Note
-
-Note, that app use to calculate frequencies.
-
-* Name
-* Root frequency
-
 #### Chord
 
 Sound that consists of multiple notes. 
@@ -50,7 +50,7 @@ Settings for
 * Time of playing
 * Delay
 
-### Graphical User Interface
+### Graphical Interface
 
 // todo
 
