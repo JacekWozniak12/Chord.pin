@@ -196,6 +196,7 @@ Settings for
 
 * App is written in TypeScript. 
 * Audio framework provided by [Tone.js](https://tonejs.github.io/)
+* Webpack
 
 
 ## Legal

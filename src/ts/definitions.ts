@@ -5,6 +5,7 @@ class Note {
 
 class RootNote extends Note{}
 
+
 class ChordNote{
     note: Note;
     volume: number;
