@@ -1,6 +1,5 @@
-import { PArt } from 'tone';
 export {
-    Note, Chord, Options, Instrument
+    Note, Chord, Options
 }
 
 class Note{
@@ -47,9 +46,9 @@ class Chord{
 class Options{
 
     constructor(
-        volume: number,
-        duration: number,
-        delay: number)
+        volume: number = 1,
+        duration: number = 1,
+        delay: number = 0)
         {
             this.volume = volume;
             this.duration = duration;
@@ -59,8 +58,5 @@ class Options{
     volume: number;
     duration: number;
     delay: number;
-}
-
-class Instrument{
     
 }

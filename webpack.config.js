@@ -7,7 +7,7 @@ module.exports = {
 
     resolve: {
         extensions: [".tsx", ".ts", ".js", ".json"],
-        modules: [path.resolve(__dirname, 'node_modules/tone/')]
+        //modules: [path.resolve(__dirname, 'node_modules/tone/')]
     },
 
     entry: path.resolve(__dirname, 'src')+"/ts/app.ts",
