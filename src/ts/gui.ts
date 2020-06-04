@@ -1,87 +1,44 @@
-import { Note, Options } from "./definitions";
+export class GUI_Element<T extends HTMLElement>{
+    element: T;
 
-export class GUI_MainWindow{
-
-    id: string;
-    element: HTMLDivElement;
-    play: HTMLButtonElement;
-    pause: HTMLButtonElement;
-    stop: HTMLButtonElement;
-
-    constructor(id: string = "main"){
-        this.handleMainDiv(id);
-        this.createElements();
-        this.appendToMainDiv();
-    }
-
-    private appendToMainDiv() {
-        this.element.appendChild(this.play);
-        this.element.appendChild(this.pause);
-        this.element.appendChild(this.stop);
-    }
-
-    private handleMainDiv(id: string) {
-        this.element = document.createElement("div");
-        this.id = id;
-        this.element.id = id;
-        document.querySelector("body").appendChild(this.element)
-    }
-
-    private createElements() {
-        this.play = this.createElement("button", "play") as HTMLButtonElement;
-        this.pause = this.createElement("button", "pause") as HTMLButtonElement;
-        this.stop = this.createElement("button", "stop") as HTMLButtonElement;
-    }
-
-    private createElement<T>(type: string, content: string = null) 
-    : HTMLElement
+    constructor(type: string, className: string, id: string = null)
     {
-        // let e = document.createElement(, );
-        e.textContent = content;
-        return e;
+        this.element = document.createElement(type) as T;
+        this.element.className = className;
+        this.element.id = id;
+        document.querySelector("body").appendChild(this.element);
     }
 }
 
-export class GUI_ChordRepresentation{
-    menu: GUI_ChordMenu;
-    selectedCells: GUI_SelectedGuitarCell;
+export class GUI_Collection<T extends HTMLElement> extends GUI_Element<T>{
+    children: GUI_Element<T>[];
 
-    constructor(){
-        new GUI_ChordMenu();
+    constructor(type:string, className: string = null, id: string = null, children : GUI_Collection<T>[] = null, ...args : GUI_Element<T>[]){
+        super(type, className, id);        
+        this.appendChildren(args.concat(children));
+    }
+
+    private appendChildren(args: GUI_Element<T>[]) {
+        this.children = args;
+        this.children.forEach(child => {
+            this.element.appendChild(child.element);
+        });
     }
 }
 
-export class GUI_ChordMenu{
-    quickPlay: HTMLBaseElement;
-    edit: HTMLBaseElement;
-    set: HTMLBaseElement;  
-}
+export class GUI_Selector<T extends HTMLElement> extends GUI_Element<T>
+{
+    toFind: string;
 
-export class GUI_ChordTable{
-    size: number;
-    firstNote: string;
-    cells;
-    selectedCells;
-
-    update(){
-
-    }
-
-    draw(){
-
-    }
-
-    selectNotes(){
+    constructor(type:string, toFind: string, className: string = null, id: string = null){
+        super(type, className, id);
+        this.toFind = toFind;
 
     }
 }
 
-export class GUI_GuitarCell{
-    noteName: string;
+export class GUI_Button<T extends HTMLElement> extends GUI_Element<T>
+{
 
 }
 
-export class GUI_SelectedGuitarCell extends GUI_GuitarCell{
-    note: Note;
-
-}

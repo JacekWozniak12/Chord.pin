@@ -178,10 +178,10 @@ Default time of note set to **1** second, default delay to **0.33** s and defaul
 
 ## Used Software / Libraries
 
-* App is written in TypeScript. 
+* App is written in [TypeScript](https://www.typescriptlang.org/) and [NativeScript](https://www.nativescript.org/). 
 * Audio framework provided by [Tone.js](https://tonejs.github.io/)
 * Webpack
-
+* Visual Studio Code
 
 ## Legal
 
