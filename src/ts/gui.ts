@@ -13,9 +13,9 @@ export class GUI_Element<T extends HTMLElement>{
 export class GUI_Collection<T extends HTMLElement> extends GUI_Element<T>{
     children: GUI_Element<T>[];
 
-    constructor(type:string, className: string = null, id: string = null, children : GUI_Collection<T>[] = null, ...args : GUI_Element<T>[]){
+    constructor(type:string, className: string = null, id: string = null, children : GUI_Element<T>[]){
         super(type, className, id);        
-        this.appendChildren(args.concat(children));
+        this.appendChildren(children);
     }
 
     private appendChildren(args: GUI_Element<T>[]) {

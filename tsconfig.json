@@ -1,8 +1,17 @@
 {
-    "compilerOptions": {
+    "compilerOptions": {       
         "lib": ["es5", "es6", "dom"],
         "module": "commonjs",
         "target": "es6",
         "removeComments": true,
-    }
+        "allowSyntheticDefaultImports": false,
+        "baseUrl": "./",
+        "paths": {
+            "Tone/*": ["node_modules/tone/*"],
+          }
+    },
+    "include":[
+        "node_modules/tone/*",
+        "src/ts/*",
+    ]
 }

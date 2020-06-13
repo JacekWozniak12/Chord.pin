@@ -6,11 +6,12 @@ module.exports = {
     mode: "production",
 
     resolve: {
-        extensions: [".tsx", ".ts", ".js", ".json"],
-        modules: [path.resolve(__dirname, 'node_modules/tone/')]
+        modules: [path.resolve(__dirname, './node_modules/tone/tone'), 'node_modules'],
+        extensions: [".tsx", ".ts", ".js", ".json"]
     },
+    
 
-    entry: path.resolve(__dirname, 'src')+"/ts/app.ts",
+    entry: path.resolve(__dirname, 'src') + "/ts/app.ts",
     
     output:{
         filename: "index.js",
@@ -27,8 +28,6 @@ module.exports = {
             ]
         })
     ],
-
-
 
     devtool: "inline-source-map",
 
