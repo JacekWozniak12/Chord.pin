@@ -2,14 +2,18 @@ import { Note } from "../app/definitions"
 
 describe("Note isValidName", () => {
     
-    it("isValidName", () =>
+    const validConstructors = ["C#3", "Bb4"];
+
+    it.each(validConstructors)("isValidName %s", (t) =>
     {
-        const a = new Note("C#3");
-        expect((a.isValidName("C#3"))).toBe(true);   
-    }),
+        const a = new Note(t);
+        expect((a.isValidName(t))).toBe(true);   
+    });
     
-    it("invalid Construction", () =>
+    const invalidConstructors = ["c", "Z#4", "Ą3", "0ad"];
+    
+    it.each(invalidConstructors)("invalid Construction %s", (t) =>
     {
-        expect(() => new Note("a")).toThrow("Invalid note name");
-    })
+        expect(() => new Note(t)).toThrow("Invalid note name");
+    });
 })
