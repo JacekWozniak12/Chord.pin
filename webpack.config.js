@@ -6,7 +6,8 @@ module.exports = {
     mode: "production",
 
     resolve: {
-        modules: [path.resolve(__dirname, './node_modules/tone/tone'), 'node_modules'],
+        modules: 
+        [path.resolve(__dirname, './node_modules/tone/tone'), 'node_modules'],
         extensions: [".tsx", ".ts", ".js", ".json"]
     },
     

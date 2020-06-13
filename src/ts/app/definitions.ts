@@ -13,7 +13,7 @@ class Note{
             this.name = name;
             this.options = options;
         }
-        else throw new Error("Invalid note name");
+        else throw "Invalid note name";
     }
 
     name: string;
