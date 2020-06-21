@@ -1,3 +1,5 @@
+import { Time } from "Tone";
+
 export {
     Note, Chord, Options
 }
@@ -46,17 +48,26 @@ class Chord{
 class Options{
 
     constructor(
-        volume: number = 1,
-        duration: number = 1,
-        delay: number = 0)
+        volume:     number = 1,
+        duration:   string,
+        delay:      string
+        )
         {
-            this.volume = volume;
-            this.duration = duration;
-            this.delay = delay;
+            try{
+                this.volume = volume;
+                this.duration = new Time(duration);
+                this.delay = new Time(delay);
+            }
+            catch (e){
+                this.duration = new Time(1);
+                this.delay = new Time(0);
+                throw "Argument Exception - Writing default options"
+            }
     }
     
     volume: number;
-    duration: number;
-    delay: number;
-    
+    // Using construction method from Time
+    duration: Time;
+    delay: Time;   
 }
+

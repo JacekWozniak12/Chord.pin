@@ -12,6 +12,11 @@
     },
     "include":[
         "node_modules/tone/*",
-        "src/ts/*", "src/ts/app/app-parts.ts", "src/ts/app/audio.ts", "src/ts/app/definitions.ts", "src/ts/app/gui.ts", "src/ts/app/prompt.ts",
+        "src/ts/*", 
+        "src/ts/app/app-parts.ts", 
+        "src/ts/app/audio.ts", 
+        "src/ts/app/definitions.ts", 
+        "src/ts/app/gui.ts", 
+        "src/ts/app/prompt.ts",
     ]
 }

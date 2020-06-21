@@ -1,5 +1,5 @@
 import { GUI_Element } from './gui';
-import { Synth } from "Tone/tone";
+import { Synth } from "Tone";
 
 export class App_Main{
 

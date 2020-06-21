@@ -1,6 +1,10 @@
 export class Prompt{
 
 
+    // rules
+
+    //
+
 }
 
 
