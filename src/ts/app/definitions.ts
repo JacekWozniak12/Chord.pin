@@ -1,4 +1,4 @@
-import { Time } from "Tone";
+import { Time, Frequency } from "Tone";
 
 export {
     Note, Chord, Options
@@ -8,11 +8,12 @@ class Note{
 
     constructor(
         name: string, 
-        options: Options = null
+        options: Options = null,
+        transposition: number = null
         )
     {
         if(this.isValidName(name)){
-            this.name = name;
+            this.name = new Frequency(name).transpose(transposition).toNote();
             this.options = options;
         }
         else throw "Invalid note name";
