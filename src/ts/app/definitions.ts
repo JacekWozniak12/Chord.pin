@@ -22,7 +22,12 @@ class Note{
     options: Options;
 
     isValidName(name: string): boolean{
-        let temp = name.trim().replace(/([^A-G][^#b][^0-9]|[^A-G][^0-9])/g, "");
+        let temp = name.
+            toUpperCase().
+            trim().
+            replace(
+                /([^ABCDEFG][^#b][^0-9]|[^ABCDEFG][^0-9])/g, ""
+                );
         if(temp.length > 1 && temp.length < 4) return true;
         else return false;
     }
@@ -33,24 +38,27 @@ class Chord{
     constructor(     
         notes: Note[], 
         name: string = "", 
-        description: string = "")
+        description: string = "", 
+        options: Options = null)
         {
             this.name = name;
             this.notes = notes;
             this.description = description;
+            this.options = options;
     }
 
     name: string;
     description: string;
     notes: Note[];
+    options: Options = null;
 }
 
 class Options{
 
     constructor(
-        volume:     number = 1,
-        duration:   string,
-        delay:      string
+        volume:     number = 0.5,
+        duration:   string | number = 1,
+        delay:      string | number = 0
         )
         {
             try{
@@ -60,10 +68,10 @@ class Options{
             }
             catch (e){
                 this.duration = new Time(1);
-                this.delay = new Time(0);
+                this.delay = new Time(0);               
                 throw "Argument Exception - Writing default options"
             }
-    }
+        }
     
     volume: number;
     // Using construction method from Time

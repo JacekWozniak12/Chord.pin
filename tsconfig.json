@@ -1,22 +1,22 @@
 {
     "compilerOptions": {       
-        "lib": ["es5", "es6", "dom"],
+        "lib": ["es5", "es6", "dom", "ES2015"],
         "module": "commonjs",
         "target": "es6",
         "removeComments": true,
-        "allowSyntheticDefaultImports": false,
+        "allowSyntheticDefaultImports": true,
         "baseUrl": "./",
         "paths": {
-            "Tone/*": ["node_modules/tone/*"],
-          }
+            "Tone": ["node_modules/tone/Tone"],
+          },
     },
     "include":[
-        "node_modules/tone/*",
+        "node_modules/tone/Tone",
         "src/ts/*", 
         "src/ts/app/app-parts.ts", 
         "src/ts/app/audio.ts", 
         "src/ts/app/definitions.ts", 
         "src/ts/app/gui.ts", 
-        "src/ts/app/prompt.ts",
+        "src/ts/app/parser.ts",
     ]
 }

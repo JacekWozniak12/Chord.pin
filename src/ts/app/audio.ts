@@ -1,23 +1,27 @@
-import { Part, Synth, PolySynth, Pattern, Transport, Time} from "Tone";
-import { Note, Options } from "./Definitions";
+import { Synth, PolySynth} from "Tone";
+import { Note, Options, Chord } from "./Definitions";
 
 export class Audio{
     
-    private Instrument : PolySynth
-    private Notes : Note[];
+    private instrument : PolySynth
+    private chord : Chord;
     
     constructor(){
         this.Setup();
     }
 
     Setup(){ 
-           
-        this.Notes = [
-            new Note("C3", new Options(0.2, "3", "1n")),
-            new Note("C2", new Options(1, "1", "2"))
-        ]  
+                 
+        this.chord = new Chord([
+            new Note("C3", new Options(0.5, 1, 0.2)),
+            new Note("C4", new Options(0.5, 1, 0)),
+            new Note("A2", new Options(0.1, 2, 2)),
+            new Note("A6", new Options(0.1, 2, 2))
+        ])  
 
-        this.Instrument = new PolySynth(
+        this.instrument = new PolySynth(
+            8, 
+            Synth,
             {
                 oscillator: {
                     type: 'triangle8'
@@ -25,28 +29,38 @@ export class Audio{
                 envelope: {
                     attack: 2,
                     decay: 1,
-                    sustain: 0.4,
-                    release: 4
+                    sustain: 0.1,
+                    release: 1
                 }
             });
-        this.Instrument.toMaster();
+        this.instrument.toMaster();
     }
 
     Dispose(){
-        this.Instrument.dispose();
-        this.Instrument = null;
+        this.instrument.dispose();
+        this.instrument = null;
     }
 
-    Play(notes : Note[] = this.Notes){
-        
-        notes.forEach(e => {
-            this.Instrument.triggerAttackRelease(e.name, e.options.duration, e.options.delay)
+    Play(chord : Chord = this.chord){
+
+        chord.notes.forEach(e => {
+            this.instrument.triggerAttackRelease
+            (
+                e.name, 
+                e.options.duration, 
+                e.options.delay, 
+                e.options.volume
+                )
         });
+
+        
+
     }
 
     Select(notes : Note[]){
-        this.Notes = notes;
+        this.chord = notes;
     }
+    
 }
 
 

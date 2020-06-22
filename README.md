@@ -164,7 +164,7 @@ Default time of note set to **1** second, default delay to **0.33** s and defaul
 
 * `D4 (t: 1) ^ A4` 
   Note **D4** and **A4** played in same time, where **D4** is lasting **1** second and **A4** uses default settings
-* `D4 (t: 1) ^ A4 (t: 2)` 
+* `{D4 (t: 1) ^ A4} (t: 2)` 
   Note **D4** and **A4** played in same time, where **D4** is lasting **1** second and **A4** is lasting **2** seconds
 * `{D4 ^ A4} (t: 2) ^ E4` 
   Note **D4**, **A4** and **E4** played in same time, where **D4** and **A4** is lasting **2** second and **E4** uses default settings

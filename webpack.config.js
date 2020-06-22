@@ -7,11 +7,10 @@ module.exports = {
 
     resolve: {
         modules: 
-        [path.resolve(__dirname, './node_modules/tone/tone'), 'node_modules'],
+        [path.resolve(__dirname, './node_modules/tone/Tone'), 'node_modules'],
         extensions: [".tsx", ".ts", ".js", ".json"]
     },
     
-
     entry: path.resolve(__dirname, 'src') + "/ts/app.ts",
     
     output:{
