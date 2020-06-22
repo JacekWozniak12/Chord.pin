@@ -5,7 +5,7 @@ import { Database } from './database';
 export class Parser{
 
     db : Database;
-     
+    prompt;
 
     // symbols start
         static readonly S_LOADING = "<<";
@@ -23,12 +23,12 @@ export class Parser{
         static readonly S_PARAMETER_NEXT = ",";
     // symbols stop
 
-    constructor(prompt : string){
+    constructor(promptID : string){
 
     }
 
     initialize(){
-        // find parser 
+        // find parser prompt
     }
 
     getOutput(input : string){
@@ -41,10 +41,6 @@ export class Parser{
             this.loadChordFromDB(i);
         } 
         else{
-            let chordBuffer;
-            let optionBuffer;
-            let noteBuffer;
-
 
         }
         // else
@@ -60,6 +56,8 @@ export class Parser{
         let c = input;
         let r = new Chord([]);
 
+        // chord groups implementation
+
         while(i < f){
             i = c.search(this.S_CHORD_CONCAT);
             if(i < 0) i = f;
@@ -71,7 +69,9 @@ export class Parser{
             c = c.slice(i, f)           
         }
 
-        return null;
+        
+
+        return r;
     }
 
     static getNote(input : string) : Note {
@@ -95,9 +95,36 @@ export class Parser{
         if(n == "") n = input.slice(
             input.search(/([ABCDEFG][0-9])/g), 2);
 
-        input.replace(n, "");
+        input = input.replace(n, "");
+
+        let transpose = 0;
+
+        for(let i = 0; i < input.length; i++){
+            let arithmeticBuffer = 0;
+            let buffer = "";
+            try{
+                if(input[i] == "+"){
+                    arithmeticBuffer = 1;
+                    transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
+                    buffer = "";
+                }
+                else
+                if(input[i] == "-"){
+                    arithmeticBuffer = -1;
+                    transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
+                    buffer = "";
+                }
+                else buffer += input[i];
+                if(i = input.length){
+                    transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
+                }
+            }
+            catch (e){
+                alert(e);
+            }
+        }
             
-        return new Note(n, options);
+        return new Note(n, options, transpose);
     }
 
     static getOptions(input : string) : Options {
