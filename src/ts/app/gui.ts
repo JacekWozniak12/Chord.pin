@@ -1,12 +1,20 @@
 export class GUI_Element<T extends HTMLElement>{
     element: T;
 
-    constructor(type: string, className: string, id: string = null, parent: string = "body")
+    constructor(type: string, className: string = "", id: string = null, parent: string = "body")
     {
         this.element = document.createElement(type) as T;
         this.element.className = className;
         this.element.id = id;
         document.querySelector(parent).appendChild(this.element);
+    }
+
+    appendTo(el : HTMLElement){
+        this.element.appendChild(el);
+    }
+
+    setText(text : string){
+        this.element.innerText = text;
     }
 }
 

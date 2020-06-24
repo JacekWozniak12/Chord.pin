@@ -165,7 +165,7 @@ Default time of note set to **1** second, default delay to **0.33** s and defaul
 
 * App is written in [TypeScript](https://www.typescriptlang.org/) ?and [NativeScript](https://www.nativescript.org/). 
 * Audio framework provided by [Tone.js](https://tonejs.github.io/)
-* Webpack
+* Bundler provided by [Webpack](https://webpack.js.org/)
 * Visual Studio Code
 
 ## Legal
