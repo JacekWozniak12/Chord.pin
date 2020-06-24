@@ -19,12 +19,6 @@ Application, that let's you create by using **custom** syntax. It lets an user c
         - [Note / default options](#note--default-options)
         - [Global options](#global-options)
       - [Examples](#examples)
-        - [Default option setting](#default-option-setting)
-        - [Single note (default options)](#single-note-default-options)
-        - [Single note with options](#single-note-with-options)
-        - [Chord with notes (default options)](#chord-with-notes-default-options)
-        - [Chord with notes and options](#chord-with-notes-and-options)
-        - [Save / read operations](#save--read-operations)
   - [Used Software / Libraries](#used-software--libraries)
   - [Legal](#legal)
 
@@ -35,7 +29,7 @@ Application, that let's you create by using **custom** syntax. It lets an user c
 - Frequency based on [equal-tempered scales](https://pages.mtu.edu/~suits/notefreqs.html)
 
 ## How To Run
-// todo: link here
+Use *index.html* in *build* folder.
 
 ## How To Use
 
@@ -66,8 +60,6 @@ Settings for
 * Instrument
 * Duration
 * Delay
-* ?Repeat
-* ?Time before repeat
 
 ### Graphical Interface
 
@@ -118,11 +110,6 @@ Settings for
 * `d` Delay of note (in seconds)
 * `v` Volume of note (from 0 to 1)
 
-#####  Global options
-
-* `bf` Base frequency (*default is **440hz***)
-* `bn` Base note *(default is **A4**)*
-
 
 #### Examples
 
@@ -130,8 +117,6 @@ Settings for
 
 ##### Default option setting
 
-* `(bf: 440, bn: A4)`
-Base frequency set to **440Hz** and base note set to **A4**.
 * `(t: 1)`
 Default time of note set to **1** second
 * `(t: 1, d: 0.33)`
@@ -144,7 +129,7 @@ Default time of note set to **1** second, default delay to **0.33** s and defaul
 * `A4` Note **A4**
 * `A4 + 5` Note **D4**
 * `A4 - 1` Note **Ab4 / G#4**
- 
+
 
 ##### Single note with options
 
@@ -178,7 +163,7 @@ Default time of note set to **1** second, default delay to **0.33** s and defaul
 
 ## Used Software / Libraries
 
-* App is written in [TypeScript](https://www.typescriptlang.org/) and [NativeScript](https://www.nativescript.org/). 
+* App is written in [TypeScript](https://www.typescriptlang.org/) ?and [NativeScript](https://www.nativescript.org/). 
 * Audio framework provided by [Tone.js](https://tonejs.github.io/)
 * Webpack
 * Visual Studio Code

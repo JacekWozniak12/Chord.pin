@@ -4,6 +4,11 @@ export class Database{
 
     chords : Chord[];
     globalOptions : Options;
+    storage = localStorage;
+
+    loadFromLocalStorage(){
+
+    }
 
     save(chords : Chord[]){
 

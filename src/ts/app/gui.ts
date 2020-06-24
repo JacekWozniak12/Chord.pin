@@ -23,6 +23,12 @@ export class GUI_Selector<T extends HTMLElement> extends GUI_Element<T>
 
 export class GUI_Button<T extends HTMLElement> extends GUI_Element<T>
 {
+    event: Event
 
+    constructor(type: string, className: string, id: string = null, parent: string = "body")
+    {
+        super(type, className, id, parent);
+
+    }
 }
 

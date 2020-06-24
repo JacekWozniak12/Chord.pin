@@ -1,15 +1,41 @@
 $c_black: #222;
 $c_white: #eee;
+$c_grey: #666;
+
+#prompt{
+  border: 0px solid black;
+  font-size: 32px;
+
+  &:focus{
+    border: 0px solid black;
+    outline: 0px solid black;
+  }
+}
 
 .note{
-    width: 25px;
-    height: 25px;
-    background-color: $c_black;
-    color: $c_white;
-    display: block;
+    width: 75px;
+    height: 75px;
+    background-color: $c_white;
+    color: $c_grey;
+    display: inline-block;
+    margin: 2.5px;
+    
     &:hover{
 
     }
+    &:first-child{
+
+    }
+}
+
+.settings-input[type="number"]{
+  width: 30px;
+}
+
+.string{
+  width: 75px;
+  display: inline-block;
+  margin: 2.5px;
 }
 
 .note-selected{
@@ -36,7 +62,9 @@ tr, td{
 }
 
 #fretboard{
-    width: 200px;
+    width: 75*7;
     height: 150px;
     overflow-y: scroll;
 }
+
+

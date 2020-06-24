@@ -1,6 +1,7 @@
 import { GUI_Element } from './gui';
 import { Frequency, Synth } from "Tone";
 import { Parser } from './parser';
+import { Database } from './database';
 
 export class App_Main{
 
@@ -14,16 +15,20 @@ export class App_Fretboard{
     startingFrequencyNote = ["E2", "A2", "D3", "G3", "B3", "E4"];
 
     constructor(){
-        let fretboard = new GUI_Element("div", "", "fretboard");
+        let openString = new GUI_Element("div", "", "openString");
+        let fretboard = new GUI_Element("div", "", "fretboard");     
         let currentNote = this.startingFrequencyNote[0];
         for(let i = 1; i < this.stringAmount + 1; i++){           
             
             let collection = 
             new GUI_Element("div", "string", `string-${i}`, "#fretboard"); 
 
-            for(let j = 1; j < this.frets; j++){
+            for(let j = 0; j < this.frets; j++){
+                
+                let part = `#string-${i}`;
+                if(j == 0) part = "#openString";
 
-                let note = new GUI_Element("div", "note", `note-${currentNote}`, `#string-${i}`)
+                let note = new GUI_Element("div", "note", `note-${currentNote}`, part)               
                 note.element.innerText = currentNote;               
                 currentNote = new Frequency(currentNote).transpose(1).toNote();               
             }
@@ -39,5 +44,8 @@ export class App_Prompt{
         this.parser = new Parser(promptID);
     }
     
+}
 
+export class App_ChordList{
+    db : Database;
 }
