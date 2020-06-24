@@ -2,6 +2,7 @@ import { GUI_Element } from './gui';
 import { Frequency } from "Tone";
 import { Parser } from './parser';
 import { Database } from './database';
+import { Chord } from './Definitions';
 
 export class App_Fretboard{
     stringAmount = 6;
@@ -42,8 +43,7 @@ export class App_Prompt{
         let a = new GUI_Element("input", "", promptID);
         a.element.setAttribute("placeholder", "...write command here");
         this.parser = new Parser(promptID);
-    }
-    
+    } 
 }
 
 export class App_Help{
@@ -56,7 +56,7 @@ export class App_ChordList{
     listOfChords = new GUI_Element("select", "select", "chord-selector");
     // <option value="">C5 Minor</option>
     constructor(){
-        
+
     }
 }
 
@@ -87,13 +87,19 @@ export class App_Settings{
     private createDelay() {
         //label
         this.el_delay = new GUI_Element("input", "", "");
+        this.el_delay.element.setAttribute("placeholder", "00");
         this.el_delay.element.setAttribute("type", "number");
+        this.el_delay.element.setAttribute("min", "0");
+        this.el_delay.element.setAttribute("max", "10");
     }
 
     private createDuration() {
         //label
         this.el_duration = new GUI_Element("input", "", "");
+        this.el_duration.element.setAttribute("placeholder", "01");
         this.el_duration.element.setAttribute("type", "number");
+        this.el_duration.element.setAttribute("min", "0");
+        this.el_duration.element.setAttribute("max", "10");
     }
 
     private createVolume() {
@@ -108,4 +114,9 @@ export class App_Settings{
 
 export class App_Player{
     el_play;
+    el_selectedChord;
+    el_saveChord;
+
+    currentChord: Chord;
+
 }

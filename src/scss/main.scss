@@ -1,6 +1,16 @@
-$c_black: #222;
+$c_black: #303030;
 $c_white: #eee;
 $c_grey: #666;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+html{
+  font-family: 'Montserrat', sans-serif;
+  color: $c_black;
+  input{
+    font-family: "Montserrat";
+  }
+}
 
 #prompt{
   border: 0px solid black;
@@ -28,8 +38,15 @@ $c_grey: #666;
     }
 }
 
-.settings-input[type="number"]{
-  width: 30px;
+.settings{
+  max-width: 140px;
+
+  input[type="number"]{
+    width: 30px;
+  }
+  input[type="range"]{
+    width: 80px;
+  }
 }
 
 .string{
