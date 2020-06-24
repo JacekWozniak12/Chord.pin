@@ -17,5 +17,4 @@ export class Database{
     findChord(input : string){
 
     }
-
 }

@@ -1,6 +1,7 @@
 $c_black: #303030;
 $c_white: #eee;
 $c_grey: #666;
+$c_selected: #ffebcd;
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
@@ -11,6 +12,11 @@ html{
     font-family: "Montserrat";
   }
 }
+
+.hidden{
+  display: none;
+}
+
 
 #prompt{
   border: 0px solid black;
@@ -29,23 +35,34 @@ html{
     color: $c_grey;
     display: inline-block;
     margin: 2.5px;
-    
-    &:hover{
+    margin-top: 0px;
 
-    }
-    &:first-child{
-
+    &:hover .note-option{
+      display: block;
+      position: absolute;
     }
 }
 
 .settings{
   max-width: 140px;
-
-  input[type="number"]{
-    width: 30px;
-  }
-  input[type="range"]{
+  border: 1px solid $c_black;
+  padding: 5px;
+  
+  input[type="number"], input[type="range"]{
+    position: relative;
     width: 80px;
+    bottom: 25%;
+    left: 7px;
+  }
+
+  .setting-container{
+    height: 32px;
+    margin: 3px;
+  }
+
+  img {
+    width:32px;
+    height:32px;
   }
 }
 
@@ -53,16 +70,14 @@ html{
   width: 75px;
   display: inline-block;
   margin: 2.5px;
+  margin-top: 0px;
 }
 
 .note-selected{
   &:hover{
-
+    background-color: BA5624;
   }
-  width: 15px;
-  height: 15px;
-  display: block;
-  border-radius: 50%;
+  background-color: #FCDE9C;
 
 }
 
@@ -79,9 +94,43 @@ tr, td{
 }
 
 #fretboard{
-    width: 75*7;
-    height: 150px;
+    overflow-x: hidden;
+    display: inline-block;
+    max-width: 75*7px;
+    min-height: 250px;
+    max-height: 375px;
     overflow-y: scroll;
+
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
+
+    /* width */
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: #ddd; 
+    }
+    
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: #888; 
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #FFA552; 
+    }
+
 }
 
+#openString{
+    padding: 1px;
+}
 
+.important-note-selected{
+  background-color: #FFA552;
+}
