@@ -17,6 +17,6 @@
         "src/ts/app/audio.ts", 
         "src/ts/app/definitions.ts", 
         "src/ts/app/gui.ts", 
-        "src/ts/app/parser.ts",
+        "src/ts/app/parser.ts", "src/ts/app/app.ts",
     ]
 }

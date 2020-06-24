@@ -1,4 +1,4 @@
-import { Time } from "tone/Tone";
+import { Time } from "Tone";
 import { Options, Note, Chord } from "./Definitions";
 import { Database } from './database';
 

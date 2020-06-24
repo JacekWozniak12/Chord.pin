@@ -19,21 +19,21 @@ export class Audio{
             new Note("A6", new Options(0.1, 2, 2))
         ])  
 
-        this.instrument = new PolySynth(
-            8, 
-            Synth,
-            {
-                oscillator: {
-                    type: 'triangle8'
-                },
-                envelope: {
-                    attack: 2,
-                    decay: 1,
-                    sustain: 0.1,
-                    release: 1
-                }
-            });
-        this.instrument.toMaster();
+        // this.instrument = new PolySynth(
+        //     8, 
+        //     Synth,
+        //     {
+        //         oscillator: {
+        //             type: 'triangle8'
+        //         },
+        //         envelope: {
+        //             attack: 2,
+        //             decay: 1,
+        //             sustain: 0.1,
+        //             release: 1
+        //         }
+        //     });
+        // this.instrument.toMaster();
     }
 
     Dispose(){
@@ -43,22 +43,20 @@ export class Audio{
 
     Play(chord : Chord = this.chord){
 
-        chord.notes.forEach(e => {
-            this.instrument.triggerAttackRelease
-            (
-                e.name, 
-                e.options.duration, 
-                e.options.delay, 
-                e.options.volume
-                )
-        });
-
-        
+        // chord.notes.forEach(e => {
+        //     this.instrument.triggerAttackRelease
+        //     (
+        //         e.name, 
+        //         e.options.duration, 
+        //         e.options.delay, 
+        //         e.options.volume
+        //         )
+        // });
 
     }
 
     Select(notes : Note[]){
-        this.chord = notes;
+        // this.chord = notes;
     }
     
 }

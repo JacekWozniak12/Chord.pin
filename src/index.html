@@ -8,5 +8,33 @@
 <body>
     <!-- Application scheme -->
     <script src="index.js"></script>
+    <h1>Hello World</h1>
+    <input type="text" id="prompt" />
+    <div class="settings"></div>
+    <div class="note-settings">
+        <h2>CHORD C5</h2>
+        <h3>C5 + C3</h3>
+
+        <label for="volume">Volume:</label>
+        <input type="range" id="volume">
+
+        <label for="duration">Duration: </label>
+        <input type="number" id="duration">
+
+        <label for="delay">Delay: </label>
+        <input type="number" id="delay">
+    </div>
+
+    <div id="fretboard">
+        <div class="string">
+            <div class="note">
+                <div class="note-selected">
+                   C3                             
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
 </body>
 </html>

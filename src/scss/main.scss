@@ -1,8 +1,26 @@
+$c_black: #222;
+$c_white: #eee;
+
 .note{
-    width: 10px;
-    height: 10px;
-    background-color: #000;
+    width: 25px;
+    height: 25px;
+    background-color: $c_black;
+    color: $c_white;
     display: block;
+    &:hover{
+
+    }
+}
+
+.note-selected{
+  &:hover{
+
+  }
+  width: 15px;
+  height: 15px;
+  display: block;
+  border-radius: 50%;
+
 }
 
 .note-collection{
@@ -11,3 +29,14 @@
     height: 100px;
 }
 
+tr, td{
+    width: 25px;
+    height: 25px;
+    border: 1px black solid;
+}
+
+#fretboard{
+    width: 200px;
+    height: 150px;
+    overflow-y: scroll;
+}
