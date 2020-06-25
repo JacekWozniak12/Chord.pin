@@ -8,7 +8,7 @@ class Note{
 
     constructor(
         name: string, 
-        options: Options = null,
+        options: Options = new Options(),
         transposition: number = null
         )
     {

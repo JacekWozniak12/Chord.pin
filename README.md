@@ -63,7 +63,23 @@ Settings for
 
 ### Graphical Interface
 
-// todo
+#### Changing settings
+
+    <img src="https://img.icons8.com/windows/32/000000/help.png"/>
+
+    <img src="https://img.icons8.com/windows/32/000000/send-letter.png"/>
+
+    <img src="https://img.icons8.com/windows/32/000000/add-column.png"/>
+
+    <img src="https://img.icons8.com/windows/32/000000/plus-math.png"/>
+
+    <img src="https://img.icons8.com/windows/32/000000/minus-math.png"/>
+
+    <img src="https://img.icons8.com/windows/32/000000/expand-arrow.png"/>
+
+    <img src="https://img.icons8.com/windows/32/000000/opened-folder.png"/>
+
+    <img src="https://img.icons8.com/windows/32/000000/settings.png"/>
 
 ### Text prompt syntax
 

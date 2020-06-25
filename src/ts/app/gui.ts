@@ -40,7 +40,7 @@ export class GUI_Listener<T extends HTMLElement> extends GUI_Element<T>
     }
 
     setImage(type: string) : void {
-        if (type = "img") {
+        if (type == "img") {
             this.element.setAttribute("src", this.img);
         }
         else

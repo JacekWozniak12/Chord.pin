@@ -1,5 +1,6 @@
-import { Synth, PolySynth} from "Tone";
-import { Note, Options, Chord } from "./Definitions";
+import Tone, { PolySynth, Transport, Loop, Time } from "Tone";
+import { Note, Chord } from "./Definitions";
+
 
 export class Audio{
     
@@ -7,58 +8,57 @@ export class Audio{
     private chord : Chord;
     
     constructor(){
-        this.Setup();
+        this.setup();
     }
 
-    Setup(){ 
+    updateChord(chord: Chord){
+        this.chord = chord;
+    }
+
+    addNote(note: Note){
+        this.chord.notes.unshift(note);
+    }
+
+    deleteNote(note: Note){
+        this.chord.notes = this.chord.notes.filter(x => x.name != note.name);
+    }
+    
+
+    setup(){ 
                  
-        this.chord = new Chord([
-            new Note("C3", new Options(0.5, 1, 0.2)),
-            new Note("C4", new Options(0.5, 1, 0)),
-            new Note("A2", new Options(0.1, 2, 2)),
-            new Note("A6", new Options(0.1, 2, 2))
-        ])  
+        this.chord = new Chord([])  
 
-        // this.instrument = new PolySynth(
-        //     8, 
-        //     Synth,
-        //     {
-        //         oscillator: {
-        //             type: 'triangle8'
-        //         },
-        //         envelope: {
-        //             attack: 2,
-        //             decay: 1,
-        //             sustain: 0.1,
-        //             release: 1
-        //         }
-        //     });
-        // this.instrument.toMaster();
+        this.instrument = new PolySynth(
+           
+            // , 
+            // Synth,
+            // {
+            //     oscillator: {
+            //         type: 'triangle8'
+            //     },
+            //     envelope: {
+            //         attack: 2,
+            //         decay: 1,
+            //         sustain: 0.1,
+            //         release: 1
+            //     }
+            // }
+            );
+        this.instrument.toMaster();
     }
 
-    Dispose(){
+    dispose(){
         this.instrument.dispose();
         this.instrument = null;
     }
 
-    Play(chord : Chord = this.chord){
-
-        // chord.notes.forEach(e => {
-        //     this.instrument.triggerAttackRelease
-        //     (
-        //         e.name, 
-        //         e.options.duration, 
-        //         e.options.delay, 
-        //         e.options.volume
-        //         )
-        // });
-
+    play(chord : Chord = this.chord){
+        chord.notes.forEach(note => {
+            this.instrument.triggerAttackRelease(note.name, note.options.duration); 
+        });
+      
     }
-
-    Select(notes : Note[]){
-        // this.chord = notes;
-    }
-    
+  
 }
 
 

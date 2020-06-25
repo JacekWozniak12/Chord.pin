@@ -6,6 +6,7 @@
         "removeComments": true,
         "allowSyntheticDefaultImports": true,
         "baseUrl": "./",
+        "noImplicitAny": false,
         "paths": {
             "Tone": ["node_modules/tone/Tone"],
           },
