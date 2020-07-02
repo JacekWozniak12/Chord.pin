@@ -1,56 +1,68 @@
-export class GUI_Element<T extends HTMLElement>{
-    element: T;
+export module GUI {
 
-    constructor(type: string, className: string = null, id: string = null, parent: string = "body")
-    {
-        this.element = document.createElement(type) as T;
-        if(className != "" && className != null) this.element.className = className;
-        if(id != "" && id != null) this.element.id = id;
-        document.querySelector(parent).appendChild(this.element);
-    }
+    class Element<T extends HTMLElement>{
 
-    parentElements(el : HTMLElement[]){
-        el.forEach(e => {this.element.appendChild(e)});
-    }
+        htmlElement: T;
+        img: string;
 
-    setText(text : string){
-        this.element.innerText = text;
-    }
-
-    modifyAttribute(attribute: string, value: string) : GUI_Element<T>{
-        this.element.setAttribute(attribute, value);
-        return this;
-    }
-}
-
-export class GUI_Listener<T extends HTMLElement> extends GUI_Element<T>
-{
-    img: string;
-
-    constructor(type: string, className: string = null, id: string = null, parent: string = "body", trigger: string, f : EventListener, img :string="")
-    {
-        super(type, className, id, parent);
-        if(img != ""){
-            this.img = img;
-            this.setImage(type);
-        }
-        if(f != null && trigger != ""){
+        constructor(
+            type: string,
+            className: string = null,
+            id: string = null,
+            parent: string = "body",
+            img: string = null,
+            trigger: string = null,
+            f: EventListener = null
+        ) {
+            this.htmlElement = document.createElement(type) as T;
+            this.setClassName(className);
+            this.setId(id);
             this.addListener(trigger, f);
-        }      
-    }
-
-    setImage(type: string) : void {
-        if (type == "img") {
-            this.element.setAttribute("src", this.img);
+            this.setImage(type, img);
+            document.querySelector(parent).appendChild(this.htmlElement);
         }
-        else
-            this.element.style.background = `url(${this.img})`;
+
+
+        private setId(id: string) {
+            if (id != "" && id != null)
+                this.htmlElement.id = id;
+        }
+
+        private setClassName(className: string) {
+            if (className != "" && className != null)
+                this.htmlElement.className = className;
+        }
+
+        setImage(type: string, img: string): void {
+            if (img != "") {
+                this.img = img;
+                if (type == "img") {
+                    this.htmlElement.setAttribute("src", this.img);
+                }
+                else
+                    this.htmlElement.style.background = `url(${this.img})`;
+            }
+        }
+
+        parentElements(el: HTMLElement[]) {
+            el.forEach(e => { this.htmlElement.appendChild(e) });
+        }
+
+        setText(text: string) {
+            this.htmlElement.innerText = text;
+        }
+
+        modifyAttribute(attribute: string, value: string){
+            this.htmlElement.setAttribute(attribute, value);
+            return this;
+        }
+
+        addListener(trigger: string, f: EventListener) {
+            if (f != null && trigger != "" && trigger != null) {
+                this.htmlElement.addEventListener(trigger, f);
+            }
+        }
     }
-
-    addListener(trigger: string, f: EventListener ){
-        this.element.addEventListener(trigger, f);
-    }
-
-
 }
+
 
