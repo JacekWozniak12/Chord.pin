@@ -11,14 +11,20 @@ Application, that let's you create by using **custom** syntax. It lets an user c
       - [Chord](#chord)
       - [Options](#options)
     - [Graphical Interface](#graphical-interface)
+      - [Changing settings](#changing-settings)
     - [Text prompt syntax](#text-prompt-syntax)
       - [Rules](#rules)
       - [Symbols](#symbols)
         - [Note](#note-1)
         - [Chord base](#chord-base)
         - [Note / default options](#note--default-options)
-        - [Global options](#global-options)
       - [Examples](#examples)
+        - [Default option setting](#default-option-setting)
+        - [Single note (default options)](#single-note-default-options)
+        - [Single note with options](#single-note-with-options)
+        - [Chord with notes (default options)](#chord-with-notes-default-options)
+        - [Chord with notes and options](#chord-with-notes-and-options)
+        - [Save / read operations](#save--read-operations)
   - [Used Software / Libraries](#used-software--libraries)
   - [Legal](#legal)
 
@@ -64,22 +70,6 @@ Settings for
 ### Graphical Interface
 
 #### Changing settings
-
-    <img src="https://img.icons8.com/windows/32/000000/help.png"/>
-
-    <img src="https://img.icons8.com/windows/32/000000/send-letter.png"/>
-
-    <img src="https://img.icons8.com/windows/32/000000/add-column.png"/>
-
-    <img src="https://img.icons8.com/windows/32/000000/plus-math.png"/>
-
-    <img src="https://img.icons8.com/windows/32/000000/minus-math.png"/>
-
-    <img src="https://img.icons8.com/windows/32/000000/expand-arrow.png"/>
-
-    <img src="https://img.icons8.com/windows/32/000000/opened-folder.png"/>
-
-    <img src="https://img.icons8.com/windows/32/000000/settings.png"/>
 
 ### Text prompt syntax
 
@@ -182,6 +172,7 @@ Default time of note set to **1** second, default delay to **0.33** s and defaul
 * App is written in [TypeScript](https://www.typescriptlang.org/) ?and [NativeScript](https://www.nativescript.org/). 
 * Audio framework provided by [Tone.js](https://tonejs.github.io/)
 * Bundler provided by [Webpack](https://webpack.js.org/)
+* Icons provided by [Icons8](https://icons8.com/)
 * Visual Studio Code
 
 ## Legal

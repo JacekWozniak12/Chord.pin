@@ -25,7 +25,7 @@ export module Components {
                 this.htmlElement.value = info;
             }
 
-            apply() : this{
+            apply(): this {
                 return this;
             }
         }
@@ -50,14 +50,19 @@ export module Components {
             stringAmount = 6;
             frets = 25;
             startingFrequencyNote = ["E2", "A2", "D3", "G3", "B3", "E4"];
+            noteBoardName : string = "fretboard"
 
             constructor(audio: Audio) {
-                super("div", "", "fretboard");
-                new GUI.Element("div", "", "openString");
+                super("div", "", "board");
+                this.parentElements([
+                    new GUI.Element("div", "", "openString").htmlElement,
+                    new GUI.Element("div", "", this.noteBoardName).htmlElement
+                ]);
+
                 let currentNote = this.startingFrequencyNote[0];
 
                 for (let i = 1; i < this.stringAmount + 1; i++) {
-                    new GUI.Element("div", "string", `string-${i}`, "#fretboard");
+                    new GUI.Element("div", "string", `string-${i}`, `#${this.noteBoardName}`);
                     for (let j = 0; j < this.frets; j++) {
                         currentNote = this.createNoteEl(i, j, currentNote, audio);
                     }
@@ -77,9 +82,11 @@ export module Components {
                     part, "mouseover", null,
                     new Note(currentNote), `string-{i}`);
 
-                note.addListener("click", (note.toggle.bind(note)));
-                note.setup(audio);
-                note.htmlElement.innerText = currentNote.replace("S", "#");
+                note.
+                    addListener("click", (note.toggle.bind(note))).
+                    setup(audio).
+                    setText(currentNote.replace("S", "#"));
+
                 currentNote = new Frequency(currentNote).transpose(1).toNote();
                 return currentNote;
             }
@@ -163,21 +170,22 @@ export module Components {
             collectionId: string;
             el_add: GUI.Element<HTMLDivElement>;
             el_del: GUI.Element<HTMLDivElement>;
-            el_settings: Settings;
+            settings: Settings;
             audio: Audio;
 
             constructor(type: string, className: string, id: string = null,
                 parent: string = "body", trigger: string, f: EventListener,
                 note: Note, collectionId: string) {
                 super(type, className, id, parent, "", trigger, f);
-                this.el_settings = new Settings();
+                this.settings = new Settings();
                 this.core = note;
                 this.collectionId = collectionId;
-                this.parentElements([this.el_settings.htmlElement]);
+                this.parentElements([this.settings.htmlElement]);
             }
 
-            setup(audio: Audio) {
+            setup(audio: Audio): this {
                 this.audio = audio;
+                return this;
             }
 
             clear() {
@@ -230,7 +238,5 @@ export module Components {
                 });
             }
         }
-
-
     }
 }
