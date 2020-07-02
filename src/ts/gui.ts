@@ -21,6 +21,7 @@ export module GUI {
                 addListener(trigger, f).
                 setImage(type, img);
             
+            this.children = [];    
             document.querySelector(parent).appendChild(this.htmlElement);
         }
 

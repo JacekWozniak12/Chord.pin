@@ -1,7 +1,6 @@
 import { PolySynth, Synth } from "Tone";
 import { Note, Chord } from "./Definitions";
 
-
 export class Audio{
     
     private instrument : PolySynth
@@ -33,7 +32,7 @@ export class Audio{
                     type: 'triangle8'
                 },
                 envelope: {
-                    attack: 2,
+                    attack: 1.22,
                     decay: 1,
                     sustain: 0.1,
                     release: 1
