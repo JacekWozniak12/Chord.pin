@@ -2,7 +2,7 @@ import { Parser } from "./parser";
 import { GUI } from "./gui";
 import { Audio } from './audio';
 import { Options, Chord, Note } from "./Definitions";
-import { Frequency } from "Tone";
+import { Frequency, isNumber } from "Tone";
 
 // describes items used to built app
 export module Components {
@@ -50,10 +50,11 @@ export module Components {
             stringAmount = 6;
             frets = 25;
             startingFrequencyNote = ["E2", "A2", "D3", "G3", "B3", "E4"];
-            noteBoardName : string = "fretboard"
+            noteBoardName: string = "fretboard"
 
             constructor(audio: Audio) {
                 super("div", "", "board");
+
                 this.parentElements([
                     new GUI.Element("div", "", "openString").htmlElement,
                     new GUI.Element("div", "", this.noteBoardName).htmlElement
@@ -63,9 +64,11 @@ export module Components {
 
                 for (let i = 1; i < this.stringAmount + 1; i++) {
                     new GUI.Element("div", "string", `string-${i}`, `#${this.noteBoardName}`);
+
                     for (let j = 0; j < this.frets; j++) {
                         currentNote = this.createNoteEl(i, j, currentNote, audio);
                     }
+
                     currentNote = this.startingFrequencyNote[i];
                 }
             }
@@ -79,13 +82,15 @@ export module Components {
                     currentNote.
                         replace("#", "S").
                         concat(`-string-${i}`),
-                    part, "mouseover", null,
+                    part, null, null,
                     new Note(currentNote), `string-{i}`);
 
                 note.
-                    addListener("click", (note.toggle.bind(note))).
-                    setup(audio).
-                    setText(currentNote.replace("S", "#"));
+                    addListener("click", note.toggle.bind(note)).
+                    addListener("mouseover", note.showOptions.bind(note)).
+                    addListener("mouseout", note.hideOptions.bind(note)).
+                    setText(currentNote.replace("S", "#")).
+                    setup(audio);
 
                 currentNote = new Frequency(currentNote).transpose(1).toNote();
                 return currentNote;
@@ -102,32 +107,43 @@ export module Components {
             el_duration: GUI.Element<HTMLInputElement>;
             el_delay: GUI.Element<HTMLInputElement>;
 
-            currentModifiedOptions: Options;
+            options: Options;
 
-            constructor(type: string = "div", className: string = "settings", id: string = null, parent: string = "body") {
+            constructor(
+                note: Note = null,
+                type: string = "div",
+                className: string = "settings",
+                id: string = null,
+                parent: string = "body"
+            ) {
                 super(type, className, id, parent);
-                this.createSettingsTitle();
+                this.setSettingsTitle(note.name + " Settings");
                 this.createVolume();
                 this.createDuration();
                 this.createDelay();
+                this.options = note.options;
             }
 
+            private updateVolume() : this{
+                this.options.volume = Number.parseFloat(this.el_volume.htmlElement.value);
+                console.log(this.options.volume);
+                return this;
+            }
 
-            private createSettingsTitle(title: string = "settings") {
+            private updateDuration() : this{
+                this.options.setDuration(Number.parseFloat(this.el_duration.htmlElement.value));
+                return this;
+            }
+
+            private updateDelay() : this{
+                this.options.setDelay(Number.parseFloat(this.el_delay.htmlElement.value))
+                return this;
+            }
+
+            setSettingsTitle(title: string = "settings") {
                 this.el_title = new GUI.Element("div", "", "");
                 this.el_title.htmlElement.textContent = title;
                 this.parentElements([this.el_title.htmlElement]);
-            }
-
-            setOption(options: Options, title: string) {
-                this.currentModifiedOptions = options;
-                this.htmlElement.textContent = title;
-            }
-
-            unsetOption() {
-                this.currentModifiedOptions = null;
-                // null everything
-                this.htmlElement.classList.toggle("hidden");
             }
 
             private createSetting(type: string, className: string, id: string, img: string): GUI.Element<HTMLElement> {
@@ -139,13 +155,13 @@ export module Components {
                 return r;
             }
 
-
             private createDelay() {
                 this.el_delay = <any>this.createSetting("input", "", "", "https://img.icons8.com/windows/32/000000/add-time.png").
                     modifyAttribute("placeholder", "00").
                     modifyAttribute("type", "number").
                     modifyAttribute("min", "0").
-                    modifyAttribute("max", "10");
+                    modifyAttribute("max", "10").
+                    addListener("focusout", this.updateDelay.bind(this));
             }
 
             private createDuration() {
@@ -153,7 +169,8 @@ export module Components {
                     modifyAttribute("placeholder", "01").
                     modifyAttribute("type", "number").
                     modifyAttribute("min", "0").
-                    modifyAttribute("max", "10");
+                    modifyAttribute("max", "10").
+                    addListener("focusout", this.updateDuration.bind(this));
             }
 
             private createVolume() {
@@ -161,31 +178,46 @@ export module Components {
                     modifyAttribute("type", "range").
                     modifyAttribute("min", "0").
                     modifyAttribute("max", "1").
-                    modifyAttribute("step", "0.01");
+                    modifyAttribute("step", "0.01").
+                    addListener("focusout", this.updateVolume.bind(this));
             }
         }
 
         export class NoteDisplay extends GUI.Element<HTMLDivElement> {
-            core: Note;
+
+            note: Note;
             collectionId: string;
-            el_add: GUI.Element<HTMLDivElement>;
-            el_del: GUI.Element<HTMLDivElement>;
+            add: GUI.Element<HTMLDivElement>;
+            del: GUI.Element<HTMLDivElement>;
             settings: Settings;
             audio: Audio;
 
-            constructor(type: string, className: string, id: string = null,
-                parent: string = "body", trigger: string, f: EventListener,
+            constructor(
+                type: string, 
+                className: string, 
+                id: string = null,
+                parent: string = "body", 
+                trigger: string, f: EventListener,
                 note: Note, collectionId: string) {
                 super(type, className, id, parent, "", trigger, f);
-                this.settings = new Settings();
-                this.core = note;
+                this.settings = new Settings(note);
+                this.settings.htmlElement.classList.add("hidden");
+                this.note = note;
                 this.collectionId = collectionId;
-                this.parentElements([this.settings.htmlElement]);
             }
 
             setup(audio: Audio): this {
                 this.audio = audio;
+                this.parentElements([this.settings.htmlElement]);
                 return this;
+            }
+
+            showOptions() {
+                this.settings.htmlElement.classList.remove("hidden");
+            }
+
+            hideOptions() {
+                this.settings.htmlElement.classList.add("hidden");
             }
 
             clear() {
@@ -197,9 +229,9 @@ export module Components {
             }
 
             toggle() {
-                let found = document.querySelectorAll(`div[id*="${this.core.name.replace("#", "S")}"]`);
+                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
                 if (this.htmlElement.classList.contains("note-selected") && !this.htmlElement.classList.contains("important-note-selected")) {
-                    this.audio.addNote(this.core);
+                    this.audio.addNote(this.note);
                     this.htmlElement.classList.toggle("important-note-selected");
                 }
                 else {
@@ -208,11 +240,11 @@ export module Components {
                         x.classList.remove("important-note-selected");
                     });
                     if (this.htmlElement.classList.contains("note-selected")) {
-                        this.audio.addNote(this.core);
+                        this.audio.addNote(this.note);
                         this.htmlElement.classList.toggle("important-note-selected");
                     }
                     else {
-                        this.audio.deleteNote(this.core);
+                        this.audio.deleteNote(this.note);
                     }
                 }
             }
@@ -221,7 +253,7 @@ export module Components {
                 this.htmlElement.classList.add
                     ("note-selected", "important-note-selected");
 
-                let found = document.querySelectorAll(`div[id*="${this.core.name.replace("#", "S")}"]`);
+                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
                 found.forEach(x => {
                     x.classList.toggle("note-selected");
                 });
@@ -231,7 +263,7 @@ export module Components {
                 this.htmlElement.classList.remove
                     ("note-selected", "important-note-selected");
 
-                let found = document.querySelectorAll(`div[id*="${this.core.name.replace("#", "S")}"]`);
+                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
                 found.forEach(x => {
                     x.classList.remove
                         ("note-selected", "important-note-selected");

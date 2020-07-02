@@ -40,7 +40,7 @@ export module GUI {
         }
 
         setImage(type: string, img: string): this {
-            if (img != "") {
+            if (img != "" && img != null && img != undefined) {
                 this.img = img;
                 if (type == "img") {
                     this.htmlElement.setAttribute("src", this.img);

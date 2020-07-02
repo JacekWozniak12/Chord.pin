@@ -13,9 +13,7 @@ html{
   }
 }
 
-.hidden{
-  display: none;
-}
+
 
 
 #prompt{
@@ -44,15 +42,19 @@ html{
 }
 
 .settings{
+  position: absolute;
+  display: inline-block;
   max-width: 140px;
   border: 1px solid $c_black;
   padding: 5px;
+  background-color: #eee;
   
   input[type="number"], input[type="range"]{
     position: relative;
     width: 80px;
     bottom: 25%;
     left: 7px;
+    margin-right: 8px;
   }
 
   .setting-container{
@@ -138,4 +140,8 @@ tr, td{
 
 .important-note-selected{
   background-color: #FFA552;
+}
+
+.hidden{
+  display: none !important;
 }

@@ -87,6 +87,14 @@ class Options{
     volume: number;
     // Using construction method from Time
     duration: Time;
-    delay: Time;   
+    delay: Time;
+    
+    setDelay(delay: number){
+        this.delay = new Time(delay);
+    }
+
+    setDuration(duration: number){
+        this.duration = new Time(duration);
+    }
 }
 

@@ -48,8 +48,15 @@ export class Audio{
     }
 
     play(chord : Chord = this.chord){
+        this.instrument.releaseAll();
+
         chord.notes.forEach(note => {
-            this.instrument.triggerAttackRelease(note.name, note.options.duration); 
+            this.instrument.triggerAttackRelease(
+                note.name, 
+                note.options.duration, 
+                note.options.delay, 
+                note.options.volume
+                ); 
         });
       
     }
