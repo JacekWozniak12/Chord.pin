@@ -1,4 +1,4 @@
-import Tone, { PolySynth, Transport, Loop, Time } from "Tone";
+import { PolySynth, Synth } from "Tone";
 import { Note, Chord } from "./Definitions";
 
 
@@ -23,26 +23,22 @@ export class Audio{
         this.chord.notes = this.chord.notes.filter(x => x.name != note.name);
     }
     
-
     setup(){ 
                  
         this.chord = new Chord([])  
 
-        this.instrument = new PolySynth(
-           
-            // , 
-            // Synth,
-            // {
-            //     oscillator: {
-            //         type: 'triangle8'
-            //     },
-            //     envelope: {
-            //         attack: 2,
-            //         decay: 1,
-            //         sustain: 0.1,
-            //         release: 1
-            //     }
-            // }
+        this.instrument = new PolySynth(16, Synth as any,
+            {
+                oscillator: {
+                    type: 'triangle8'
+                },
+                envelope: {
+                    attack: 2,
+                    decay: 1,
+                    sustain: 0.1,
+                    release: 1
+                }
+            }
             );
         this.instrument.toMaster();
     }

@@ -52,6 +52,16 @@ class Chord{
     description: string;
     notes: Note[];
     options: Options = null;
+
+    returnContent(): string{
+        let s = "";
+
+        this.notes.forEach(element => {
+            s = s.concat(element.name, " ^ ")
+        });
+        
+        return s.slice(0, s.length - 2)
+    }
 }
 
 class Options{

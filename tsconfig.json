@@ -15,9 +15,9 @@
         "node_modules/tone/Tone",
         "src/ts/*", 
         "src/ts/app/app-parts.ts", 
-        "src/ts/app/audio.ts", 
-        "src/ts/app/definitions.ts", 
-        "src/ts/app/gui.ts", 
-        "src/ts/app/parser.ts", "src/ts/app/app.ts",
+        "src/ts/audio.ts", 
+        "src/ts/definitions.ts", 
+        "src/ts/gui.ts", 
+        "src/ts/parser.ts", "src/ts/app/app.ts",
     ]
 }

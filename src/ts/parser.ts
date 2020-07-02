@@ -5,7 +5,7 @@ import { Database } from './database';
 export class Parser{
 
     db : Database;
-    prompt;
+    prompt : HTMLInputElement;
 
     // symbols start
         static readonly S_LOADING = "<<";
@@ -23,32 +23,40 @@ export class Parser{
         static readonly S_PARAMETER_NEXT = ",";
     // symbols stop
 
-    constructor(promptID : string){
-
+    constructor(prompt : HTMLInputElement){
+        this.prompt = prompt;
+        this.prompt.addEventListener
+        ("keydown", 
+         ((event: KeyboardEvent) => {
+            this.getOutput(event, this.prompt.value)
+         }) as EventListener, true);
+        
     }
 
-    initialize(){
-        // find parser prompt
-    }
+    getOutput(e : KeyboardEvent, text: string){
+        
+        if(e.key == "Enter")
+        {    
+            let input = text;
+            console.log(e.key);
+            console.log(input);
 
-    getOutput(input : string){
-        input = input.trim();
+            let s = input.search(Parser.S_LOADING);
+            if(s >= 0){
+                let t = input.slice(s, Parser.S_LOADING.length);
+                let i = input.replace(t, "");
+                this.loadChordFromDB(i);
+            } 
+            else{
 
-        let s = input.search(Parser.S_LOADING);
-        if(s >= 0){
-            let t = input.slice(s, Parser.S_LOADING.length);
-            let i = input.replace(t, "");
-            this.loadChordFromDB(i);
-        } 
-        else{
-
+            }
         }
-        // else
-            // get chord strings
-            // get option strings
-            // get save string
-    }
+            // else
+                // get chord strings
+                // get option strings
+                // get save string
 
+    }
 
     static getChord(input : string) : Chord {
         let i = 0;
@@ -68,9 +76,6 @@ export class Parser{
                     );
             c = c.slice(i, f)           
         }
-
-        
-
         return r;
     }
 

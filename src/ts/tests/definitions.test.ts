@@ -1,4 +1,4 @@
-import { Note } from "../app/definitions"
+import { Note } from "../definitions"
 
 describe("Note isValidName", () => {
     
