@@ -2,32 +2,31 @@ import { Parser } from "./parser";
 import { GUI } from "./gui";
 import { Audio } from './audio';
 import { Options, Chord, Note } from "./Definitions";
-import { Frequency } from "tone/Tone";
+import { Frequency } from "Tone";
 
 // describes items used to built app
 export module Components {
 
     export module Interfaces {
 
-        export class Prompt {
+        export class Prompt extends GUI.Element<HTMLInputElement>{
 
             parser: Parser;
             audio: Audio;
-            input: GUI.Element<HTMLInputElement>;
 
             constructor(promptID: string, audio: Audio) {
-                this.input = new GUI.Element("input", "", promptID);
+                super("input", "input", promptID)
+                this.parser = new Parser(this.htmlElement);
                 this.audio = audio;
-                this.input.htmlElement.setAttribute("placeholder", "...write command here");
-                this.parser = new Parser(this.input.htmlElement);
+                this.htmlElement.setAttribute("placeholder", "...write command here");
             }
 
             notify(info: string) {
-                this.input.htmlElement.value = info;
+                this.htmlElement.value = info;
             }
 
-            apply() {
-
+            apply() : this{
+                return this;
             }
         }
 
@@ -37,9 +36,9 @@ export module Components {
             currentChord: Chord;
 
             constructor(audio: Audio) {
-                super("div");
-                this.el_play = new GUI.Element("div", "icon", "", "body", "https://img.icons8.com/ios-glyphs/32/000000/play.png", "click", this.play.bind(this));
+                super("div", "icon", "", "body", "https://img.icons8.com/ios-glyphs/32/000000/play.png");
                 this.audio = audio;
+                this.addListener("click", this.play.bind(this));
             }
 
             play() {
@@ -86,7 +85,6 @@ export module Components {
             }
         }
     }
-
 
     export module Data {
 

@@ -1,7 +1,6 @@
 import { PolySynth, Synth } from "Tone";
 import { Note, Chord } from "./Definitions";
 
-
 export class Audio{
     
     private instrument : PolySynth
