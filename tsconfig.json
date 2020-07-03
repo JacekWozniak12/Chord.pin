@@ -1,23 +1,20 @@
 {
-    "compilerOptions": {       
-        "lib": ["es5", "es6", "dom", "ES2015"],
+    "compilerOptions": {     
+        "lib": ["dom", "es6"],
         "module": "commonjs",
-        "target": "es6",
+        "target": "es5",
         "removeComments": true,
         "allowSyntheticDefaultImports": true,
         "baseUrl": "./",
         "noImplicitAny": false,
         "paths": {
-            "Tone": ["node_modules/tone/Tone"],
+            "Tone": ["node_modules/tone/*"],
           },
+        "experimentalDecorators": true,
+        "downlevelIteration": true
     },
     "include":[
-        "node_modules/tone/Tone",
+        "node_modules/tone/*",
         "src/ts/*", 
-        "src/ts/app/app-parts.ts", 
-        "src/ts/audio.ts", 
-        "src/ts/definitions.ts", 
-        "src/ts/gui.ts", 
-        "src/ts/parser.ts", "src/ts/app/app.ts",
     ]
 }

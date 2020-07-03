@@ -160,12 +160,12 @@ export class Parser {
         }
     }
 
-    static getDuration(input: string): Time {
-        return new Time(input);
+    static getDuration(input: string): number {
+        return Number.parseFloat(input);
     }
 
-    static getDelay(input: string): Time {
-        return new Time(input);
+    static getDelay(input: string): number{
+        return Number.parseFloat(input);
     }
 
     static getVolume(input: string): number {
@@ -179,5 +179,4 @@ export class Parser {
     loadChordFromDB(input: string, db: Database = this.db): Chord {
         return db.chords.find(x => x.name == input);
     }
-
 }

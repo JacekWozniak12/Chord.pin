@@ -2,7 +2,7 @@ import { Parser } from "./parser";
 import { GUI } from "./gui";
 import { Audio } from './audio';
 import { Options, Chord, Note } from "./Definitions";
-import { Frequency, isNumber } from "Tone";
+import { Frequency} from "Tone";
 
 // describes items used to built app
 export module Components {
@@ -92,7 +92,7 @@ export module Components {
                     setText(currentNote.replace("S", "#")).
                     setup(audio);
 
-                currentNote = new Frequency(currentNote).transpose(1).toNote();
+                currentNote = Frequency(currentNote).transpose(1).toNote();
                 return currentNote;
             }
         }
@@ -117,16 +117,23 @@ export module Components {
                 parent: string = "body"
             ) {
                 super(type, className, id, parent);
-                this.setSettingsTitle(note.name + " Settings");
+                let title = note?.name ?? "";               
+                this.setSettingsTitle(title + " Settings");
                 this.createVolume();
                 this.createDuration();
                 this.createDelay();
-                this.options = note.options;
+                this.options = note?.options;
+                
+                if(this.options != null){
+                    this.el_volume.htmlElement.value = <any>this.options.volume;
+                    this.el_delay.htmlElement.value = <any>this.options.delay;
+                    this.el_duration.htmlElement.value = <any>this.options.duration;
+                }
+                else this.options = new Options;
             }
 
             private updateVolume() : this{
                 this.options.volume = Number.parseFloat(this.el_volume.htmlElement.value);
-                console.log(this.options.volume);
                 return this;
             }
 
@@ -140,10 +147,16 @@ export module Components {
                 return this;
             }
 
-            setSettingsTitle(title: string = "settings") {
+            setSettingsTitle(title: string = "settings") : this{
                 this.el_title = new GUI.Element("div", "", "");
                 this.el_title.htmlElement.textContent = title;
                 this.parentElements([this.el_title.htmlElement]);
+                return this;
+            }
+
+            setOptions(options : Options) : this{
+                this.options = options;
+                return this;
             }
 
             private createSetting(type: string, className: string, id: string, img: string): GUI.Element<HTMLElement> {
@@ -161,7 +174,7 @@ export module Components {
                     modifyAttribute("type", "number").
                     modifyAttribute("min", "0").
                     modifyAttribute("max", "10").
-                    addListener("focusout", this.updateDelay.bind(this));
+                    addListener("change", this.updateDelay.bind(this));
             }
 
             private createDuration() {
@@ -170,7 +183,7 @@ export module Components {
                     modifyAttribute("type", "number").
                     modifyAttribute("min", "0").
                     modifyAttribute("max", "10").
-                    addListener("focusout", this.updateDuration.bind(this));
+                    addListener("change", this.updateDuration.bind(this));
             }
 
             private createVolume() {
@@ -179,7 +192,7 @@ export module Components {
                     modifyAttribute("min", "0").
                     modifyAttribute("max", "1").
                     modifyAttribute("step", "0.01").
-                    addListener("focusout", this.updateVolume.bind(this));
+                    addListener("change", this.updateVolume.bind(this));
             }
         }
 

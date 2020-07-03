@@ -13,7 +13,7 @@ class Note{
         )
     {
         if(this.isValidName(name)){
-            this.name = new Frequency(name).transpose(transposition).toNote();
+            this.name = Frequency(name).transpose(transposition).toNote();
             this.options = options;
         }
         else throw "Invalid note name";
@@ -74,27 +74,27 @@ class Options{
         {
             try{
                 this.volume = volume;
-                this.duration = new Time(duration);
-                this.delay = new Time(delay);
+                this.duration = Number.parseFloat(duration as string);
+                this.delay = Number.parseFloat(delay as string);
             }
             catch (e){
-                this.duration = new Time(1);
-                this.delay = new Time(0);               
+                this.duration = 1;
+                this.delay = 0;               
                 throw "Argument Exception - Writing default options"
             }
         }
     
     volume: number;
     // Using construction method from Time
-    duration: Time;
-    delay: Time;
+    duration: number;
+    delay: number;
     
     setDelay(delay: number){
-        this.delay = new Time(delay);
+        this.delay = delay
     }
 
     setDuration(duration: number){
-        this.duration = new Time(duration);
+        this.duration = duration;
     }
 }
 

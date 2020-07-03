@@ -1,66 +1,83 @@
-import { PolySynth, Synth } from "Tone";
+import { PolySynth, Synth, Transport, Part } from 'Tone';
 import { Note, Chord } from "./Definitions";
 
-export class Audio{
-    
-    private instrument : PolySynth
-    private chord : Chord;
-    
-    constructor(){
+export class Audio {
+
+    private instrument: PolySynth
+    private chord: Chord;
+
+    constructor() {
         this.setup();
     }
 
-    updateChord(chord: Chord){
+    updateChord(chord: Chord) {
         this.chord = chord;
     }
 
-    addNote(note: Note){
+    addNote(note: Note) {
         this.chord.notes.unshift(note);
     }
 
-    deleteNote(note: Note){
+    deleteNote(note: Note) {
         this.chord.notes = this.chord.notes.filter(x => x.name != note.name);
     }
-    
-    setup(){ 
-                 
-        this.chord = new Chord([])  
 
-        this.instrument = new PolySynth(16, Synth as any,
-            {
-                oscillator: {
-                    type: 'triangle8'
-                },
-                envelope: {
-                    attack: 1.22,
-                    decay: 1,
-                    sustain: 0.1,
-                    release: 1
-                }
-            }
-            );
-        this.instrument.toMaster();
+    setup() {
+
+        this.chord = new Chord([])
+
+        this.instrument = new PolySynth(
+            Synth
+            // {
+            //     oscillator: {
+            //         type: 'triangle8'
+            //     },
+            //     envelope: {
+            //         attack: 1.22,
+            //         decay: 1,
+            //         sustain: 0.1,
+            //         release: 1
+            //     }
+            // }
+        ).toDestination();
     }
 
-    dispose(){
+    dispose() {
         this.instrument.dispose();
         this.instrument = null;
     }
 
-    play(chord : Chord = this.chord){
-        this.instrument.releaseAll();
+    play(chord: Chord = this.chord) {
+        Transport.stop();
+        Transport.cancel();
 
-        chord.notes.forEach(note => {
-            this.instrument.triggerAttackRelease(
-                note.name, 
-                note.options.duration, 
-                note.options.delay, 
-                note.options.volume
-                ); 
+        let temp = this.instrument;
+
+        let part = new Part(function (time, event) {
+            temp.triggerAttackRelease(
+                event.note,
+                event.dur,
+                time,
+                event.volume)
+        }, []
+        )
+
+        chord.notes.forEach(e => {
+            part.add(e.options.delay,
+                {
+                    note: e.name,
+                    dur: e.options.duration,
+                    volume: e.options.volume
+                });
         });
-      
+
+        console.log(part);
+
+        part.start(0);
+        part.loop = 0
+
+        Transport.start();
     }
-  
 }
 
 

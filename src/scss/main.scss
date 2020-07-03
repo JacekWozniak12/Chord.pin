@@ -5,10 +5,11 @@ $c_selected: #ffebcd;
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-html{
+html {
   font-family: 'Montserrat', sans-serif;
   color: $c_black;
-  input{
+
+  input {
     font-family: "Montserrat";
   }
 }
@@ -16,40 +17,41 @@ html{
 
 
 
-#prompt{
+#prompt {
   border: 0px solid black;
   font-size: 32px;
 
-  &:focus{
+  &:focus {
     border: 0px solid black;
     outline: 0px solid black;
   }
 }
 
-.note{
-    width: 75px;
-    height: 75px;
-    background-color: $c_white;
-    color: $c_grey;
-    display: inline-block;
-    margin: 2.5px;
-    margin-top: 0px;
+.note {
+  width: 75px;
+  height: 75px;
+  background-color: $c_white;
+  color: $c_grey;
+  display: inline-block;
+  margin: 2.5px;
+  margin-top: 0px;
 
-    &:hover .note-option{
-      display: block;
-      position: absolute;
-    }
+  &:hover .note-option {
+    display: block;
+    position: absolute;
+  }
 }
 
-.settings{
+.settings {
   position: absolute;
   display: inline-block;
-  max-width: 140px;
+  width: 140px;
   border: 1px solid $c_black;
   padding: 5px;
   background-color: #eee;
-  
-  input[type="number"], input[type="range"]{
+
+  input[type="number"],
+  input[type="range"] {
     position: relative;
     width: 80px;
     bottom: 25%;
@@ -57,91 +59,93 @@ html{
     margin-right: 8px;
   }
 
-  .setting-container{
+  .setting-container {
     height: 32px;
     margin: 3px;
   }
 
   img {
-    width:32px;
-    height:32px;
+    width: 32px;
+    height: 32px;
   }
 }
 
-.icon{
-  width:32px;
-  height:32px;
+.icon {
+  width: 32px;
+  height: 32px;
 }
 
-.string{
+.string {
   width: 75px;
   display: inline-block;
   margin: 2.5px;
   margin-top: 0px;
 }
 
-.note-selected{
-  &:hover{
+.note-selected {
+  &:hover {
     background-color: BA5624;
   }
+
   background-color: #FCDE9C;
 
 }
 
-.note-collection{
-    display: grid;
-    width: 100px;
-    height: 100px;
+.note-collection {
+  display: grid;
+  width: 100px;
+  height: 100px;
 }
 
-tr, td{
-    width: 25px;
-    height: 25px;
-    border: 1px black solid;
+tr,
+td {
+  width: 25px;
+  height: 25px;
+  border: 1px black solid;
 }
 
-#fretboard{
-    overflow-x: hidden;
-    display: inline-block;
-    max-width: 75*7px;
-    min-height: 250px;
-    max-height: 375px;
-    overflow-y: scroll;
+#fretboard {
+  overflow-x: hidden;
+  display: inline-block;
+  max-width: 75*7px;
+  min-height: 250px;
+  max-height: 375px;
+  overflow-y: scroll;
 
-    // &::-webkit-scrollbar {
-    //   display: none;
-    // }
+  // &::-webkit-scrollbar {
+  //   display: none;
+  // }
 
-    /* width */
-    &::-webkit-scrollbar {
-      width: 10px;
-    }
+  /* width */
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
 
-    /* Track */
-    &::-webkit-scrollbar-track {
-      background: #ddd; 
-    }
-    
-    /* Handle */
-    &::-webkit-scrollbar-thumb {
-      background: #888; 
-    }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #ddd;
+  }
 
-    /* Handle on hover */
-    &::-webkit-scrollbar-thumb:hover {
-      background: #FFA552; 
-    }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #FFA552;
+  }
 
 }
 
-#openString{
-    padding: 1px;
+#openString {
+  padding: 1px;
 }
 
-.important-note-selected{
+.important-note-selected {
   background-color: #FFA552;
 }
 
-.hidden{
+.hidden {
   display: none !important;
 }
