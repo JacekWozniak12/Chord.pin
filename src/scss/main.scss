@@ -1,7 +1,9 @@
 $c_black: #303030;
 $c_white: #eee;
 $c_grey: #666;
+$c_white2: #ddd;
 $c_selected: #ffebcd;
+$s_track: 15px;
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
@@ -14,9 +16,6 @@ html {
   }
 }
 
-
-
-
 #prompt {
   border: 0px solid black;
   font-size: 32px;
@@ -28,18 +27,33 @@ html {
 }
 
 .note {
-  width: 75px;
-  height: 75px;
   background-color: $c_white;
   color: $c_grey;
   display: inline-block;
   margin: 2.5px;
   margin-top: 0px;
+  height: 50px;
 
   &:hover .note-option {
     display: block;
     position: absolute;
   }
+}
+
+#openString{
+  display: flex;
+  align-content: flex-start;
+  padding-right: $s_track;
+
+  & .note{
+    flex: 1;
+    background-color: $c_white2;
+
+    & .note-selected{
+      background-color: #FFA552;
+    }
+  }
+
 }
 
 .settings {
@@ -76,25 +90,17 @@ html {
 }
 
 .string {
-  width: 75px;
-  display: inline-block;
-  margin: 2.5px;
-  margin-top: 0px;
+  display: inline-flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .note-selected {
   &:hover {
-    background-color: BA5624;
+    background-color: #BA5624;
   }
 
   background-color: #FCDE9C;
-
-}
-
-.note-collection {
-  display: grid;
-  width: 100px;
-  height: 100px;
 }
 
 tr,
@@ -104,42 +110,34 @@ td {
   border: 1px black solid;
 }
 
+#board{
+  min-width: 300px;
+}
+
 #fretboard {
+  align-content: flex-start;
+  align-items: flex-start;
   overflow-x: hidden;
-  display: inline-block;
-  max-width: 75*7px;
-  min-height: 250px;
+  display: flex;
   max-height: 375px;
   overflow-y: scroll;
 
-  // &::-webkit-scrollbar {
-  //   display: none;
-  // }
-
-  /* width */
   &::-webkit-scrollbar {
-    width: 10px;
+    width: $s_track;
   }
 
-  /* Track */
   &::-webkit-scrollbar-track {
     background: #ddd;
   }
 
-  /* Handle */
   &::-webkit-scrollbar-thumb {
     background: #888;
   }
 
-  /* Handle on hover */
   &::-webkit-scrollbar-thumb:hover {
     background: #FFA552;
   }
 
-}
-
-#openString {
-  padding: 1px;
 }
 
 .important-note-selected {

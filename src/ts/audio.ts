@@ -27,22 +27,19 @@ export class Audio {
         this.chord = new Chord([])
 
         this.instrument = new PolySynth(
-            Synth
-            // {
-            //     oscillator: {
-            //         type: 'triangle8'
-            //     },
-            //     envelope: {
-            //         attack: 1.22,
-            //         decay: 1,
-            //         sustain: 0.1,
-            //         release: 1
-            //     }
-            // }
+            Synth,
+            {
+                oscillator: {
+                    type: 'triangle8'
+
+                }
+            }
         ).toDestination();
     }
 
     dispose() {
+        Transport.stop();
+        Transport.cancel();
         this.instrument.dispose();
         this.instrument = null;
     }
@@ -70,8 +67,6 @@ export class Audio {
                     volume: e.options.volume
                 });
         });
-
-        console.log(part);
 
         part.start(0);
         part.loop = 0

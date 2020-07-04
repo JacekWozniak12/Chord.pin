@@ -7,7 +7,7 @@ export class Database{
     storage = localStorage;
 
     loadFromLocalStorage(){
-
+        
     }
 
     save(chords : Chord[]){

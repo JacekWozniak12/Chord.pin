@@ -99,6 +99,94 @@ export module Components {
     }
 
     export module Data {
+        
+        export class NoteDisplay extends GUI.Element<HTMLDivElement> {
+
+            note: Note;
+            collectionId: string;
+            add: GUI.Element<HTMLDivElement>;
+            del: GUI.Element<HTMLDivElement>;
+            settings: Settings;
+            audio: Audio;
+
+            constructor(
+                type: string, 
+                className: string, 
+                id: string = null,
+                parent: string = "body", 
+                trigger: string, f: EventListener,
+                note: Note, collectionId: string) {
+                super(type, className, id, parent, "", trigger, f);
+                this.settings = new Settings(note);
+                this.settings.htmlElement.classList.add("hidden");
+                this.note = note;
+                this.collectionId = collectionId;
+            }
+
+            setup(audio: Audio): this {
+                this.audio = audio;
+                this.parentElements([this.settings.htmlElement]);
+                return this;
+            }
+
+            showOptions() {
+                this.settings.htmlElement.classList.remove("hidden");
+            }
+
+            hideOptions() {
+                this.settings.htmlElement.classList.add("hidden");
+            }
+
+            clear() {
+                let found = document.querySelectorAll("note-selected");
+                found.forEach(x => {
+                    x.classList.remove("note-selected");
+                    x.classList.remove("important-note-selected");
+                });
+            }
+
+            toggle() {
+                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
+                if (this.htmlElement.classList.contains("note-selected") && !this.htmlElement.classList.contains("important-note-selected")) {
+                    this.audio.addNote(this.note);
+                    this.htmlElement.classList.toggle("important-note-selected");
+                }
+                else {
+                    found.forEach(x => {
+                        x.classList.toggle("note-selected");
+                        x.classList.remove("important-note-selected");
+                    });
+                    if (this.htmlElement.classList.contains("note-selected")) {
+                        this.audio.addNote(this.note);
+                        this.htmlElement.classList.toggle("important-note-selected");
+                    }
+                    else {
+                        this.audio.deleteNote(this.note);
+                    }
+                }
+            }
+
+            select() {
+                this.htmlElement.classList.add
+                    ("note-selected", "important-note-selected");
+
+                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
+                found.forEach(x => {
+                    x.classList.toggle("note-selected");
+                });
+            }
+
+            unselect() {
+                this.htmlElement.classList.remove
+                    ("note-selected", "important-note-selected");
+
+                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
+                found.forEach(x => {
+                    x.classList.remove
+                        ("note-selected", "important-note-selected");
+                });
+            }
+        }
 
         export class Settings extends GUI.Element<HTMLElement>{
 
@@ -196,92 +284,5 @@ export module Components {
             }
         }
 
-        export class NoteDisplay extends GUI.Element<HTMLDivElement> {
-
-            note: Note;
-            collectionId: string;
-            add: GUI.Element<HTMLDivElement>;
-            del: GUI.Element<HTMLDivElement>;
-            settings: Settings;
-            audio: Audio;
-
-            constructor(
-                type: string, 
-                className: string, 
-                id: string = null,
-                parent: string = "body", 
-                trigger: string, f: EventListener,
-                note: Note, collectionId: string) {
-                super(type, className, id, parent, "", trigger, f);
-                this.settings = new Settings(note);
-                this.settings.htmlElement.classList.add("hidden");
-                this.note = note;
-                this.collectionId = collectionId;
-            }
-
-            setup(audio: Audio): this {
-                this.audio = audio;
-                this.parentElements([this.settings.htmlElement]);
-                return this;
-            }
-
-            showOptions() {
-                this.settings.htmlElement.classList.remove("hidden");
-            }
-
-            hideOptions() {
-                this.settings.htmlElement.classList.add("hidden");
-            }
-
-            clear() {
-                let found = document.querySelectorAll("note-selected");
-                found.forEach(x => {
-                    x.classList.remove("note-selected");
-                    x.classList.remove("important-note-selected");
-                });
-            }
-
-            toggle() {
-                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-                if (this.htmlElement.classList.contains("note-selected") && !this.htmlElement.classList.contains("important-note-selected")) {
-                    this.audio.addNote(this.note);
-                    this.htmlElement.classList.toggle("important-note-selected");
-                }
-                else {
-                    found.forEach(x => {
-                        x.classList.toggle("note-selected");
-                        x.classList.remove("important-note-selected");
-                    });
-                    if (this.htmlElement.classList.contains("note-selected")) {
-                        this.audio.addNote(this.note);
-                        this.htmlElement.classList.toggle("important-note-selected");
-                    }
-                    else {
-                        this.audio.deleteNote(this.note);
-                    }
-                }
-            }
-
-            select() {
-                this.htmlElement.classList.add
-                    ("note-selected", "important-note-selected");
-
-                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-                found.forEach(x => {
-                    x.classList.toggle("note-selected");
-                });
-            }
-
-            unselect() {
-                this.htmlElement.classList.remove
-                    ("note-selected", "important-note-selected");
-
-                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-                found.forEach(x => {
-                    x.classList.remove
-                        ("note-selected", "important-note-selected");
-                });
-            }
-        }
     }
 }
