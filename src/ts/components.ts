@@ -1,8 +1,9 @@
 import { Parser } from "./parser";
 import { GUI } from "./gui";
 import { Audio } from './audio';
-import { Options, Chord, Note } from "./Definitions";
-import { Frequency} from "Tone";
+import { Options, Chord, Note } from "./definitions";
+import { Frequency } from "Tone";
+import { Database } from './database';
 
 // describes items used to built app
 export module Components {
@@ -95,29 +96,87 @@ export module Components {
                 currentNote = Frequency(currentNote).transpose(1).toNote();
                 return currentNote;
             }
+
+            selectChord(chord : Chord) : this{
+                chord.notes.forEach(x => {
+                    
+                });
+                return this;
+            }
+        }
+
+        export class ChordAdder extends GUI.Element<HTMLInputElement>{
+            
+            database: Database;
+            add_button : GUI.Element<HTMLElement>;
+
+            constructor(database: Database){
+                super("Input", "");
+                this.database = database;
+                this.add_button = new GUI.Element("div");
+            }
+
+        }
+
+        export class ChordDatabase extends GUI.Element<HTMLSelectElement>{
+
+            database: Database;
+
+            constructor(database: Database) {
+                super("select", "");
+                this.database = database;
+            }
+
+            updateList(): this {
+                let chords = this.database.getChords();
+                this.clearSelectables();
+                chords.forEach(x => {
+                    new GUI.Element("option").
+                        modifyAttribute("value", `${x.name}`).
+                        setText(`${x.name}`);
+                });
+                return this;
+            }
+
+            deleteSelected() : this{
+
+                return this;
+            }
+
+            select() : this{
+                
+                return this;
+            }
+
+            clearSelectables() {
+                this.htmlElement.childNodes.forEach(x => {
+                    x.remove();
+                })
+            }
+
         }
     }
 
     export module Data {
-        
+
         export class NoteDisplay extends GUI.Element<HTMLDivElement> {
 
             note: Note;
             collectionId: string;
             add: GUI.Element<HTMLDivElement>;
             del: GUI.Element<HTMLDivElement>;
-            settings: Settings;
+            settings: SettingsDisplay;
             audio: Audio;
 
             constructor(
-                type: string, 
-                className: string, 
+                type: string,
+                className: string,
                 id: string = null,
-                parent: string = "body", 
+                parent: string = "body",
                 trigger: string, f: EventListener,
                 note: Note, collectionId: string) {
                 super(type, className, id, parent, "", trigger, f);
-                this.settings = new Settings(note);
+                this.settings = new SettingsDisplay(note);
                 this.settings.htmlElement.classList.add("hidden");
                 this.note = note;
                 this.collectionId = collectionId;
@@ -147,7 +206,8 @@ export module Components {
 
             toggle() {
                 let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-                if (this.htmlElement.classList.contains("note-selected") && !this.htmlElement.classList.contains("important-note-selected")) {
+                if (this.htmlElement.classList.contains("note-selected") &&
+                    !this.htmlElement.classList.contains("important-note-selected")) {
                     this.audio.addNote(this.note);
                     this.htmlElement.classList.toggle("important-note-selected");
                 }
@@ -188,7 +248,7 @@ export module Components {
             }
         }
 
-        export class Settings extends GUI.Element<HTMLElement>{
+        export class SettingsDisplay extends GUI.Element<HTMLElement>{
 
             el_title: GUI.Element<HTMLDivElement>;
             el_volume: GUI.Element<HTMLInputElement>;
@@ -205,14 +265,14 @@ export module Components {
                 parent: string = "body"
             ) {
                 super(type, className, id, parent);
-                let title = note?.name ?? "";               
+                let title = note?.name ?? "";
                 this.setSettingsTitle(title + " Settings");
                 this.createVolume();
                 this.createDuration();
                 this.createDelay();
                 this.options = note?.options;
-                
-                if(this.options != null){
+
+                if (this.options != null) {
                     this.el_volume.htmlElement.value = <any>this.options.volume;
                     this.el_delay.htmlElement.value = <any>this.options.delay;
                     this.el_duration.htmlElement.value = <any>this.options.duration;
@@ -220,29 +280,29 @@ export module Components {
                 else this.options = new Options;
             }
 
-            private updateVolume() : this{
+            private updateVolume(): this {
                 this.options.volume = Number.parseFloat(this.el_volume.htmlElement.value);
                 return this;
             }
 
-            private updateDuration() : this{
+            private updateDuration(): this {
                 this.options.setDuration(Number.parseFloat(this.el_duration.htmlElement.value));
                 return this;
             }
 
-            private updateDelay() : this{
+            private updateDelay(): this {
                 this.options.setDelay(Number.parseFloat(this.el_delay.htmlElement.value))
                 return this;
             }
 
-            setSettingsTitle(title: string = "settings") : this{
+            setSettingsTitle(title: string = "settings"): this {
                 this.el_title = new GUI.Element("div", "", "");
                 this.el_title.htmlElement.textContent = title;
                 this.parentElements([this.el_title.htmlElement]);
                 return this;
             }
 
-            setOptions(options : Options) : this{
+            setOptions(options: Options): this {
                 this.options = options;
                 return this;
             }

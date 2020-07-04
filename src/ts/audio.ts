@@ -1,5 +1,5 @@
 import { PolySynth, Synth, Transport, Part } from 'Tone';
-import { Note, Chord } from "./Definitions";
+import { Note, Chord } from "./definitions";
 
 export class Audio {
 

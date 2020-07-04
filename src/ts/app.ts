@@ -15,7 +15,6 @@ const container = new G.Element("div", "", "chord-pin")
     new G.Element("div").setText("or choose from those below:").htmlElement,
     new C.Interfaces.Fretboard(audio).htmlElement,
     new C.Interfaces.Player(audio).htmlElement,
-    new C.Data.Settings().htmlElement
 ]
 )
 

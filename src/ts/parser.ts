@@ -1,5 +1,4 @@
-import { Time } from "Tone";
-import { Options, Note, Chord } from "./Definitions";
+import { Options, Note, Chord } from "./definitions";
 import { Database } from './database';
 
 export class Parser {
