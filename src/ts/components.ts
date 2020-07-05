@@ -179,7 +179,6 @@ export module Components {
             }
 
             getCurrentSelection(): string {
-                console.log(this.htmlElement.selectedOptions[1]?.value);
                 return this.htmlElement.selectedOptions[0]?.value;
             }
 
@@ -197,12 +196,6 @@ export module Components {
                 });
                 return this;
             }
-
-            // deleteSelected(): this {
-            //     let temp = this.database.getChords();
-            //     this.database.setChords(temp);
-            //     return this;
-            // }
 
             select(): this {
                 let value = this.getCurrentSelection();
@@ -266,6 +259,8 @@ export module Components {
                 });
             }
 
+            /* todo toggling */
+
             toggle() {
                 let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
                 if (this.htmlElement.classList.contains("note-selected") &&
@@ -278,12 +273,12 @@ export module Components {
                         x.classList.toggle("note-selected");
                         x.classList.remove("important-note-selected");
                     });
-                    
+
                     if (this.htmlElement.classList.contains("note-selected")) {
                         this.audio.addNote(this.note);
                         this.htmlElement.classList.toggle("important-note-selected");
                     }
-                    
+
                     else {
                         this.audio.deleteNote(this.note);
                     }
@@ -330,8 +325,6 @@ export module Components {
                 parent: string = "body"
             ) {
                 super(type, className, id, parent);
-                let title = note?.name ?? "";
-                this.setSettingsTitle(title + " Settings");
                 this.createVolume();
                 this.createDuration();
                 this.createDelay();
@@ -360,19 +353,12 @@ export module Components {
                 return this;
             }
 
-            setSettingsTitle(title: string = "settings"): this {
-                this.el_title = new GUI.Element("div", "", "");
-                this.el_title.htmlElement.textContent = title;
-                this.parentElements([this.el_title.htmlElement]);
-                return this;
-            }
-
             setOptions(options: Options): this {
                 this.options = options;
                 return this;
             }
 
-            private createSetting(type: string, className: string, id: string, img: string): GUI.Element<HTMLElement> {
+            private createSettings(type: string, className: string, id: string, img: string): GUI.Element<HTMLElement> {
                 let i = new GUI.Element("img").modifyAttribute("src", img);
                 let r = new GUI.Element(type, className, id);
                 let u = new GUI.Element("div", "setting-container");
@@ -382,7 +368,7 @@ export module Components {
             }
 
             private createDelay() {
-                this.el_delay = <any>this.createSetting("input", "", "", "https://img.icons8.com/windows/32/000000/add-time.png").
+                this.el_delay = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/add-time.png").
                     modifyAttribute("placeholder", "00").
                     modifyAttribute("type", "number").
                     modifyAttribute("min", "0").
@@ -391,7 +377,7 @@ export module Components {
             }
 
             private createDuration() {
-                this.el_duration = <any>this.createSetting("input", "", "", "https://img.icons8.com/windows/32/000000/time-slider.png").
+                this.el_duration = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/time-slider.png").
                     modifyAttribute("placeholder", "01").
                     modifyAttribute("type", "number").
                     modifyAttribute("min", "0").
@@ -400,7 +386,7 @@ export module Components {
             }
 
             private createVolume() {
-                this.el_volume = <any>this.createSetting("input", "", "", "https://img.icons8.com/windows/32/000000/speaker.png").
+                this.el_volume = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/speaker.png").
                     modifyAttribute("type", "range").
                     modifyAttribute("min", "0").
                     modifyAttribute("max", "1").
