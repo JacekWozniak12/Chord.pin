@@ -21,7 +21,8 @@ export module GUI {
                 addListener(trigger, f).
                 setImage(type, img);
             
-            this.children = [];    
+            this.children = [];
+            if(parent == "" || parent == null) parent = "body";    
             document.querySelector(parent).appendChild(this.htmlElement);
         }
 
@@ -106,10 +107,6 @@ export module GUI {
             this.htmlElement.value = value;
             return this;
         }
-    }
-
-    export class DataElement<T extends HTMLElement> extends Element<T>{
-        
     }
 
 }

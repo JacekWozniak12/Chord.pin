@@ -14,6 +14,10 @@ export class Audio {
         this.chord = chord;
     }
 
+    getChord(){
+        return this.chord;
+    }
+
     addNote(note: Note) {
         this.chord.notes.unshift(note);
     }
@@ -22,7 +26,7 @@ export class Audio {
         this.chord.notes = this.chord.notes.filter(x => x.name != note.name);
     }
 
-    setup() {
+    setup() : this{
 
         this.chord = new Chord([])
 
@@ -35,6 +39,7 @@ export class Audio {
                 }
             }
         ).toDestination();
+        return this;
     }
 
     dispose() {

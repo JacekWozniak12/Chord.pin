@@ -52,9 +52,14 @@ export module Components {
             frets = 25;
             startingFrequencyNote = ["E2", "A2", "D3", "G3", "B3", "E4"];
             noteBoardName: string = "fretboard"
+            noteDisplayed: Data.NoteDisplay[];
 
-            constructor(audio: Audio) {
+            constructor(database: Database, audio: Audio) {
                 super("div", "", "board");
+
+                this.noteDisplayed = new Array();
+                let options = database?.getOptions() ?? new Options();
+                let position = 0;
 
                 this.parentElements([
                     new GUI.Element("div", "", "openString").htmlElement,
@@ -67,14 +72,14 @@ export module Components {
                     new GUI.Element("div", "string", `string-${i}`, `#${this.noteBoardName}`);
 
                     for (let j = 0; j < this.frets; j++) {
-                        currentNote = this.createNoteEl(i, j, currentNote, audio);
+                        currentNote = this.createNoteEl(i, j, currentNote, audio, options, position++);
                     }
 
                     currentNote = this.startingFrequencyNote[i];
                 }
             }
 
-            private createNoteEl(i: number, j: number, currentNote: string, audio: Audio) {
+            private createNoteEl(i: number, j: number, currentNote: string, audio: Audio, options: Options, position: number) {
                 let part = `#string-${i}`;
                 if (j == 0)
                     part = "#openString";
@@ -84,8 +89,15 @@ export module Components {
                         replace("#", "S").
                         concat(`-string-${i}`),
                     part, null, null,
-                    new Note(currentNote), `string-{i}`);
+                    new Note(currentNote, options, position), `string-{i}`);
 
+                note = this.SetupNote(note, currentNote, audio);
+                this.noteDisplayed.push(note);
+                currentNote = Frequency(currentNote).transpose(1).toNote();
+                return currentNote;
+            }
+
+            private SetupNote(note: Data.NoteDisplay, currentNote: string, audio: Audio): Data.NoteDisplay {
                 note.
                     addListener("click", note.toggle.bind(note)).
                     addListener("mouseover", note.showOptions.bind(note)).
@@ -93,27 +105,61 @@ export module Components {
                     setText(currentNote.replace("S", "#")).
                     setup(audio);
 
-                currentNote = Frequency(currentNote).transpose(1).toNote();
-                return currentNote;
+                return note;
             }
 
-            selectChord(chord : Chord) : this{
+            selectChord(chord: Chord): this {
+
+                this.clearSelection();
+
                 chord.notes.forEach(x => {
-                    
+                    try {
+                        this.noteDisplayed.find(y => y.note.fretboardPosition == x.fretboardPosition).select();
+                    }
+                    catch{
+                        this.noteDisplayed.find(y => y.note.name == x.name).select();
+                    }
                 });
+
+                return this;
+            }
+
+            clearSelection(): this {
+                this.noteDisplayed.forEach(x => {
+                    x.unselect();
+                })
                 return this;
             }
         }
 
-        export class ChordAdder extends GUI.Element<HTMLInputElement>{
-            
-            database: Database;
-            add_button : GUI.Element<HTMLElement>;
+        export class ChordAdder extends GUI.Element<HTMLButtonElement>{
 
-            constructor(database: Database){
-                super("Input", "");
+            database: Database;
+            audio: Audio;
+            add_button: GUI.Element<HTMLElement>;
+            input: GUI.InputElement<HTMLInputElement>
+
+            constructor(database: Database, audio: Audio) {
+                super("div", "");
                 this.database = database;
-                this.add_button = new GUI.Element("div");
+                this.audio = audio;
+                this.add_button = new GUI.Element("div",
+                    "icon", "", "", "https://img.icons8.com/windows/32/000000/plus-math.png",
+                    "click", this.addChord.bind(this));
+                this.input = new GUI.InputElement("input")
+                this.parentElements([this.add_button.htmlElement, this.input.htmlElement]);
+            }
+
+            addChord() {
+                let name = this.input.getValue();
+                let chordObject = this.audio.getChord();
+
+                if (chordObject == null || chordObject.notes.length < 1) return;
+                if (name == "null" || name == "") name = "Chord " + chordObject.returnContent().trim();
+
+                this.database.addChord(
+                    new Chord(chordObject.notes, name, "", chordObject.options)
+                );
             }
 
         }
@@ -121,36 +167,52 @@ export module Components {
         export class ChordDatabase extends GUI.Element<HTMLSelectElement>{
 
             database: Database;
+            fretboard: Fretboard;
 
-            constructor(database: Database) {
+            constructor(database: Database, fretboard: Fretboard) {
                 super("select", "");
                 this.database = database;
+                this.fretboard = fretboard;
+                this.database.toNotifyChordChange.push(this.getListFromDatabase.bind(this));
+                this.getListFromDatabase();
+                this.addListener("input", this.select.bind(this));
             }
 
-            updateList(): this {
+            getCurrentSelection(): string {
+                console.log(this.htmlElement.selectedOptions[1]?.value);
+                return this.htmlElement.selectedOptions[0]?.value;
+            }
+
+            getListFromDatabase(): this {
                 let chords = this.database.getChords();
                 this.clearSelectables();
+
                 chords.forEach(x => {
-                    new GUI.Element("option").
-                        modifyAttribute("value", `${x.name}`).
-                        setText(`${x.name}`);
+                    let selectable =
+                        new GUI.Element<HTMLOptionElement>("option").
+                            modifyAttribute("value", `${x.name}`).
+                            setText(`${x.name}`);
+
+                    this.parentElements([selectable.htmlElement])
                 });
                 return this;
             }
 
-            deleteSelected() : this{
+            // deleteSelected(): this {
+            //     let temp = this.database.getChords();
+            //     this.database.setChords(temp);
+            //     return this;
+            // }
 
-                return this;
-            }
-
-            select() : this{
-                
+            select(): this {
+                let value = this.getCurrentSelection();
+                this.fretboard.selectChord(this.database.getChord(value));
                 return this;
             }
 
             clearSelectables() {
                 this.htmlElement.childNodes.forEach(x => {
-                    x.remove();
+                    this.htmlElement.removeChild(x);
                 })
             }
 
@@ -216,10 +278,12 @@ export module Components {
                         x.classList.toggle("note-selected");
                         x.classList.remove("important-note-selected");
                     });
+                    
                     if (this.htmlElement.classList.contains("note-selected")) {
                         this.audio.addNote(this.note);
                         this.htmlElement.classList.toggle("important-note-selected");
                     }
+                    
                     else {
                         this.audio.deleteNote(this.note);
                     }
@@ -227,8 +291,7 @@ export module Components {
             }
 
             select() {
-                this.htmlElement.classList.add
-                    ("note-selected", "important-note-selected");
+                this.htmlElement.classList.add("note-selected", "important-note-selected");
 
                 let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
                 found.forEach(x => {
@@ -237,14 +300,16 @@ export module Components {
             }
 
             unselect() {
-                this.htmlElement.classList.remove
-                    ("note-selected", "important-note-selected");
-
-                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-                found.forEach(x => {
-                    x.classList.remove
+                if (this.htmlElement.classList.contains("note-selected")) {
+                    this.htmlElement.classList.remove
                         ("note-selected", "important-note-selected");
-                });
+
+                    let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
+                    found.forEach(x => {
+                        x.classList.remove
+                            ("note-selected", "important-note-selected");
+                    });
+                }
             }
         }
 

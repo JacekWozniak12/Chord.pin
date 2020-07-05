@@ -43,7 +43,6 @@ export class Parser {
             if (s >= 0) {
                 let t = input.slice(s, Parser.S_LOADING.length);
                 let i = input.replace(t, "");
-                this.loadChordFromDB(i);
             }
             else {
 
@@ -175,7 +174,4 @@ export class Parser {
         return new Options();
     }
 
-    loadChordFromDB(input: string, db: Database = this.db): Chord {
-        return db.chords.find(x => x.name == input);
-    }
 }
