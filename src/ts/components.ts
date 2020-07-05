@@ -10,44 +10,7 @@ export module Components {
 
     export module Interfaces {
 
-        export class Prompt extends GUI.Element<HTMLInputElement>{
-
-            parser: Parser;
-            audio: Audio;
-
-            constructor(promptID: string, audio: Audio) {
-                super("input", "input", promptID)
-                this.parser = new Parser(this.htmlElement);
-                this.audio = audio;
-                this.htmlElement.setAttribute("placeholder", "...write command here");
-            }
-
-            notify(info: string) {
-                this.htmlElement.value = info;
-            }
-
-            apply(): this {
-                return this;
-            }
-        }
-
-        export class Player extends GUI.Element<HTMLElement>{
-            el_play: GUI.Element<HTMLDivElement>;
-            audio: Audio;
-            currentChord: Chord;
-
-            constructor(audio: Audio) {
-                super("div", "icon", "", "body", "https://img.icons8.com/ios-glyphs/32/000000/play.png");
-                this.audio = audio;
-                this.addListener("click", this.play.bind(this));
-            }
-
-            play() {
-                this.audio.play(this.currentChord);
-            }
-        }
-
-        export class Fretboard extends GUI.Element<HTMLElement>{
+        export class Fretboard extends GUI.Element<HTMLDivElement>{
             stringAmount = 6;
             frets = 25;
             startingFrequencyNote = ["E2", "A2", "D3", "G3", "B3", "E4"];
@@ -58,12 +21,11 @@ export module Components {
                 super("div", "", "board");
 
                 this.noteDisplayed = new Array();
-                let options = database?.getOptions() ?? new Options();
+                let options = database.getOptions() ?? new Options();
                 let position = 0;
 
                 this.parentElements([
-                    new GUI.Element("div", "", "openString").htmlElement,
-                    new GUI.Element("div", "", this.noteBoardName).htmlElement
+                    new GUI.Element("div", "", "openString").htmlElement, new GUI.Element("div", "", this.noteBoardName).htmlElement
                 ]);
 
                 let currentNote = this.startingFrequencyNote[0];
@@ -98,20 +60,16 @@ export module Components {
             }
 
             private SetupNote(note: Data.NoteDisplay, currentNote: string, audio: Audio): Data.NoteDisplay {
-                note.
-                    addListener("click", note.toggle.bind(note)).
+                note.addListener("click", note.toggle.bind(note)).
                     addListener("mouseover", note.showOptions.bind(note)).
                     addListener("mouseout", note.hideOptions.bind(note)).
                     setText(currentNote.replace("S", "#")).
                     setup(audio);
-
                 return note;
             }
 
             selectChord(chord: Chord): this {
-
                 this.clearSelection();
-
                 chord.notes.forEach(x => {
                     try {
                         this.noteDisplayed.find(y => y.note.fretboardPosition == x.fretboardPosition).select();
@@ -120,19 +78,18 @@ export module Components {
                         this.noteDisplayed.find(y => y.note.name == x.name).select();
                     }
                 });
-
                 return this;
             }
 
             clearSelection(): this {
                 this.noteDisplayed.forEach(x => {
-                    x.unselect();
+                    x.deselect();
                 })
                 return this;
             }
         }
 
-        export class ChordAdder extends GUI.Element<HTMLButtonElement>{
+        export class ChordAdd extends GUI.Element<HTMLButtonElement>{
 
             database: Database;
             audio: Audio;
@@ -164,7 +121,7 @@ export module Components {
 
         }
 
-        export class ChordDatabase extends GUI.Element<HTMLSelectElement>{
+        export class ChordSelector extends GUI.Element<HTMLSelectElement>{
 
             database: Database;
             fretboard: Fretboard;
@@ -209,6 +166,97 @@ export module Components {
                 })
             }
 
+            deleteSelected() {
+                this.database.deleteChord(this.getCurrentSelection());
+            }
+
+
+        }
+
+        export class ChordDelete extends GUI.Element<HTMLDivElement>{
+
+            chordSelector: ChordSelector;
+            delete_button: GUI.Element<HTMLElement>;
+
+            constructor(chordSelector: ChordSelector) {
+                super("div", "");
+                this.chordSelector = chordSelector;
+                this.delete_button = new GUI.Element("div",
+                    "icon", "", "", "https://img.icons8.com/windows/32/000000/minus-math.png",
+                    "click", this.deleteChord.bind(this));
+                this.parentElements([this.delete_button.htmlElement]);
+            }
+
+            deleteChord() {
+                this.chordSelector.deleteSelected();
+            }
+        }
+
+        export class MenuPlayer extends GUI.Element<HTMLDivElement>{
+
+            player: Player;
+            chordSelector: ChordSelector;
+            chordAdd: ChordAdd;
+            chordDelete: ChordDelete;
+
+            constructor(database: Database, audio: Audio, fretboard: Fretboard) {
+                super("div", "Menu");
+                this.chordSelector = new ChordSelector(database, fretboard);
+                this.chordAdd = new ChordAdd(database, audio);
+                this.chordDelete = new ChordDelete(this.chordSelector);
+            }
+        }
+
+        export class MenuSettings extends GUI.Element<HTMLDivElement>{
+
+            settings: Data.SettingsDisplay;
+            database: Database;
+
+            constructor(database: Database) {
+                super("div");
+                this.database = database;
+                this.settings = new Data.SettingsDisplay();
+                this.settings.setOptions(database.getOptions());
+                this.parentElements([this.settings.htmlElement]);
+            }
+
+        }
+
+        export class Prompt extends GUI.Element<HTMLInputElement>{
+
+            parser: Parser;
+            audio: Audio;
+
+            constructor(promptID: string, audio: Audio) {
+                super("input", "input", promptID)
+                this.parser = new Parser(this.htmlElement);
+                this.audio = audio;
+                this.htmlElement.setAttribute("placeholder", "...write command here");
+            }
+
+            notify(info: string) {
+                this.htmlElement.value = info;
+            }
+
+            apply(): this {
+                return this;
+            }
+        }
+
+        export class Player extends GUI.Element<HTMLElement>{
+            el_play: GUI.Element<HTMLDivElement>;
+            audio: Audio;
+            currentChord: Chord;
+
+            constructor(audio: Audio) {
+                super("div", "icon", "", "body", "https://img.icons8.com/ios-glyphs/32/000000/play.png");
+                this.audio = audio;
+                this.addListener("click", this.play.bind(this));
+            }
+
+            play() {
+                this.audio.play(this.currentChord);
+            }
         }
     }
 
@@ -222,14 +270,10 @@ export module Components {
             del: GUI.Element<HTMLDivElement>;
             settings: SettingsDisplay;
             audio: Audio;
+            selected: boolean = false;
 
-            constructor(
-                type: string,
-                className: string,
-                id: string = null,
-                parent: string = "body",
-                trigger: string, f: EventListener,
-                note: Note, collectionId: string) {
+            constructor(type: string, className: string, id: string = null,
+                parent: string = "body", trigger: string, f: EventListener, note: Note, collectionId: string) {
                 super(type, className, id, parent, "", trigger, f);
                 this.settings = new SettingsDisplay(note);
                 this.settings.htmlElement.classList.add("hidden");
@@ -259,52 +303,33 @@ export module Components {
                 });
             }
 
-            /* todo toggling */
-
-            toggle() {
-                let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-                if (this.htmlElement.classList.contains("note-selected") &&
-                    !this.htmlElement.classList.contains("important-note-selected")) {
-                    this.audio.addNote(this.note);
-                    this.htmlElement.classList.toggle("important-note-selected");
-                }
-                else {
-                    found.forEach(x => {
-                        x.classList.toggle("note-selected");
-                        x.classList.remove("important-note-selected");
-                    });
-
-                    if (this.htmlElement.classList.contains("note-selected")) {
-                        this.audio.addNote(this.note);
-                        this.htmlElement.classList.toggle("important-note-selected");
-                    }
-
-                    else {
-                        this.audio.deleteNote(this.note);
-                    }
-                }
-            }
-
             select() {
                 this.htmlElement.classList.add("note-selected", "important-note-selected");
-
                 let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
                 found.forEach(x => {
-                    x.classList.toggle("note-selected");
+                    x.classList.add("note-selected");
                 });
             }
 
-            unselect() {
-                if (this.htmlElement.classList.contains("note-selected")) {
-                    this.htmlElement.classList.remove
-                        ("note-selected", "important-note-selected");
-
-                    let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
+            deselect() {
+                this.htmlElement.classList.remove("note-selected", "important-note-selected")
+                
+                let found = document.querySelectorAll(`div.important-note-selected[id*="${this.note.name.replace("#", "S")}"]`);
+                
+                console.log(found);   
+                if(found.length == 0){
+                    found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);           
                     found.forEach(x => {
-                        x.classList.remove
-                            ("note-selected", "important-note-selected");
+                        x.classList.remove("note-selected");
                     });
                 }
+            }
+
+            toggle() {
+                if(this.htmlElement.classList.contains("important-note-selected")){
+                    this.deselect();
+                }
+                else this.select()
             }
         }
 
@@ -338,6 +363,11 @@ export module Components {
                 else this.options = new Options;
             }
 
+            setOptions(options: Options): this {
+                this.options = options;
+                return this;
+            }
+
             private updateVolume(): this {
                 this.options.volume = Number.parseFloat(this.el_volume.htmlElement.value);
                 return this;
@@ -353,11 +383,6 @@ export module Components {
                 return this;
             }
 
-            setOptions(options: Options): this {
-                this.options = options;
-                return this;
-            }
-
             private createSettings(type: string, className: string, id: string, img: string): GUI.Element<HTMLElement> {
                 let i = new GUI.Element("img").modifyAttribute("src", img);
                 let r = new GUI.Element(type, className, id);
@@ -369,28 +394,19 @@ export module Components {
 
             private createDelay() {
                 this.el_delay = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/add-time.png").
-                    modifyAttribute("placeholder", "00").
-                    modifyAttribute("type", "number").
-                    modifyAttribute("min", "0").
-                    modifyAttribute("max", "10").
+                    modifyAttribute("placeholder", "00").modifyAttribute("type", "number").modifyAttribute("min", "0").modifyAttribute("max", "10").
                     addListener("change", this.updateDelay.bind(this));
             }
 
             private createDuration() {
                 this.el_duration = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/time-slider.png").
-                    modifyAttribute("placeholder", "01").
-                    modifyAttribute("type", "number").
-                    modifyAttribute("min", "0").
-                    modifyAttribute("max", "10").
+                    modifyAttribute("placeholder", "01").modifyAttribute("type", "number").modifyAttribute("min", "0").modifyAttribute("max", "10").
                     addListener("change", this.updateDuration.bind(this));
             }
 
-            private createVolume() {
+            createVolume() {
                 this.el_volume = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/speaker.png").
-                    modifyAttribute("type", "range").
-                    modifyAttribute("min", "0").
-                    modifyAttribute("max", "1").
-                    modifyAttribute("step", "0.01").
+                    modifyAttribute("type", "range").modifyAttribute("min", "0").modifyAttribute("max", "1").modifyAttribute("step", "0.01").
                     addListener("change", this.updateVolume.bind(this));
             }
         }
