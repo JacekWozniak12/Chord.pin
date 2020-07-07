@@ -135,9 +135,9 @@ export class Parser {
         let d = this.getOptionNumberValue(input.search(this.S_DELAY), input);
         let v = this.getOptionNumberValue(input.search(this.S_VOLUME), input);
 
-        if (t != "") r.duration = this.getDuration(t);
-        if (d != "") r.delay = this.getDelay(d);
-        if (v != "") r.volume = this.getVolume(v);
+        if (t != "") r.duration = (this.getDuration(t));
+        if (d != "") r.delay = (this.getDelay(d));
+        if (v != "") r.volume = (this.getVolume(v));
 
         return r;
     }

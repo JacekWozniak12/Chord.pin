@@ -3,54 +3,55 @@ import { Chord, Options } from "./definitions";
 export class Database {
 
     private chords: Chord[];
-    private globalOptions: Options;
+    globalOptions: Options;
     storage = localStorage;
-    toNotifyChordChange: Function[];
+
+    private toNotifyChordChange: Function[];
+
+    getNotified(f: Function): void {
+        this.toNotifyChordChange.push(f);
+    }
 
     constructor() {
-        this.toNotifyChordChange = new Array();
         this.loadFromLocalStorage();
+        this.toNotifyChordChange = new Array();
     }
 
     loadFromLocalStorage() {
         try {
             this.chords = JSON.parse(localStorage.getItem("ChordPin_Chord")) as Chord[];
-            this.globalOptions = JSON.parse(localStorage.getItem("ChordPin_Options")) as Options;
+            let x = JSON.parse(localStorage.getItem("ChordPin_Options")) as Options;
+            this.globalOptions = new Options().setValues(x);
+            console.log(this.globalOptions);
         }
         catch{
             console.log("LOADING FROM LOCAL STORAGE FAILED");
         }
-        if (this.chords == undefined) this.chords = new Array();
-        if (this.globalOptions == undefined) this.globalOptions = new Options();
+        if (this.chords == undefined || this.globalOptions == null) this.chords = new Array();
+        if (this.globalOptions == undefined || this.globalOptions == null) this.globalOptions = new Options();
         return this;
     }
-
-    // this.chords.forEach(x => {
-    //     if(x.name == null) this.chords = this.chords.filter(y => y.name != x.name);
-    // })
 
     saveToLocalStorage() {
-        try {
+            let x = (<Options>this.globalOptions).serialize();
             this.storage.setItem("ChordPin_Chord", JSON.stringify(this.chords));
-            this.storage.setItem("ChordPin_Options", JSON.stringify(this.globalOptions));
-        }
-        catch{
-            console.log("SAVING TO LOCAL STORAGE FAILED");
-        }
-        return this;
-    }
+            this.storage.setItem("ChordPin_Options", x);
 
-    setChords(chords: Chord[]): this {
-        this.chords = chords;
-        this.notify();
         return this;
     }
 
     addChord(chord: Chord): this {
-        if (this.chords.find(x => x.name == chord.name) == null)
+        if (this.chords.find(x => x.name == chord.name || x.notes == chord.notes) == null)
             this.chords.push(chord);
-        this.notify();
         this.saveToLocalStorage();
+        this.notify();
+        return this;
+    }
+
+    deleteChord(name: string): this {
+        this.chords = this.chords.filter(y => y.name != name);
+        this.saveToLocalStorage();
+        this.notify();
         return this;
     }
 
@@ -68,11 +69,12 @@ export class Database {
 
     getChord(name: string): Chord {
         console.log(`GETTING ${name}`);
-        return this.chords.find(x => x.name == name);
+        return this.chords.find(x => x.name === name);
     }
 
     setOptions(options: Options): this {
         this.globalOptions = options;
+        this.saveToLocalStorage();
         return this;
     }
 
@@ -82,8 +84,8 @@ export class Database {
 
     clear() {
         this.chords = new Array();
-        this.globalOptions = new Options();
-        this.notify();
+        this.globalOptions = new Options();   
         this.saveToLocalStorage();
+        this.notify();
     }
 }

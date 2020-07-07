@@ -7,31 +7,28 @@ import { Database } from './database';
 // init
 const audio = new Audio().setup();
 const database = new Database();
+audio.setOptions(database.getOptions());
 
 const title = new G.Element("h1").setText("Chord.pin");
-// const prompt = new C.Interfaces.Prompt("prompt", audio);
-// const info = new G.Element("div").setText("or choose from those below:");
+const globalOptions = new C.Interfaces.MenuSettings(database);
 const fretboard = new C.Interfaces.Fretboard(database, audio);
-const player = new C.Interfaces.Player(audio);
-const selector = new C.Interfaces.ChordDatabase(database, fretboard);
-const adder = new C.Interfaces.ChordAdder(database, audio);
+const menu = new C.Interfaces.MenuPlayer(database, audio, fretboard);
+const parser = new C.Interfaces.Prompt("prompt", audio);
 
 function clear(){
     database.clear();
-    selector.clearSelectables();
+    menu.chordSelector.clearSelectables();
 }
 
 const container = new G.Element("div", "", "chord-pin")
     .parentElements(
         [
             title.htmlElement,
-            // prompt.htmlElement,
-            // info.htmlElement,
+            globalOptions.htmlElement,
             fretboard.htmlElement,
-            player.htmlElement,
-            selector.htmlElement,
-            adder.htmlElement,
-            new G.Element("div").setText("CLEAR").addListener("click", clear.bind(this)).htmlElement
+            menu.htmlElement,
+            // new G.Element("div").setText("CLEAR").addListener("click", clear.bind(this)).htmlElement,
+            // parser.htmlElement
         ]
     )
 

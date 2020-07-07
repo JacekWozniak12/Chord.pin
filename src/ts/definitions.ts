@@ -9,9 +9,9 @@ class Note {
     constructor(
         name: string,
         options: Options = new Options(),
-        position : number = null,
+        position: number = null,
         transposition: number = null
-        
+
     ) {
         if (this.isValidName(name)) {
             this.name = Frequency(name).transpose(transposition).toNote();
@@ -69,14 +69,14 @@ class Chord {
 class Options {
 
     constructor(
-        volume: number = 0.5,
-        duration: string | number = 1,
-        delay: string | number = 0
+        volume:     string | number = 0.5,
+        duration:   string | number = 1,
+        delay:      string | number = 0
     ) {
         try {
-            this.volume = volume;
-            this.duration = Number.parseFloat(duration as string);
+            this.volume = Number.parseFloat(volume as string);
             this.delay = Number.parseFloat(delay as string);
+            this.duration = Number.parseFloat(duration as string);
         }
         catch (e) {
             this.duration = 1;
@@ -84,18 +84,50 @@ class Options {
             throw "Argument Exception - Writing default options"
         }
     }
-
-    volume: number;
-    // Using construction method from Time
-    duration: number;
-    delay: number;
-
-    setDelay(delay: number) {
-        this.delay = delay
+    
+    get volume() : number | string{
+        return this._volume;
     }
 
-    setDuration(duration: number) {
-        this.duration = duration;
+    get delay() : number | string{
+        return this._delay;
+    }
+
+    get duration() : number | string{
+        return this._duration;
+    }
+
+    set volume(value: number | string){
+        this._volume = Options.clamp(Number.parseFloat(value as string), 0, 1) ?? 0.5;
+    }
+
+    set delay(value: number | string){
+        this._delay = Options.clamp(Number.parseFloat(value as string), 0, 10) ?? 0;
+    }
+
+    set duration(value: number | string ){
+        this._duration = Options.clamp(Number.parseFloat(value as string), 0, 10) ?? 1;
+    }
+
+    serialize(){
+        return JSON.stringify({volume: this.volume, duration: this.duration, delay: this.delay})
+    }
+
+    private _volume: number = 0.5;
+    private _duration: number = 1;
+    private _delay: number = 0;
+
+    static clamp(value: number, min: number, max: number): number {
+        if (value > max) value = max;
+        if (value < min) value = min;
+        return value;
+    }
+
+    setValues(options: Options): this {
+        this.delay = options.delay;
+        this.duration = options.duration;
+        this.volume = options.volume;
+        return this;
     }
 }
 

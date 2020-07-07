@@ -73,7 +73,7 @@ export module GUI {
             return this;
         }
 
-        modifyAttribute(attribute: string, value: string): this {
+        modifyAttribute(attribute: string, value: string){
             this.htmlElement.setAttribute(attribute, value);
             return this;
         }
@@ -83,6 +83,10 @@ export module GUI {
                 this.htmlElement.addEventListener(trigger, f);
             }
             return this;
+        }
+
+        delete(){
+            this.htmlElement.remove();
         }
     }
 

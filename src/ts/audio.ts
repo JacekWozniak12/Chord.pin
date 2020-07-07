@@ -80,7 +80,8 @@ export class Audio {
                 {
                     note: e.name,
                     dur: e.options.duration,
-                    volume: e.options.volume * this.options.volume
+                    volume: 
+                    (e.options.volume) as number * (this.options.volume as number)
                 });
         });
         Destination.mute = false;

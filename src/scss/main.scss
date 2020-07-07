@@ -1,10 +1,5 @@
-$c_black: #303030;
-$c_white: #eee;
-$c_grey: #666;
-$c_white2: #ddd;
-$c_selected: #ffebcd;
-$s_track: 15px;
-
+@import 'anim';
+@import 'vars';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 html {
@@ -27,30 +22,43 @@ html {
 }
 
 .note {
+  font-size: 24px;
   background-color: $c_white;
   color: $c_grey;
-  display: inline-block;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
   margin: 2.5px;
   margin-top: 0px;
-  height: 50px;
+  height: 75px;
+    
+  &:hover {
+    cursor: pointer;
+    background-color: $c_white2;
 
-  &:hover .note-option {
-    display: block;
-    position: absolute;
+    & .setting-container{
+      background-color: $c_white;
+    }
+  }
+
+  & .settings:hover{
+    cursor: default;
   }
 }
 
 #openString{
+  background-color: $c_white2;
   display: flex;
   align-content: flex-start;
   padding-right: $s_track;
 
   & .note{
     flex: 1;
-    background-color: $c_white2;
 
     & .note-selected{
-      background-color: #FFA552;
+      background-color: $c_selected;
     }
   }
 
@@ -60,29 +68,33 @@ html {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 200%;
-  width: 100%;
-  overflow: scroll;
-  background-color: #eee;
+  height: 60%;
+  overflow-y: scroll;
+  background-color: $c_white;
+  scroll-snap-type: x proximity;
 
   input[type="number"],
   input[type="range"] {
     position: relative;
     font-size: 10px;
-    width: 70px;
-    bottom: 4px;
+    flex: auto;
     left: 7px;
     margin-right: 8px;
   }
 
+  input[type="range"] {
+    width: calc(100% - 25px);
+  }
+
   .setting-container {
-    height: 32px;
-    margin: 3px;
+    display: flex;
+    height: $s_settings;
+    margin: 2px;
   }
 
   img {
-    width: 32px;
-    height: 32px;
+    width: $s_settings;
+    height: $s_settings;
   }
 
   &::-webkit-scrollbar {
@@ -114,11 +126,7 @@ html {
 }
 
 .note-selected {
-  &:hover {
-    background-color: #BA5624;
-  }
-
-  background-color: #FCDE9C;
+  background-color: $c_selected;
 }
 
 tr,
@@ -139,6 +147,7 @@ td {
   display: flex;
   max-height: 375px;
   overflow-y: scroll;
+  scroll-snap-type: y proximity;
 
   &::-webkit-scrollbar {
     width: $s_track;
@@ -159,7 +168,7 @@ td {
 }
 
 .important-note-selected {
-  background-color: #FFA552;
+  background-color: $c_selected-important;
 }
 
 .hidden {
