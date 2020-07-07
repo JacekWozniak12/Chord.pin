@@ -63,7 +63,6 @@ Sound that consists of multiple notes.
 Settings for 
 
 * Volume 
-* Instrument
 * Duration
 * Delay
 
@@ -72,7 +71,7 @@ Settings for
 #### Changing settings
 
 ### Text prompt syntax
-
+(wip)
 #### Rules
 
 * Case insensitive
