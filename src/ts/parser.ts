@@ -68,9 +68,11 @@ export class Parser {
                 console.log(this.loadChordFromDatabase(input, s));
             }
             else {
+                let c = new Chord([]) // mock
+
                 s = input.search(Parser.S_SAVE)
                 if (s >= 0) {
-                    this.saveChordFromDatabase(input, s);
+                    this.saveChordToDatabase(c, input, s);
                 }
             }
         }
@@ -80,8 +82,25 @@ export class Parser {
         // get save string
 
     }
-    saveChordFromDatabase(input: string, s: number) {
-        throw new Error("Method not implemented.");
+    saveChordToDatabase(chord : Chord, input: string, s: number) : void{
+        input = input.slice(s, input.length);
+        
+        if(chord == null) throw "EMPTY CHORD";
+        let search = input.search(Parser.S_PARAMETER_NEXT)
+        let description = "";
+        if(search >= 0){
+            description = input.slice(search + 1, input.length).trim();
+        }
+        else search = input.length;
+        
+        let name = input.slice(2, search).trim();
+        console.log(name);
+        console.log(description);
+
+        chord.name = name;
+        chord.description = description;
+        console.log(chord)
+        this.database.addChord(chord);
     }
 
     loadChordFromDatabase(input: string, s: number): Chord {
