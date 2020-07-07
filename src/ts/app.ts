@@ -13,7 +13,7 @@ const title = new G.Element("h1").setText("Chord.pin");
 const globalOptions = new C.Interfaces.MenuSettings(database);
 const fretboard = new C.Interfaces.Fretboard(database, audio);
 const menu = new C.Interfaces.MenuPlayer(database, audio, fretboard);
-const parser = new C.Interfaces.Prompt("prompt", audio);
+const parser = new C.Interfaces.Prompt("prompt", audio, database);
 
 function clear(){
     database.clear();

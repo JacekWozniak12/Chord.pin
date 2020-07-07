@@ -48,7 +48,7 @@ export module Components {
                     new Note(currentNote, new Options().setValues(options), position));
 
                 this.setDefaultOptions(noteDisplay, options);
-                
+
                 noteDisplay = this.SetupNote(noteDisplay, currentNote, audio);
                 this.noteDisplayed.push(noteDisplay);
                 currentNote = Frequency(currentNote).transpose(1).toNote();
@@ -245,7 +245,7 @@ export module Components {
                 this.database = database;
                 this.settings = new Data.SettingsDisplay(database.getOptions());
                 this.parentElements([this.settings.htmlElement]);
-                
+
                 this.settings.el_duration.addListener(
                     "change", this.sendToDatabase.bind(this)
                 );
@@ -255,21 +255,22 @@ export module Components {
                 this.settings.el_volume.addListener(
                     "change", this.sendToDatabase.bind(this)
                 );
-                }
-                                
-                sendToDatabase(){
-                    this.database.setOptions(this.settings.options);
-                }
             }
+
+            sendToDatabase() {
+                this.database.setOptions(this.settings.options);
+            }
+        }
 
         export class Prompt extends GUI.Element<HTMLInputElement>{
 
             parser: Parser;
             audio: Audio;
+            database: Database;
 
-            constructor(promptID: string, audio: Audio) {
+            constructor(promptID: string, audio: Audio, database: Database) {
                 super("input", "input", promptID)
-                this.parser = new Parser(this.htmlElement);
+                this.parser = new Parser(this.htmlElement, database);
                 this.audio = audio;
                 this.htmlElement.setAttribute("placeholder", "...write command here");
             }
@@ -377,14 +378,14 @@ export module Components {
             options: Options;
 
             constructor(
-                options : Options,
+                options: Options,
                 type: string = "div",
                 className: string = "settings",
                 id: string = null,
                 parent: string = "body",
             ) {
                 super(type, className, id, parent);
-                
+
                 if (options != null)
                     this.options = options;
                 else this.options = new Options();
@@ -392,7 +393,7 @@ export module Components {
                 this.createVolume();
                 this.createDuration();
                 this.createDelay();
-                
+
                 this.el_volume.htmlElement.value = <any>this.options.volume;
                 this.el_delay.htmlElement.value = <any>this.options.delay;
                 this.el_duration.htmlElement.value = <any>this.options.duration;
