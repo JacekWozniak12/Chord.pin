@@ -9,7 +9,7 @@ class Note {
     constructor(
         name: string,
         options: Options = new Options(),
-        position: number = null,
+        position: number = -1,
         transposition: number = null
 
     ) {
@@ -23,7 +23,7 @@ class Note {
 
     name: string;
     options: Options;
-    fretboardPosition: number;
+    fretboardPosition: number = -1;
 
     isValidName(name: string): boolean {
         let temp = name.
@@ -47,13 +47,11 @@ class Chord {
         this.name = name;
         this.notes = notes;
         this.description = description;
-        this.options = options;
     }
 
     name: string;
     description: string;
     notes: Note[];
-    options: Options = null;
 
     returnContent(): string {
         let s = "";
@@ -63,6 +61,13 @@ class Chord {
         });
 
         return s.slice(0, s.length - 2)
+    }
+
+    addChord(chord: Chord): this{
+        chord.notes.forEach(x =>
+            this.notes.push(x)
+            );
+        return this;
     }
 }
 

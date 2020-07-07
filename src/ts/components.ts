@@ -72,12 +72,10 @@ export module Components {
             selectChord(chord: Chord): this {
                 this.clearSelection();
                 chord.notes.forEach(x => {
-                    try {
+                    if(x.fretboardPosition != -1)
                         this.noteDisplayed.find(y => y.note.fretboardPosition == x.fretboardPosition).select();
-                    }
-                    catch{
+                    else
                         this.noteDisplayed.find(y => y.note.name == x.name).select();
-                    }
                 });
                 return this;
             }
@@ -117,7 +115,7 @@ export module Components {
                 if (name == "null" || name == "") name = "Chord " + chordObject.returnContent().trim();
 
                 this.database.addChord(
-                    new Chord(chordObject.notes, name, "", chordObject.options)
+                    new Chord(chordObject.notes, name, "")
                 );
             }
 

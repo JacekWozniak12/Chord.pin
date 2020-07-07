@@ -16,6 +16,8 @@ export class Parser {
 
     database: Database;
     prompt: HTMLInputElement;
+    chord: Chord;
+    options: Options;
 
     // symbols start
     static readonly S_LOADING = "<<";
@@ -55,51 +57,87 @@ export class Parser {
         this.database = database;
     }
 
-    getOutput(e: KeyboardEvent, text: string): void {
 
-        if (e.key == "Enter" && text != null && text != "") {
-            Parser.SYMBOLS.toString();
-            let input = text;
-            console.log(e.key);
-            console.log(input);
 
-            let s = input.search(Parser.S_LOADING);
-            if (s >= 0) {
-                console.log(this.loadChordFromDatabase(input, s));
+    getOutput(e: KeyboardEvent, input: string): void {
+
+        if (e.key == "Enter" && input != null && input != "") {
+            let search = input.indexOf(Parser.S_LOADING);
+
+            if (search >= 0) {
+                this.chord = this.loadChordFromDatabase(input, search);
             }
-            else {
-                let c = new Chord([]) // mock
 
-                s = input.search(Parser.S_SAVE)
-                if (s >= 0) {
-                    this.saveChordToDatabase(c, input, s);
+            else {
+                let options = new Options().setValues(this.database.getOptions());
+                let notesWithDefaultOptions = new Chord([]);
+                let notesWithCustomOptions = new Chord([]);
+
+                search = input.indexOf(D_START.S_CHORD);
+                while (search >= 0) {
+
+                    if (search >= 0) {
+                        let temp = Parser.getGroup(input, D_START.S_CHORD, D_END.S_CHORD);
+                        input = input.replace(temp, "");
+                        let temp_chord = Parser.parseChord(temp);
+
+                        search = input.indexOf(D_START.S_OPTIONS);
+                        let temp_options = new Options();
+
+                        if (search >= 0) {
+                            temp = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
+                            input = input.replace(temp, "");
+                            temp_options = Parser.parseOptions(temp);
+                            temp_chord.notes.forEach(x => x.options = temp_options);
+
+                            notesWithCustomOptions.addChord(temp_chord);
+                        }
+                        else
+                            notesWithDefaultOptions.addChord(temp_chord);
+
+                        search = input.indexOf(D_START.S_CHORD)
+                    }
+                }
+
+                search = input.indexOf(D_START.S_OPTIONS);
+
+                if (search >= 0) {
+                    options.setValues(
+                        Parser.parseOptions(
+                            Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS
+                            )
+                        )
+                    );
+                }
+
+                console.log(notesWithCustomOptions);
+                console.log(notesWithDefaultOptions);
+                notesWithDefaultOptions.notes.forEach(x => x.options = options);
+                let chord = notesWithDefaultOptions.addChord(notesWithCustomOptions);
+                console.log(chord);
+
+                search = input.search(Parser.S_SAVE)
+                if (search >= 0) {
+                    this.saveChordToDatabase(chord, input, search);
                 }
             }
         }
-        // else
-        // get chord strings
-        // get option strings
-        // get save string
-
     }
-    saveChordToDatabase(chord : Chord, input: string, s: number) : void{
+    saveChordToDatabase(chord: Chord, input: string, s: number): void {
         input = input.slice(s, input.length);
-        
-        if(chord == null) throw "EMPTY CHORD";
+
+        if (chord == null || chord.notes.length < 1) throw "EMPTY CHORD";
         let search = input.search(Parser.S_PARAMETER_NEXT)
         let description = "";
-        if(search >= 0){
+
+        if (search >= 0) {
             description = input.slice(search + 1, input.length).trim();
         }
         else search = input.length;
-        
-        let name = input.slice(2, search).trim();
-        console.log(name);
-        console.log(description);
 
+        let name = input.slice(2, search).trim();
         chord.name = name;
         chord.description = description;
-        console.log(chord)
         this.database.addChord(chord);
     }
 
@@ -109,15 +147,38 @@ export class Parser {
         return this.database.getChord(i);
     }
 
+    static getGroup(
+        input: string,
+        delimiter_start: D_START,
+        delimiter_end: D_END)
+        : string {
+
+        let x = "";
+        console.log(
+            `
+            ${delimiter_start.toString()} == 
+            ${delimiter_end.toString()}
+            `)
+
+        let s = input.indexOf(delimiter_start);
+        let e = input.indexOf(delimiter_end);
+        if (s >= 0 && e > s) {
+            x = input.slice(s, e + 1);
+        }
+
+        return x;
+
+    }
+
     static parseChord(input: string): Chord {
         let i = 0;
-        let f = input.length;
-        let c = input;
+        let c = input.slice(1, input.length - 1);
+        let f = c.length;
         let r = new Chord([]);
 
         while (i < f) {
             i = c.search(this.S_CHORD_CONCAT);
-            if (i < 0) i = f;
+            if(i < 2) i = f;
             r.notes.push(
                 this.parseNote(
                     c.slice(0, i).trim()
@@ -131,26 +192,24 @@ export class Parser {
     static parseNote(input: string): Note {
         input = input.trim();
 
-        let o = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS)
-        let options: Options = this.parseOptions(o);
-
+        let o = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
+        let options = this.parseOptions(o);
         input = input.replace(o, "");
 
         let name = Parser.getNoteName(input);
-
         input = input.replace(name, "");
 
         let transpose = Parser.calculateTransposition(input, 0);
-        return new Note(name, options, transpose);
+        return new Note(name, options, -1, transpose);
     }
 
     private static getNoteName(input: string) {
         let name = input.slice(
-            input.search(/([ABCDEFG][#b][0-9])/g), 3);
+            input.search(/([ABCDEFG][#b][0-9])/g) - 1, 3);
 
         if (name == "")
             name = input.slice(
-                input.search(/([ABCDEFG][0-9])/g), 2);
+                input.search(/([ABCDEFG][0-9])/g) - 1, 2);
         return name;
     }
 
@@ -180,30 +239,6 @@ export class Parser {
             }
         }
         return transpose;
-    }
-
-    static getGroup<T>(
-        input: string,
-        delimiter_start: D_START,
-        delimiter_end: D_END)
-        : string {
-
-        let x = "";
-        console.log(
-            `
-            ${delimiter_start.toString()} == 
-            ${delimiter_end.toString()}
-            `)
-
-        if (delimiter_start.toString() == delimiter_end.toString()) {
-            let s = input.search(delimiter_start);
-            let e = input.search(delimiter_end);
-            if (s >= 0 && e > s) {
-                x = input.slice(s, e);
-            }
-        }
-        return x;
-
     }
 
     static parseOptions(input: string): Options {
