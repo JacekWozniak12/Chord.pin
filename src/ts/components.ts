@@ -69,14 +69,18 @@ export module Components {
                 return note;
             }
 
-            selectChord(chord: Chord): this {
+            selectChord(chord: Chord, setNote : boolean = false): this {
                 try{
                     this.clearSelection();
                     chord.notes.forEach(x => {
                         if(x.fretboardPosition != -1)
+                            if(setNote) 
+                            this.noteDisplayed.find(y => y.note.fretboardPosition == x.fretboardPosition).select(x);
+                            else
                             this.noteDisplayed.find(y => y.note.fretboardPosition == x.fretboardPosition).select();
                         else
-                            this.noteDisplayed.find(y => y.note.name == x.name).select();
+                            if(setNote) this.noteDisplayed.find(y => y.note.name == x.name).select(x);
+                            else this.noteDisplayed.find(y => y.note.name == x.name).select();
                     });
                     return this;
                 }
@@ -341,14 +345,17 @@ export module Components {
                 });
             }
 
-            select() {
+            select(note : Note = null) {
                 this.htmlElement.classList.add("note-selected", "important-note-selected");
                 let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
                 found.forEach(x => {
                     x.classList.add("note-selected");
                 });
+                if(note != null){
+                    this.note = note;
+                }
+                this.settings.setOptions(note.options);
                 this.audio.addNote(this.note);
-
             }
 
             deselect() {
@@ -396,17 +403,18 @@ export module Components {
                 this.createVolume();
                 this.createDuration();
                 this.createDelay();
-
-                this.el_volume.htmlElement.value = <any>this.options.volume;
-                this.el_delay.htmlElement.value = <any>this.options.delay;
-                this.el_duration.htmlElement.value = <any>this.options.duration;
-
+             
                 this.el_delay.modifyAttribute("placeholder", `${this.options.delay}`);
                 this.el_duration.modifyAttribute("placeholder", `${this.options.duration}`);
+
+                this.setOptions(this.options);
             }
 
             setOptions(options: Options): this {
                 this.options = options;
+                this.el_volume.htmlElement.value = <any>this.options.volume;
+                this.el_delay.htmlElement.value = <any>this.options.delay;
+                this.el_duration.htmlElement.value = <any>this.options.duration;
                 return this;
             }
 

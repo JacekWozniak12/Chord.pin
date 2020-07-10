@@ -98,7 +98,7 @@ export class Parser {
                     this.saveChordToDatabase(chord, NameDescriptionPart)
                 }
                 
-                this.fretboard.selectChord(chord);
+                this.fretboard.selectChord(chord, true);
             }
         }
     }
@@ -175,7 +175,7 @@ export class Parser {
         let s = input.indexOf(delimiter_start);
         let e = input.indexOf(delimiter_end);
         if (s >= 0 && e > s) {
-            x = input.slice(s + 1, e + 1);
+            x = input.slice(s, e + 1);
         }
         return x;
     }
@@ -230,27 +230,29 @@ export class Parser {
 
     static parseOptions(input: string, def: Options = new Options()): Options {
         let r = def;
-        let t = this.getOptionNumberValue(input.search(this.S_DURATION), input);
-        let d = this.getOptionNumberValue(input.search(this.S_DELAY), input);
-        let v = this.getOptionNumberValue(input.search(this.S_VOLUME), input);
+        let t = this.getOptionNumberValue(this.S_DURATION, input);
+        let d = this.getOptionNumberValue(this.S_DELAY, input);
+        let v = this.getOptionNumberValue(this.S_VOLUME, input);
 
-        if (t != "") r.duration = (this.getDuration(t));
-        if (d != "") r.delay = (this.getDelay(d));
-        if (v != "") r.volume = (this.getVolume(v));
-
+        if (t != "" && t != null) r.duration = (this.getDuration(t));
+        if (d != "" && d != null) r.delay = (this.getDelay(d));
+        if (v != "" && v != null) r.volume = (this.getVolume(v));
         return r;
     }
 
-    private static getOptionNumberValue(t: number, input: string): string {
+    private static getOptionNumberValue(symbol : string, input: string): string {
+        let t = input.indexOf(symbol);
         if (t >= 0) {
             let i = input.slice(t, input.length);
             let b = i.search(this.S_PARAMETER_NEXT);
 
             if (b >= 0) {
-                return input.slice(t, b).replace(/([A-Z])/g, "").trim();
+                let r = input.slice(t + symbol.length - 1, b).replace(/([^0-9])/g, "").trim();
+                return r;
             }
             else {
-                return input.slice(t, input.length).replace(/([A-Z])/g, "").trim();
+                let r = input.slice(t + symbol.length - 1, input.length).replace(/([^0-9])/g, "").trim();
+                return r;
             }
         }
     }
