@@ -22,7 +22,6 @@ export class Database {
             this.chords = JSON.parse(localStorage.getItem("ChordPin_Chord")) as Chord[];
             let x = JSON.parse(localStorage.getItem("ChordPin_Options")) as Options;
             this.globalOptions = new Options().setValues(x);
-            console.log(this.globalOptions);
         }
         catch{
             console.log("LOADING FROM LOCAL STORAGE FAILED");
@@ -68,7 +67,6 @@ export class Database {
     }
 
     getChord(name: string): Chord {
-        console.log(`GETTING ${name}`);
         return this.chords.find(x => x.name === name);
     }
 

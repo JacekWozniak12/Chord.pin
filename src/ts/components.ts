@@ -70,14 +70,19 @@ export module Components {
             }
 
             selectChord(chord: Chord): this {
-                this.clearSelection();
-                chord.notes.forEach(x => {
-                    if(x.fretboardPosition != -1)
-                        this.noteDisplayed.find(y => y.note.fretboardPosition == x.fretboardPosition).select();
-                    else
-                        this.noteDisplayed.find(y => y.note.name == x.name).select();
-                });
-                return this;
+                try{
+                    this.clearSelection();
+                    chord.notes.forEach(x => {
+                        if(x.fretboardPosition != -1)
+                            this.noteDisplayed.find(y => y.note.fretboardPosition == x.fretboardPosition).select();
+                        else
+                            this.noteDisplayed.find(y => y.note.name == x.name).select();
+                    });
+                    return this;
+                }
+                catch (e){
+                    console.log(e);
+                }
             }
 
             clearSelection(): this {
@@ -266,9 +271,9 @@ export module Components {
             audio: Audio;
             database: Database;
 
-            constructor(promptID: string, audio: Audio, database: Database) {
+            constructor(promptID: string, audio: Audio, database: Database, fretboard: Fretboard) {
                 super("input", "input", promptID)
-                this.parser = new Parser(this.htmlElement, database);
+                this.parser = new Parser(this.htmlElement, database, fretboard);
                 this.audio = audio;
                 this.htmlElement.setAttribute("placeholder", "...write command here");
             }

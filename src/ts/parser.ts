@@ -1,6 +1,6 @@
 import { Options, Note, Chord } from "./definitions";
 import { Database } from './database';
-import { } from './components';
+import { Components } from './components';
 
 // Delimiters
 enum D_START {
@@ -16,6 +16,7 @@ export class Parser {
 
     database: Database;
     prompt: HTMLInputElement;
+    fretboard: Components.Interfaces.Fretboard;
     chord: Chord;
     options: Options;
 
@@ -31,23 +32,7 @@ export class Parser {
     static readonly S_PARAMETER_NEXT = ",";
     // symbols stop
 
-    static readonly SYMBOLS = [
-        Parser.S_LOADING,
-        Parser.S_SAVE,
-        Parser.S_DELAY,
-        Parser.S_DURATION,
-        Parser.S_VOLUME,
-        Parser.S_CHORD_CONCAT,
-        Parser.S_STEP_ADD,
-        Parser.S_STEP_SUB,
-        Parser.S_PARAMETER_NEXT,
-        D_START.S_CHORD,
-        D_END.S_CHORD,
-        D_START.S_OPTIONS,
-        D_END.S_OPTIONS,
-    ]
-
-    constructor(prompt: HTMLInputElement, database: Database) {
+    constructor(prompt: HTMLInputElement, database: Database, fretboard : Components.Interfaces.Fretboard) {
         this.prompt = prompt;
         this.prompt.addEventListener
             ("keydown",
@@ -55,76 +40,113 @@ export class Parser {
                     this.getOutput(event, this.prompt.value)
                 }) as EventListener, true);
         this.database = database;
+        this.fretboard = fretboard;
     }
-
-
 
     getOutput(e: KeyboardEvent, input: string): void {
 
+        let save = false;
+
         if (e.key == "Enter" && input != null && input != "") {
-            let search = input.indexOf(Parser.S_LOADING);
-
-            if (search >= 0) {
-                this.chord = this.loadChordFromDatabase(input, search);
-            }
-
+            let isFinished = this.HandleLoadProcedure(input);
+            if (isFinished) return;
             else {
-                let options = new Options().setValues(this.database.getOptions());
-                let notesWithDefaultOptions = new Chord([]);
-                let notesWithCustomOptions = new Chord([]);
+                // { ( ) }( ) >> name, description
 
-                search = input.indexOf(D_START.S_CHORD);
-                while (search >= 0) {
-
-                    if (search >= 0) {
-                        let temp = Parser.getGroup(input, D_START.S_CHORD, D_END.S_CHORD);
-                        input = input.replace(temp, "");
-                        let temp_chord = Parser.parseChord(temp);
-
-                        search = input.indexOf(D_START.S_OPTIONS);
-                        let temp_options = new Options();
-
-                        if (search >= 0) {
-                            temp = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
-                            input = input.replace(temp, "");
-                            temp_options = Parser.parseOptions(temp);
-                            temp_chord.notes.forEach(x => x.options = temp_options);
-
-                            notesWithCustomOptions.addChord(temp_chord);
-                        }
-                        else
-                            notesWithDefaultOptions.addChord(temp_chord);
-
-                        search = input.indexOf(D_START.S_CHORD)
+                let search = input.indexOf(Parser.S_SAVE);
+                let NameDescriptionPart = "";
+                while(search < 2 && search != -1)
+                {
+                    if(search >= 2){
+                        NameDescriptionPart = input.slice(search, input.length);
+                        input = input.slice(0, search);
                     }
                 }
 
+                let chords : Chord[] = new Array();
+                search = input.indexOf(D_START.S_CHORD);
+
+                let settings = new Options();
+                while(search != -1){
+                    let t = Parser.getGroup(input, D_START.S_CHORD, D_END.S_CHORD);
+                    input.replace(t, "");
+
+                    search = input.indexOf(D_START.S_CHORD);
+                    let o = input.indexOf(D_START.S_OPTIONS);
+                    
+                    if(o < search){
+                        let r = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
+                        input = input.replace(r, "");
+                        settings = Parser.parseOptions(r, settings);
+                    }
+                    chords.unshift(Parser.parseChord(t, settings));                 
+                }
+                
                 search = input.indexOf(D_START.S_OPTIONS);
-
-                if (search >= 0) {
-                    options.setValues(
-                        Parser.parseOptions(
-                            Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS
-                            )
-                        )
-                    );
+                if(search > -1){
+                    let t = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
+                    input = input.replace(t, "");
+                    settings = Parser.parseOptions(t);
                 }
 
-                console.log(notesWithCustomOptions);
-                console.log(notesWithDefaultOptions);
-                notesWithDefaultOptions.notes.forEach(x => x.options = options);
-                let chord = notesWithDefaultOptions.addChord(notesWithCustomOptions);
-                console.log(chord);
+                let chord = Parser.parseChord(input, settings);
+                chords.forEach(element => {
+                    chord.addChord(element);
+                });
 
-                search = input.search(Parser.S_SAVE)
-                if (search >= 0) {
-                    this.saveChordToDatabase(chord, input, search);
+                if(NameDescriptionPart != ""){
+                    this.saveChordToDatabase(chord, NameDescriptionPart)
                 }
+                
+                this.fretboard.selectChord(chord);
             }
         }
     }
-    saveChordToDatabase(chord: Chord, input: string, s: number): void {
-        input = input.slice(s, input.length);
+
+    static parseChord(input: string, def: Options): Chord {
+        let i = 0;
+        let c = input;
+        let f = c.length;
+        let r = new Chord([]);
+
+        while (i < f) {
+            i = c.indexOf(this.S_CHORD_CONCAT);
+            if (i < 2) i = f;
+            let t = c.slice(0, i).replace(this.S_CHORD_CONCAT, "");
+            r.notes.push(
+                this.parseNote(
+                    t, def
+                )
+            );
+            c = c.slice(i + 1, f)
+        }
+        return r;
+    }
+
+    static parseNote(input: string, def: Options): Note {
+
+        let o = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
+        let options = this.parseOptions(o, def);
+        input = input.replace(o, "");
+
+        let name = Parser.getNoteName(input);
+        input = input.replace(name, "");
+
+        let transpose = Parser.calculateTransposition(input, 0);
+        return new Note(name, options, -1, transpose);
+    }
+
+    private HandleLoadProcedure(input: string): boolean {
+        let search = input.indexOf(Parser.S_LOADING);
+        // load from database
+        if (search >= 0) {
+            this.chord = this.loadChordFromDatabase(input, search);
+            return true;
+        }
+        return false;
+    }
+
+    saveChordToDatabase(chord: Chord, input: string): void {
 
         if (chord == null || chord.notes.length < 1) throw "EMPTY CHORD";
         let search = input.search(Parser.S_PARAMETER_NEXT)
@@ -139,6 +161,7 @@ export class Parser {
         chord.name = name;
         chord.description = description;
         this.database.addChord(chord);
+
     }
 
     loadChordFromDatabase(input: string, s: number): Chord {
@@ -147,102 +170,66 @@ export class Parser {
         return this.database.getChord(i);
     }
 
-    static getGroup(
-        input: string,
-        delimiter_start: D_START,
-        delimiter_end: D_END)
-        : string {
-
+    static getGroup(input: string, delimiter_start: D_START, delimiter_end: D_END): string {
         let x = "";
-        console.log(
-            `
-            ${delimiter_start.toString()} == 
-            ${delimiter_end.toString()}
-            `)
-
         let s = input.indexOf(delimiter_start);
         let e = input.indexOf(delimiter_end);
         if (s >= 0 && e > s) {
-            x = input.slice(s, e + 1);
+            x = input.slice(s + 1, e + 1);
         }
-
         return x;
-
-    }
-
-    static parseChord(input: string): Chord {
-        let i = 0;
-        let c = input.slice(1, input.length - 1);
-        let f = c.length;
-        let r = new Chord([]);
-
-        while (i < f) {
-            i = c.search(this.S_CHORD_CONCAT);
-            if(i < 2) i = f;
-            r.notes.push(
-                this.parseNote(
-                    c.slice(0, i).trim()
-                )
-            );
-            c = c.slice(i, f)
-        }
-        return r;
-    }
-
-    static parseNote(input: string): Note {
-        input = input.trim();
-
-        let o = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
-        let options = this.parseOptions(o);
-        input = input.replace(o, "");
-
-        let name = Parser.getNoteName(input);
-        input = input.replace(name, "");
-
-        let transpose = Parser.calculateTransposition(input, 0);
-        return new Note(name, options, -1, transpose);
     }
 
     private static getNoteName(input: string) {
-        let name = input.slice(
+        let name = input.substring(
             input.search(/([ABCDEFG][#b][0-9])/g) - 1, 3);
 
         if (name == "")
-            name = input.slice(
+            name = input.substring(
                 input.search(/([ABCDEFG][0-9])/g) - 1, 2);
         return name;
     }
 
     private static calculateTransposition(input: string, transpose: number) {
-        for (let i = 0; i < input.length; i++) {
+
+        input = input.trim();
+        if(input.length > 0){
             let arithmeticBuffer = 0;
             let buffer = "";
-            try {
-                if (input[i] == "+") {
-                    arithmeticBuffer = 1;
-                    transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
-                    buffer = "";
+            for (let i = 0; i < input.length; i++) {
+                try {
+                    if (input[i] == "+") {
+                        arithmeticBuffer = 1;
+                        if(buffer != ""){
+                            transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
+                            buffer = "";
+                        }                          
+                    }
+                    else if (input[i] == "-") {
+                        arithmeticBuffer = -1;
+                        if(buffer != ""){
+                            transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
+                            buffer = "";
+                        }   
+                    }
+                    else{
+                        buffer += input[i];
+                        buffer.trim();
+                    }                   
+                    if (i == input.length - 1) {
+                        transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
+                    }
                 }
-                else if (input[i] == "-") {
-                    arithmeticBuffer = -1;
-                    transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
-                    buffer = "";
+                catch (e) {
+                    alert(e);
                 }
-                else
-                    buffer += input[i];
-                if (i = input.length) {
-                    transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
-                }
-            }
-            catch (e) {
-                alert(e);
             }
         }
         return transpose;
     }
 
-    static parseOptions(input: string): Options {
-        let r = new Options();
+    static parseOptions(input: string, def: Options = new Options()): Options {
+        let r = def;
         let t = this.getOptionNumberValue(input.search(this.S_DURATION), input);
         let d = this.getOptionNumberValue(input.search(this.S_DELAY), input);
         let v = this.getOptionNumberValue(input.search(this.S_VOLUME), input);
@@ -260,12 +247,10 @@ export class Parser {
             let b = i.search(this.S_PARAMETER_NEXT);
 
             if (b >= 0) {
-                return input.slice(t, b).
-                    replace(/([A-Z])/g, "").trim();
+                return input.slice(t, b).replace(/([A-Z])/g, "").trim();
             }
             else {
-                return input.slice(t, input.length).
-                    replace(/([A-Z])/g, "").trim();
+                return input.slice(t, input.length).replace(/([A-Z])/g, "").trim();
             }
         }
     }
