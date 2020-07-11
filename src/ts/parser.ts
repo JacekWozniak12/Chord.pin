@@ -1,6 +1,6 @@
 import { Options, Note, Chord } from "./definitions";
 import { Database } from './database';
-import { Fretboard } from "./components/Elements";
+import { Fretboard } from "./components/elements";
 import { INotify } from './interfaces';
 
 // Delimiters
@@ -13,24 +13,7 @@ enum D_END {
     S_OPTIONS = ")"
 }
 
-export class Parser implements INotify{
-
-    toNotify : Function[];
-
-    notify(y : Object = null){
-        this.toNotify.forEach(x => x(y))
-        return this;
-    }
-
-    subscribe(x : Function){
-        this.toNotify.push(x);
-        return this;
-    }
-
-    unsubscribe(f: Function){
-        this.toNotify = this.toNotify.filter(y => y.name != f.name)
-        return this;
-    }
+export class Parser implements INotify {
 
     database: Database;
     prompt: HTMLInputElement;
@@ -71,12 +54,12 @@ export class Parser implements INotify{
                 let globalSettings = false;
                 let search = input.indexOf(Parser.S_SAVE);
                 let NameDescriptionPart = "";
-                while (search < 2 && search != -1) {
-                    if (search >= 2) {
-                        NameDescriptionPart = input.slice(search + Parser.S_SAVE.length - 1, input.length);
-                        input = input.slice(0, search);
-                    }
+
+                if (search >= 2) {
+                    NameDescriptionPart = input.slice(search + Parser.S_SAVE.length, input.length);
+                    input = input.slice(0, search + 1).replace(">", "");
                 }
+
 
                 input = input.toUpperCase();
 
@@ -121,8 +104,6 @@ export class Parser implements INotify{
                     this.notify(chord);
                 }
 
-                // todo SETTINGS
-
                 else if (globalSettings) {
                     this.database.setOptions(settings);
                     this.notify(settings);
@@ -141,6 +122,7 @@ export class Parser implements INotify{
             i = c.indexOf(this.S_CHORD_CONCAT);
             if (i < 2) i = f;
             let t = c.slice(0, i).replace(this.S_CHORD_CONCAT, "");
+            if(t.trim() != "")
             r.notes.push(
                 this.parseNote(
                     t, def
@@ -151,7 +133,7 @@ export class Parser implements INotify{
         return r;
     }
 
-    static clearGroups(input: string, s: string, e: string){
+    static clearGroups(input: string, s: string, e: string) {
         input = input.replace(s, "").replace(e, "");
         return input;
     }
@@ -171,7 +153,7 @@ export class Parser implements INotify{
 
     private HandleLoadProcedure(input: string): boolean {
         let search = input.indexOf(Parser.S_LOADING);
-        // load from database
+
         if (search >= 0) {
             this.chord = this.loadChordFromDatabase(input, search);
             return true;
@@ -207,17 +189,17 @@ export class Parser implements INotify{
         let x = "";
         let s = input.indexOf(delimiter_start);
         let e = input.indexOf(delimiter_end);
-        if(s == -1){
+        if (s == -1) {
             s = 0;
-            if(e == -1){
+            if (e == -1) {
                 return "";
             }
             else e = input.length;
         }
-        else if(e == -1){
+        else if (e == -1) {
             e = input.length;
         }
-        x = input.slice(s, e+1);
+        x = input.slice(s, e + 1);
         return x;
     }
 
@@ -286,11 +268,11 @@ export class Parser implements INotify{
             let b = i.search(this.S_PARAMETER_NEXT);
 
             if (b >= 0) {
-                let r = input.slice(t + symbol.length - 1, b).replace(/([^0-9])/g, "").trim();
+                let r = input.slice(t + symbol.length - 1, b).replace(/([^0-9.])/g, "").trim();
                 return r;
             }
             else {
-                let r = input.slice(t + symbol.length - 1, input.length).replace(/([^0-9])/g, "").trim();
+                let r = input.slice(t + symbol.length - 1, input.length).replace(/([^0-9.])/g, "").trim();
                 return r;
             }
         }
@@ -310,6 +292,23 @@ export class Parser implements INotify{
 
     static getGlobals(input: string = null): Options {
         return new Options();
+    }
+
+    toNotify: Function[];
+
+    notify(y: Object = null) {
+        this.toNotify.forEach(x => x(y))
+        return this;
+    }
+
+    subscribe(x: Function) {
+        this.toNotify.push(x);
+        return this;
+    }
+
+    unsubscribe(f: Function) {
+        this.toNotify = this.toNotify.filter(y => y.name != f.name)
+        return this;
     }
 
 }

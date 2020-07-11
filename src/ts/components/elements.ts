@@ -4,8 +4,8 @@ import { Audio } from '../audio';
 import { Options, Chord, Note } from "../definitions";
 import { Frequency } from "Tone";
 import { Database } from '../database';
-import { NoteDisplay, SettingsDisplay, ChordContainer } from './DataRepresentation';
-import { IObserve } from '../interfaces';
+import { NoteDisplay, SettingsDisplay, ChordContainer } from './dataRepresentation';
+import { IObserve, INotify } from '../interfaces';
 
 export class Fretboard extends GUI.Element<HTMLDivElement> implements IObserve{
     stringAmount = 6;
@@ -77,10 +77,10 @@ export class Fretboard extends GUI.Element<HTMLDivElement> implements IObserve{
         if(object instanceof Options)
             this.changeDefaults(object);
         if(object instanceof Chord)
-            this.selectChord(object);
+            this.selectChord(object, true);
     }
 
-    selectChord(chord: Chord, setNote: boolean = false): this {
+    selectChord(chord: Chord, setNote: boolean = true): this {
         try {
             if(chord != null){
                 this.clearSelection();
@@ -200,7 +200,6 @@ export class ChordSelector extends GUI.Element<HTMLSelectElement>{
 export class ChordPlayer extends GUI.Element<HTMLElement>{
     el_play: GUI.Element<HTMLDivElement>;
     audio: Audio;
-    currentChord: Chord;
 
     constructor(audio: Audio) {
         super("div", "icon", "", "body", "https://img.icons8.com/ios-glyphs/32/000000/play.png");
@@ -209,8 +208,7 @@ export class ChordPlayer extends GUI.Element<HTMLElement>{
     }
 
     play() {
-        this.audio.stop();
-        this.audio.play(this.currentChord);
+        this.audio.play();
     }
 }
 
@@ -255,30 +253,54 @@ export class MenuPlayer extends GUI.Element<HTMLDivElement>{
     }
 }
 
-export class MenuSettings extends GUI.Element<HTMLDivElement>{
+export class MenuSettings extends GUI.Element<HTMLDivElement> implements INotify{
 
     settings: SettingsDisplay;
     database: Database;
-
-    constructor(database: Database) {
+    audio: Audio;
+    
+    constructor(database: Database, audio: Audio) {
         super("div");
         this.database = database;
+        this.audio = audio;
         this.settings = new SettingsDisplay(database.getOptions());
         this.parentElements([this.settings.htmlElement]);
+        this.toNotify = new Array<Function>();
 
         this.settings.el_duration.addListener(
-            "change", this.sendToDatabase.bind(this)
+            "change", this.registerChange.bind(this)
         );
         this.settings.el_delay.addListener(
-            "change", this.sendToDatabase.bind(this)
+            "change", this.registerChange.bind(this)
         );
         this.settings.el_volume.addListener(
-            "change", this.sendToDatabase.bind(this)
+            "change", this.registerChange.bind(this)
         );
     }
+    
+    toNotify : Function[];
 
-    sendToDatabase() {
+    notify(y: Object): this {
+        this.toNotify.forEach(x => { x(y); });
+        return this;
+    } 
+    subscribe(x: Function): this {
+        this.toNotify.push(x);
+        return this;
+    }
+    unsubscribe(x: Function): this {
+        this.toNotify = this.toNotify.filter(y => y.name != x.name)
+        return this;
+    }
+    
+    saveToDatabase(){
         this.database.setOptions(this.settings.options);
+    }
+
+    registerChange() {
+        this.notify(this.settings.options);
+        this.audio.setOptions(this.settings.options);
+        this.saveToDatabase();
     }
 }
 

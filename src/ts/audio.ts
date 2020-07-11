@@ -64,23 +64,25 @@ export class Audio {
     }
 
     play(chord: Chord = this.chord): void {     
+        let vol = this.options.volume as number;
         this.stop();
-        this.setup();
         this.part = new Part((x, y) => {
             this.instrument.triggerAttackRelease(
                 y.note,
                 y.dur,
                 x,
-                y.volume)
+                y.volume);
+            
         }, [])
-        chord.notes.forEach(e => {
-            this.part.add(e.options.delay,
+        chord.notes.forEach(e => {           
+            e.options = new Options().setValues(e.options);
+            this.part.add(e.options.delay as number,
                 {
                     note: e.name,
-                    dur: e.options.duration,
-                    volume: 
-                    (e.options.volume) as number * (this.options.volume as number)
+                    dur: e.options.duration as number,
+                    volume : (e.options.volume as number) * vol as number
                 });
+                
         });
         Destination.mute = false;
         this.part.start(0);

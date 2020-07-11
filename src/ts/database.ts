@@ -1,7 +1,7 @@
 import { Chord, Options } from "./definitions";
 import { INotify } from './interfaces';
 
-export class Database implements INotify{
+export class Database implements INotify {
 
     private chords: Chord[];
     private toNotify: Function[];
@@ -16,7 +16,7 @@ export class Database implements INotify{
     loadFromLocalStorage() {
         try {
             this.chords = JSON.parse(localStorage.getItem("ChordPin_Chord")) as Chord[];
-            let x = Options.deserialize(localStorage.getItem("ChordPin_Options")) as Options;
+            let x = JSON.parse(localStorage.getItem("ChordPin_Options")) as Options;
             this.globalOptions = new Options().setValues(x);
         }
         catch{
@@ -28,9 +28,9 @@ export class Database implements INotify{
     }
 
     saveToLocalStorage() {
-            let x = (<Options>this.globalOptions).serialize();
-            this.storage.setItem("ChordPin_Chord", JSON.stringify(this.chords));
-            this.storage.setItem("ChordPin_Options", x);
+        let x = this.globalOptions.serialize();
+        this.storage.setItem("ChordPin_Chord", JSON.stringify(this.chords));
+        this.storage.setItem("ChordPin_Options", x);
         return this;
     }
 
@@ -50,20 +50,16 @@ export class Database implements INotify{
     }
 
     notify() {
-        this.toNotify.forEach(
-            x => {
-                x();
-            }
-        );
+        this.toNotify.forEach(x => { x(); });
         return this;
     }
 
-    subscribe(f: Function) : this{
+    subscribe(f: Function): this {
         this.toNotify.push(f);
         return this;
     }
 
-    unsubscribe(f: Function){
+    unsubscribe(f: Function) {
         this.toNotify = this.toNotify.filter(y => y.name != f.name)
         return this;
     }
@@ -88,7 +84,7 @@ export class Database implements INotify{
 
     clear() {
         this.chords = new Array();
-        this.globalOptions = new Options();   
+        this.globalOptions = new Options();
         this.saveToLocalStorage();
     }
 }

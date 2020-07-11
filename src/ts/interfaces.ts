@@ -7,7 +7,3 @@ export interface INotify{
 export interface IObserve{
     notifyHandler(y: object);
 }
-
-export interface IErrorHandler{
-    HandleError() : this;
-}

@@ -69,7 +69,7 @@ export class NoteDisplay extends GUI.Element<HTMLDivElement> {
         if (note != null) {
             this.note = note;           
             this.settings.setOptions(note.options);
-        }     
+        }  
         this.audio.addNote(this.note);
     }
 
@@ -164,12 +164,12 @@ export class SettingsDisplay extends GUI.Element<HTMLElement> implements IObserv
     }
 
     private createDelay() {
-        this.el_delay = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/add-time.png").modifyAttribute("type", "number").modifyAttribute("min", "0").modifyAttribute("max", "10").
+        this.el_delay = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/add-time.png").modifyAttribute("type", "number").modifyAttribute("min", "0").modifyAttribute("max", "10").modifyAttribute("step", "0.01").
             addListener("change", this.updateDelay.bind(this));
     }
 
     private createDuration() {
-        this.el_duration = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/time-slider.png").modifyAttribute("type", "number").modifyAttribute("min", "0").modifyAttribute("max", "10").
+        this.el_duration = <any>this.createSettings("input", "", "", "https://img.icons8.com/windows/32/000000/time-slider.png").modifyAttribute("type", "number").modifyAttribute("min", "0").modifyAttribute("max", "10").modifyAttribute("step", "0.01").
             addListener("change", this.updateDuration.bind(this));
     }
 
