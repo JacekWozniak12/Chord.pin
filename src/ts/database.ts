@@ -16,7 +16,7 @@ export class Database implements INotify{
     loadFromLocalStorage() {
         try {
             this.chords = JSON.parse(localStorage.getItem("ChordPin_Chord")) as Chord[];
-            let x = JSON.parse(localStorage.getItem("ChordPin_Options")) as Options;
+            let x = Options.deserialize(localStorage.getItem("ChordPin_Options")) as Options;
             this.globalOptions = new Options().setValues(x);
         }
         catch{

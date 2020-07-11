@@ -67,7 +67,7 @@ export class NoteDisplay extends GUI.Element<HTMLDivElement> {
         });
         
         if (note != null) {
-            this.note = note;
+            this.note = note;           
             this.settings.setOptions(note.options);
         }     
         this.audio.addNote(this.note);
@@ -132,13 +132,13 @@ export class SettingsDisplay extends GUI.Element<HTMLElement> implements IObserv
     }
 
     setOptions(options: Options): this {
-        this.options = options;
+        this.options.setValues(options);
         this.el_volume.htmlElement.value = <any>this.options.volume;
         this.el_delay.htmlElement.value = <any>this.options.delay;
         this.el_duration.htmlElement.value = <any>this.options.duration;
         return this;
     }
-
+ 
     private updateVolume(): this {
         this.options.volume = this.el_volume.htmlElement.value;
         return this;

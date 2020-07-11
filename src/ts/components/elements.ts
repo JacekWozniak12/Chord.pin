@@ -180,7 +180,7 @@ export class ChordSelector extends GUI.Element<HTMLSelectElement>{
     select(): this {
         let value = this.getCurrentSelection();
         let promise = this.database.getChord(value);
-        if (promise != null) this.fretboard.selectChord(promise);
+        if (promise != null) this.fretboard.selectChord(promise, true);
         return this;
     }
 

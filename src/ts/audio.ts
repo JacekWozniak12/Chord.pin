@@ -59,21 +59,19 @@ export class Audio {
     }
 
     dispose(): void {
-        this.stop();
-        this.instrument.dispose();
+        this.instrument?.dispose();
         this.instrument = null;
     }
 
-    play(chord: Chord = this.chord): void {
-        
+    play(chord: Chord = this.chord): void {     
         this.stop();
-        let temp = this.instrument;
-        this.part = new Part(function (time, event) {
-            temp.triggerAttackRelease(
-                event.note,
-                event.dur,
-                time,
-                event.volume)
+        this.setup();
+        this.part = new Part((x, y) => {
+            this.instrument.triggerAttackRelease(
+                y.note,
+                y.dur,
+                x,
+                y.volume)
         }, [])
         chord.notes.forEach(e => {
             this.part.add(e.options.delay,
@@ -91,10 +89,10 @@ export class Audio {
     }
 
     stop(){
+        this.part.stop();
         Destination.mute = true;
         Transport.stop();
         Transport.cancel();
-        this.instrument.unsync();
     }
 }
 

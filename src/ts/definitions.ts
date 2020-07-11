@@ -118,6 +118,11 @@ class Options {
         return JSON.stringify({volume: this.volume, duration: this.duration, delay: this.delay})
     }
 
+    static deserialize(input : string){
+        let x = JSON.parse(input) as Options;
+        return x;
+    }
+
     private _volume: number = 0.5;
     private _duration: number = 1;
     private _delay: number = 0;
@@ -129,9 +134,9 @@ class Options {
     }
 
     setValues(options: Options): this {
-        this.delay = options.delay;
-        this.duration = options.duration;
-        this.volume = options.volume;
+        this.delay = options._delay ?? options.delay;
+        this.duration = options._duration ?? options.duration;
+        this.volume = options._volume ?? options.volume;
         return this;
     }
 }
