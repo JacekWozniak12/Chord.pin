@@ -52,24 +52,26 @@ export class Parser {
             if (isFinished) return;
             else {
                 // { ( ) }( ) >> name, description
-
+                let globalSettings = false;
                 let search = input.indexOf(Parser.S_SAVE);
                 let NameDescriptionPart = "";
                 while(search < 2 && search != -1)
                 {
                     if(search >= 2){
-                        NameDescriptionPart = input.slice(search, input.length);
+                        NameDescriptionPart = input.slice(search + Parser.S_SAVE.length - 1, input.length);
                         input = input.slice(0, search);
                     }
                 }
 
+                input = input.toUpperCase();
+
                 let chords : Chord[] = new Array();
                 search = input.indexOf(D_START.S_CHORD);
 
-                let settings = new Options();
+                let settings = this.database.getOptions();
                 while(search != -1){
                     let t = Parser.getGroup(input, D_START.S_CHORD, D_END.S_CHORD);
-                    input.replace(t, "");
+                    input = input.replace(t, "");
 
                     search = input.indexOf(D_START.S_CHORD);
                     let o = input.indexOf(D_START.S_OPTIONS);
@@ -79,7 +81,8 @@ export class Parser {
                         input = input.replace(r, "");
                         settings = Parser.parseOptions(r, settings);
                     }
-                    chords.unshift(Parser.parseChord(t, settings));                 
+                    chords.unshift(Parser.parseChord(t, settings));
+                    console.log(chords);                 
                 }
                 
                 search = input.indexOf(D_START.S_OPTIONS);
@@ -87,6 +90,7 @@ export class Parser {
                     let t = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
                     input = input.replace(t, "");
                     settings = Parser.parseOptions(t);
+                    globalSettings = true;
                 }
 
                 let chord = Parser.parseChord(input, settings);
@@ -94,11 +98,16 @@ export class Parser {
                     chord.addChord(element);
                 });
 
-                if(NameDescriptionPart != ""){
+                if(NameDescriptionPart.length > 0){
                     this.saveChordToDatabase(chord, NameDescriptionPart)
                 }
                 
-                this.fretboard.selectChord(chord, true);
+                if(chord.notes.length > 0)
+                    this.fretboard.selectChord(chord, true);
+                else if(globalSettings){
+                    this.database.setOptions(settings);
+                    this.fretboard.changeDefaults(settings);
+                }
             }
         }
     }
@@ -130,7 +139,7 @@ export class Parser {
         input = input.replace(o, "");
 
         let name = Parser.getNoteName(input);
-        input = input.replace(name, "");
+        input = input.replace(name, "").replace(D_START.S_CHORD, "").replace(D_END.S_CHORD, "");
 
         let transpose = Parser.calculateTransposition(input, 0);
         return new Note(name, options, -1, transpose);
@@ -181,12 +190,9 @@ export class Parser {
     }
 
     private static getNoteName(input: string) {
-        let name = input.substring(
-            input.search(/([ABCDEFG][#b][0-9])/g) - 1, 3);
-
-        if (name == "")
-            name = input.substring(
-                input.search(/([ABCDEFG][0-9])/g) - 1, 2);
+        input = input.toUpperCase();
+        let name = input.slice(
+            input.search(/([ABCDEFG])/g), input.search(/[0-9]/g) + 1);
         return name;
     }
 
@@ -229,6 +235,7 @@ export class Parser {
     }
 
     static parseOptions(input: string, def: Options = new Options()): Options {
+        input = input.toLowerCase();
         let r = def;
         let t = this.getOptionNumberValue(this.S_DURATION, input);
         let d = this.getOptionNumberValue(this.S_DELAY, input);

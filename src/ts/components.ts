@@ -69,6 +69,13 @@ export module Components {
                 return note;
             }
 
+            changeDefaults(options: Options){
+                this.noteDisplayed.forEach(x => {
+                    if(!x.htmlElement.classList.contains("important-note-selected"))
+                    x.updateOptions(options);
+                })
+            }
+
             selectChord(chord: Chord, setNote : boolean = false): this {
                 try{
                     this.clearSelection();
@@ -321,6 +328,11 @@ export module Components {
                     addListener("click", function (event) { event.stopPropagation() });
                 this.settings.htmlElement.classList.add("hidden");
                 this.note = note;
+            }
+
+            updateOptions(options: Options){
+                this.note.options = options;
+                this.settings.options = options;
             }
 
             setup(audio: Audio): this {

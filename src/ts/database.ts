@@ -35,7 +35,7 @@ export class Database {
             let x = (<Options>this.globalOptions).serialize();
             this.storage.setItem("ChordPin_Chord", JSON.stringify(this.chords));
             this.storage.setItem("ChordPin_Options", x);
-
+            this.notify();
         return this;
     }
 
@@ -43,14 +43,12 @@ export class Database {
         if (this.chords.find(x => x.name == chord.name || x.notes == chord.notes) == null)
             this.chords.push(chord);
         this.saveToLocalStorage();
-        this.notify();
         return this;
     }
 
     deleteChord(name: string): this {
         this.chords = this.chords.filter(y => y.name != name);
         this.saveToLocalStorage();
-        this.notify();
         return this;
     }
 
@@ -84,6 +82,5 @@ export class Database {
         this.chords = new Array();
         this.globalOptions = new Options();   
         this.saveToLocalStorage();
-        this.notify();
     }
 }
