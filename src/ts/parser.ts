@@ -1,6 +1,7 @@
 import { Options, Note, Chord } from "./definitions";
 import { Database } from './database';
-import { Components } from './components';
+import { Fretboard } from "./components/Elements";
+import { INotify } from './interfaces';
 
 // Delimiters
 enum D_START {
@@ -12,11 +13,28 @@ enum D_END {
     S_OPTIONS = ")"
 }
 
-export class Parser {
+export class Parser implements INotify{
+
+    toNotify : Function[];
+
+    notify(y : Object = null){
+        this.toNotify.forEach(x => x(y))
+        return this;
+    }
+
+    subscribe(x : Function){
+        this.toNotify.push(x);
+        return this;
+    }
+
+    unsubscribe(f: Function){
+        this.toNotify = this.toNotify.filter(y => y.name != f.name)
+        return this;
+    }
 
     database: Database;
     prompt: HTMLInputElement;
-    fretboard: Components.Interfaces.Fretboard;
+    fretboard: Fretboard;
     chord: Chord;
     options: Options;
 
@@ -32,7 +50,7 @@ export class Parser {
     static readonly S_PARAMETER_NEXT = ",";
     // symbols stop
 
-    constructor(prompt: HTMLInputElement, database: Database, fretboard : Components.Interfaces.Fretboard) {
+    constructor(prompt: HTMLInputElement, database: Database, fretboard: Fretboard) {
         this.prompt = prompt;
         this.prompt.addEventListener
             ("keydown",
@@ -41,6 +59,7 @@ export class Parser {
                 }) as EventListener, true);
         this.database = database;
         this.fretboard = fretboard;
+        this.toNotify = new Array<Function>();
     }
 
     getOutput(e: KeyboardEvent, input: string): void {
@@ -51,13 +70,11 @@ export class Parser {
             let isFinished = this.HandleLoadProcedure(input);
             if (isFinished) return;
             else {
-                // { ( ) }( ) >> name, description
                 let globalSettings = false;
                 let search = input.indexOf(Parser.S_SAVE);
                 let NameDescriptionPart = "";
-                while(search < 2 && search != -1)
-                {
-                    if(search >= 2){
+                while (search < 2 && search != -1) {
+                    if (search >= 2) {
                         NameDescriptionPart = input.slice(search + Parser.S_SAVE.length - 1, input.length);
                         input = input.slice(0, search);
                     }
@@ -65,31 +82,31 @@ export class Parser {
 
                 input = input.toUpperCase();
 
-                let chords : Chord[] = new Array();
+                let chords: Chord[] = new Array();
                 search = input.indexOf(D_START.S_CHORD);
 
                 let settings = this.database.getOptions();
-                while(search != -1){
+                while (search != -1) {
                     let t = Parser.getGroup(input, D_START.S_CHORD, D_END.S_CHORD);
                     input = input.replace(t, "");
 
                     search = input.indexOf(D_START.S_CHORD);
                     let o = input.indexOf(D_START.S_OPTIONS);
-                    
-                    if(o < search){
+
+                    if (o < search) {
                         let r = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
                         input = input.replace(r, "");
-                        settings = Parser.parseOptions(r, settings);
+                        settings = Parser.getOptions(r, settings);
                     }
                     chords.unshift(Parser.parseChord(t, settings));
-                    console.log(chords);                 
+                    console.log(chords);
                 }
-                
+
                 search = input.indexOf(D_START.S_OPTIONS);
-                if(search > -1){
+                if (search > -1) {
                     let t = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
                     input = input.replace(t, "");
-                    settings = Parser.parseOptions(t);
+                    settings = Parser.getOptions(t);
                     globalSettings = true;
                 }
 
@@ -98,15 +115,20 @@ export class Parser {
                     chord.addChord(element);
                 });
 
-                if(NameDescriptionPart.length > 0){
+                if (NameDescriptionPart.length > 0) {
                     this.saveChordToDatabase(chord, NameDescriptionPart)
                 }
-                
-                if(chord.notes.length > 0)
-                    this.fretboard.selectChord(chord, true);
-                else if(globalSettings){
+
+                if (chord.notes.length > 0) {
+                    console.log(chord);
+                    this.notify(chord);
+                }
+
+                // todo SETTINGS
+
+                else if (globalSettings) {
+                    this.notify(chord);
                     this.database.setOptions(settings);
-                    this.fretboard.changeDefaults(settings);
                 }
             }
         }
@@ -135,7 +157,7 @@ export class Parser {
     static parseNote(input: string, def: Options): Note {
 
         let o = Parser.getGroup(input, D_START.S_OPTIONS, D_END.S_OPTIONS);
-        let options = this.parseOptions(o, def);
+        let options = this.getOptions(o, def);
         input = input.replace(o, "");
 
         let name = Parser.getNoteName(input);
@@ -199,29 +221,29 @@ export class Parser {
     private static calculateTransposition(input: string, transpose: number) {
 
         input = input.trim();
-        if(input.length > 0){
+        if (input.length > 0) {
             let arithmeticBuffer = 0;
             let buffer = "";
             for (let i = 0; i < input.length; i++) {
                 try {
                     if (input[i] == "+") {
                         arithmeticBuffer = 1;
-                        if(buffer != ""){
+                        if (buffer != "") {
                             transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
                             buffer = "";
-                        }                          
+                        }
                     }
                     else if (input[i] == "-") {
                         arithmeticBuffer = -1;
-                        if(buffer != ""){
+                        if (buffer != "") {
                             transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
                             buffer = "";
-                        }   
+                        }
                     }
-                    else{
+                    else {
                         buffer += input[i];
                         buffer.trim();
-                    }                   
+                    }
                     if (i == input.length - 1) {
                         transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
                     }
@@ -234,7 +256,7 @@ export class Parser {
         return transpose;
     }
 
-    static parseOptions(input: string, def: Options = new Options()): Options {
+    static getOptions(input: string, def: Options = new Options()): Options {
         input = input.toLowerCase();
         let r = def;
         let t = this.getOptionNumberValue(this.S_DURATION, input);
@@ -247,7 +269,7 @@ export class Parser {
         return r;
     }
 
-    private static getOptionNumberValue(symbol : string, input: string): string {
+    private static getOptionNumberValue(symbol: string, input: string): string {
         let t = input.indexOf(symbol);
         if (t >= 0) {
             let i = input.slice(t, input.length);

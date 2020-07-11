@@ -1,20 +1,16 @@
 import { Chord, Options } from "./definitions";
+import { INotify } from './interfaces';
 
-export class Database {
+export class Database implements INotify{
 
     private chords: Chord[];
+    private toNotify: Function[];
     globalOptions: Options;
     storage = localStorage;
 
-    private toNotifyChordChange: Function[];
-
-    getNotified(f: Function): void {
-        this.toNotifyChordChange.push(f);
-    }
-
     constructor() {
         this.loadFromLocalStorage();
-        this.toNotifyChordChange = new Array();
+        this.toNotify = new Array();
     }
 
     loadFromLocalStorage() {
@@ -35,7 +31,6 @@ export class Database {
             let x = (<Options>this.globalOptions).serialize();
             this.storage.setItem("ChordPin_Chord", JSON.stringify(this.chords));
             this.storage.setItem("ChordPin_Options", x);
-            this.notify();
         return this;
     }
 
@@ -43,21 +38,34 @@ export class Database {
         if (this.chords.find(x => x.name == chord.name || x.notes == chord.notes) == null)
             this.chords.push(chord);
         this.saveToLocalStorage();
+        this.notify();
         return this;
     }
 
     deleteChord(name: string): this {
         this.chords = this.chords.filter(y => y.name != name);
         this.saveToLocalStorage();
+        this.notify();
         return this;
     }
 
-    private notify() {
-        this.toNotifyChordChange.forEach(
+    notify() {
+        this.toNotify.forEach(
             x => {
                 x();
             }
         );
+        return this;
+    }
+
+    subscribe(f: Function) : this{
+        this.toNotify.push(f);
+        return this;
+    }
+
+    unsubscribe(f: Function){
+        this.toNotify = this.toNotify.filter(y => y.name != f.name)
+        return this;
     }
 
     getChords(): Chord[] {

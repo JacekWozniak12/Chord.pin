@@ -1,8 +1,8 @@
 import '../scss/main.scss';
 import { Audio } from './audio';
-import { Components as C } from "./components"
 import { GUI as G } from './gui';
 import { Database } from './database';
+import { MenuSettings, Fretboard, MenuPlayer, Prompt } from './components/Elements';
 
 // init
 const audio = new Audio().setup();
@@ -10,10 +10,12 @@ const database = new Database();
 audio.setOptions(database.getOptions());
 
 const title = new G.Element("h1").setText("Chord.pin");
-const globalOptions = new C.Interfaces.MenuSettings(database);
-const fretboard = new C.Interfaces.Fretboard(database, audio);
-const menu = new C.Interfaces.MenuPlayer(database, audio, fretboard);
-const parser = new C.Interfaces.Prompt("prompt", audio, database, fretboard);
+const globalOptions = new MenuSettings(database);
+const fretboard = new Fretboard(database, audio);
+const menu = new MenuPlayer(database, audio, fretboard);
+const prompt = new Prompt("prompt", audio, database, fretboard);
+
+prompt.parser.subscribe(fretboard.selectChord.bind(fretboard))
 
 function clear(){
     database.clear();
