@@ -1,6 +1,7 @@
 import { GUI } from "../gui";
 import { Audio } from '../audio';
 import { Options, Chord, Note } from "../definitions";
+import { IObserve } from '../interfaces';
 
 export class ChordContainer extends GUI.Element<HTMLOptionElement>{
 
@@ -92,7 +93,7 @@ export class NoteDisplay extends GUI.Element<HTMLDivElement> {
     }
 }
 
-export class SettingsDisplay extends GUI.Element<HTMLElement>{
+export class SettingsDisplay extends GUI.Element<HTMLElement> implements IObserve{
 
     el_title: GUI.Element<HTMLDivElement>;
     el_volume: GUI.Element<HTMLInputElement>;
@@ -122,6 +123,12 @@ export class SettingsDisplay extends GUI.Element<HTMLElement>{
         this.el_duration.modifyAttribute("placeholder", `${this.options.duration}`);
 
         this.setOptions(this.options);
+    }
+
+    notifyHandler(object : Object){
+        if(object instanceof Options){
+            this.setOptions(object);
+        }
     }
 
     setOptions(options: Options): this {

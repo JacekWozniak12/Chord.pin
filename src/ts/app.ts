@@ -13,9 +13,10 @@ const title = new G.Element("h1").setText("Chord.pin");
 const globalOptions = new MenuSettings(database);
 const fretboard = new Fretboard(database, audio);
 const menu = new MenuPlayer(database, audio, fretboard);
-const prompt = new Prompt("prompt", audio, database, fretboard);
+const prompt = new Prompt("prompt", audio, database);
 
-prompt.parser.subscribe(fretboard.selectChord.bind(fretboard))
+prompt.parser.subscribe(fretboard.notifyHandler.bind(fretboard))
+prompt.parser.subscribe(globalOptions.settings.notifyHandler.bind(globalOptions.settings))
 
 function clear(){
     database.clear();

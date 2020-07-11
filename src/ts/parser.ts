@@ -34,7 +34,6 @@ export class Parser implements INotify{
 
     database: Database;
     prompt: HTMLInputElement;
-    fretboard: Fretboard;
     chord: Chord;
     options: Options;
 
@@ -50,7 +49,7 @@ export class Parser implements INotify{
     static readonly S_PARAMETER_NEXT = ",";
     // symbols stop
 
-    constructor(prompt: HTMLInputElement, database: Database, fretboard: Fretboard) {
+    constructor(prompt: HTMLInputElement, database: Database) {
         this.prompt = prompt;
         this.prompt.addEventListener
             ("keydown",
@@ -58,7 +57,6 @@ export class Parser implements INotify{
                     this.getOutput(event, this.prompt.value)
                 }) as EventListener, true);
         this.database = database;
-        this.fretboard = fretboard;
         this.toNotify = new Array<Function>();
     }
 
@@ -120,15 +118,14 @@ export class Parser implements INotify{
                 }
 
                 if (chord.notes.length > 0) {
-                    console.log(chord);
                     this.notify(chord);
                 }
 
                 // todo SETTINGS
 
                 else if (globalSettings) {
-                    this.notify(chord);
                     this.database.setOptions(settings);
+                    this.notify(settings);
                 }
             }
         }
@@ -136,7 +133,7 @@ export class Parser implements INotify{
 
     static parseChord(input: string, def: Options): Chord {
         let i = 0;
-        let c = input;
+        let c = Parser.clearGroups(input, D_START.S_CHORD, D_END.S_CHORD);
         let f = c.length;
         let r = new Chord([]);
 
@@ -152,6 +149,11 @@ export class Parser implements INotify{
             c = c.slice(i + 1, f)
         }
         return r;
+    }
+
+    static clearGroups(input: string, s: string, e: string){
+        input = input.replace(s, "").replace(e, "");
+        return input;
     }
 
     static parseNote(input: string, def: Options): Note {
@@ -205,9 +207,17 @@ export class Parser implements INotify{
         let x = "";
         let s = input.indexOf(delimiter_start);
         let e = input.indexOf(delimiter_end);
-        if (s >= 0 && e > s) {
-            x = input.slice(s, e + 1);
+        if(s == -1){
+            s = 0;
+            if(e == -1){
+                return "";
+            }
+            else e = input.length;
         }
+        else if(e == -1){
+            e = input.length;
+        }
+        x = input.slice(s, e+1);
         return x;
     }
 

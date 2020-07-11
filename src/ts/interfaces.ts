@@ -4,6 +4,10 @@ export interface INotify{
     unsubscribe(x : Function) : this;
 }
 
+export interface IObserve{
+    notifyHandler(y: object);
+}
+
 export interface IErrorHandler{
     HandleError() : this;
 }

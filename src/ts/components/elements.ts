@@ -5,8 +5,9 @@ import { Options, Chord, Note } from "../definitions";
 import { Frequency } from "Tone";
 import { Database } from '../database';
 import { NoteDisplay, SettingsDisplay, ChordContainer } from './DataRepresentation';
+import { IObserve } from '../interfaces';
 
-export class Fretboard extends GUI.Element<HTMLDivElement>{
+export class Fretboard extends GUI.Element<HTMLDivElement> implements IObserve{
     stringAmount = 6;
     frets = 25;
     startingFrequencyNote = ["E2", "A2", "D3", "G3", "B3", "E4"];
@@ -70,6 +71,13 @@ export class Fretboard extends GUI.Element<HTMLDivElement>{
             if (!x.htmlElement.classList.contains("important-note-selected"))
                 x.updateOptions(options);
         })
+    }
+
+    notifyHandler(object: Options | Chord){
+        if(object instanceof Options)
+            this.changeDefaults(object);
+        if(object instanceof Chord)
+            this.selectChord(object);
     }
 
     selectChord(chord: Chord, setNote: boolean = false): this {
@@ -280,9 +288,9 @@ export class Prompt extends GUI.Element<HTMLInputElement>{
     audio: Audio;
     database: Database;
 
-    constructor(promptID: string, audio: Audio, database: Database, fretboard: Fretboard) {
+    constructor(promptID: string, audio: Audio, database: Database) {
         super("input", "input", promptID)
-        this.parser = new Parser(this.htmlElement, database, fretboard);
+        this.parser = new Parser(this.htmlElement, database);
         this.audio = audio;
         this.htmlElement.setAttribute("placeholder", "...write command here");
     }

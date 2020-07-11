@@ -65,8 +65,8 @@ export class Audio {
     }
 
     play(chord: Chord = this.chord): void {
-        Transport.stop();
-        Transport.cancel();
+        
+        this.stop();
         let temp = this.instrument;
         this.part = new Part(function (time, event) {
             temp.triggerAttackRelease(
@@ -94,6 +94,7 @@ export class Audio {
         Destination.mute = true;
         Transport.stop();
         Transport.cancel();
+        this.instrument.unsync();
     }
 }
 
