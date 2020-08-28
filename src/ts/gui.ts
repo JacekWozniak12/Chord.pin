@@ -21,7 +21,8 @@ export module GUI {
                 addListener(trigger, f).
                 setImage(type, img);
             
-            this.children = [];    
+            this.children = [];
+            if(parent == "" || parent == null) parent = "body";    
             document.querySelector(parent).appendChild(this.htmlElement);
         }
 
@@ -40,7 +41,7 @@ export module GUI {
         }
 
         setImage(type: string, img: string): this {
-            if (img != "") {
+            if (img != "" && img != null && img != undefined) {
                 this.img = img;
                 if (type == "img") {
                     this.htmlElement.setAttribute("src", this.img);
@@ -72,7 +73,7 @@ export module GUI {
             return this;
         }
 
-        modifyAttribute(attribute: string, value: string): this {
+        modifyAttribute(attribute: string, value: string){
             this.htmlElement.setAttribute(attribute, value);
             return this;
         }
@@ -82,6 +83,10 @@ export module GUI {
                 this.htmlElement.addEventListener(trigger, f);
             }
             return this;
+        }
+
+        delete(){
+            this.htmlElement.remove();
         }
     }
 
@@ -106,10 +111,6 @@ export module GUI {
             this.htmlElement.value = value;
             return this;
         }
-    }
-
-    export class DataElement<T extends HTMLElement> extends Element<T>{
-        
     }
 
 }

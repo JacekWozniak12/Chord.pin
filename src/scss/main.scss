@@ -1,141 +1,176 @@
-$c_black: #303030;
-$c_white: #eee;
-$c_grey: #666;
-$c_selected: #ffebcd;
-
+@import 'anim';
+@import 'vars';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-html{
+html {
   font-family: 'Montserrat', sans-serif;
   color: $c_black;
-  input{
+
+  input {
     font-family: "Montserrat";
   }
 }
 
-.hidden{
-  display: none;
-}
-
-
-#prompt{
+#prompt {
   border: 0px solid black;
   font-size: 32px;
 
-  &:focus{
+  &:focus {
     border: 0px solid black;
     outline: 0px solid black;
   }
 }
 
-.note{
-    width: 75px;
-    height: 75px;
-    background-color: $c_white;
-    color: $c_grey;
-    display: inline-block;
-    margin: 2.5px;
-    margin-top: 0px;
-
-    &:hover .note-option{
-      display: block;
-      position: absolute;
-    }
-}
-
-.settings{
-  max-width: 140px;
-  border: 1px solid $c_black;
-  padding: 5px;
-  
-  input[type="number"], input[type="range"]{
-    position: relative;
-    width: 80px;
-    bottom: 25%;
-    left: 7px;
-  }
-
-  .setting-container{
-    height: 32px;
-    margin: 3px;
-  }
-
-  img {
-    width:32px;
-    height:32px;
-  }
-}
-
-.icon{
-  width:32px;
-  height:32px;
-}
-
-.string{
-  width: 75px;
-  display: inline-block;
+.note {
+  font-size: 24px;
+  background-color: $c_white;
+  color: $c_grey;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
   margin: 2.5px;
   margin-top: 0px;
-}
-
-.note-selected{
-  &:hover{
-    background-color: BA5624;
-  }
-  background-color: #FCDE9C;
-
-}
-
-.note-collection{
-    display: grid;
-    width: 100px;
-    height: 100px;
-}
-
-tr, td{
-    width: 25px;
-    height: 25px;
-    border: 1px black solid;
-}
-
-#fretboard{
-    overflow-x: hidden;
-    display: inline-block;
-    max-width: 75*7px;
-    min-height: 250px;
-    max-height: 375px;
-    overflow-y: scroll;
-
-    // &::-webkit-scrollbar {
-    //   display: none;
-    // }
-
-    /* width */
-    &::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    /* Track */
-    &::-webkit-scrollbar-track {
-      background: #ddd; 
-    }
+  height: 75px;
     
-    /* Handle */
-    &::-webkit-scrollbar-thumb {
-      background: #888; 
-    }
+  &:hover {
+    cursor: pointer;
+    background-color: $c_white2;
 
-    /* Handle on hover */
-    &::-webkit-scrollbar-thumb:hover {
-      background: #FFA552; 
+    & .setting-container{
+      background-color: $c_white;
     }
+  }
 
+  & .settings:hover{
+    cursor: default;
+  }
 }
 
 #openString{
-    padding: 1px;
+  background-color: $c_white2;
+  display: flex;
+  align-content: flex-start;
+  padding-right: $s_track;
+
+  & .note{
+    flex: 1;
+
+    & .note-selected{
+      background-color: $c_selected;
+    }
+  }
+
 }
 
-.important-note-selected{
-  background-color: #FFA552;
+.settings {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 60%;
+  overflow-y: scroll;
+  background-color: $c_white;
+  scroll-snap-type: x proximity;
+
+  input[type="number"],
+  input[type="range"] {
+    position: relative;
+    font-size: 10px;
+    flex: auto;
+    left: 7px;
+    margin-right: 8px;
+  }
+
+  input[type="range"] {
+    width: calc(100% - 25px);
+  }
+
+  .setting-container {
+    display: flex;
+    height: $s_settings;
+    margin: 2px;
+  }
+
+  img {
+    width: $s_settings;
+    height: $s_settings;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    display: none;
+  }
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+}
+
+.string {
+  display: inline-flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.note-selected {
+  background-color: $c_selected;
+}
+
+tr,
+td {
+  width: 25px;
+  height: 25px;
+  border: 1px black solid;
+}
+
+#board{
+  min-width: 300px;
+}
+
+#fretboard {
+  align-content: flex-start;
+  align-items: flex-start;
+  overflow-x: hidden;
+  display: flex;
+  max-height: 375px;
+  overflow-y: scroll;
+  scroll-snap-type: y proximity;
+
+  &::-webkit-scrollbar {
+    width: $s_track;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #ddd;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #FFA552;
+  }
+
+}
+
+.important-note-selected {
+  background-color: $c_selected-important;
+}
+
+.hidden {
+  display: none !important;
 }
