@@ -1,4 +1,5 @@
 import { Frequency } from "Tone";
+import { Library } from './lib';
 
 export {
     Note, Chord, Options
@@ -63,10 +64,10 @@ class Chord {
         return s.slice(0, s.length - 2)
     }
 
-    addChord(chord: Chord): this{
+    addChord(chord: Chord): this {
         chord.notes.forEach(x =>
             this.notes.push(x)
-            );
+        );
         return this;
     }
 }
@@ -74,9 +75,9 @@ class Chord {
 class Options {
 
     constructor(
-        volume:     string | number = 0.5,
-        duration:   string | number = 1,
-        delay:      string | number = 0
+        volume: string | number = 0.5,
+        duration: string | number = 1,
+        delay: string | number = 0
     ) {
         try {
             this.volume = Number.parseFloat(volume as string);
@@ -89,47 +90,41 @@ class Options {
             throw "Argument Exception - Writing default options"
         }
     }
-    
-    get volume() : number | string{
+
+    get volume(): number | string {
         return this._volume;
     }
 
-    get delay() : number | string{
+    get delay(): number | string {
         return this._delay;
     }
 
-    get duration() : number | string{
+    get duration(): number | string {
         return this._duration;
     }
 
-    set volume(value: number | string){
-        this._volume = Options.clamp(Number.parseFloat(value as string), 0, 1) ?? 0.5;
+    set volume(value: number | string) {
+        this._volume = Library.clamp(Number.parseFloat(value as string), 0, 1) ?? 0.5;
     }
 
-    set delay(value: number | string){
-        this._delay = Options.clamp(Number.parseFloat(value as string), 0, 10) ?? 0;
+    set delay(value: number | string) {
+        this._delay = Library.clamp(Number.parseFloat(value as string), 0, 10) ?? 0;
     }
 
-    set duration(value: number | string ){
-        this._duration = Options.clamp(Number.parseFloat(value as string), 0, 10) ?? 1;
+    set duration(value: number | string) {
+        this._duration = Library.clamp(Number.parseFloat(value as string), 0, 10) ?? 1;
     }
 
-    serialize(){
-        return JSON.stringify({volume: this.volume, duration: this.duration, delay: this.delay})
+    serialize() {
+        return JSON.stringify({ volume: this.volume, duration: this.duration, delay: this.delay })
     }
 
     private _volume: number = 0.5;
     private _duration: number = 1;
     private _delay: number = 0;
 
-    static clamp(value: number, min: number, max: number): number {
-        if (value > max) value = max;
-        if (value < min) value = min;
-        return value;
-    }
-
     setValues(options: Options): this {
-        this.delay =  options.delay ?? options._delay;
+        this.delay = options.delay ?? options._delay;
         this.duration = options.duration ?? options._duration;
         this.volume = options.volume ?? options._volume;
         return this;

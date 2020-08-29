@@ -3,6 +3,7 @@ import { Audio } from './audio';
 import { GUI as G } from './gui';
 import { Database } from './database';
 import { MenuSettings, Fretboard, MenuPlayer, Prompt } from './components/elements';
+import { Main_Chord, Main_Options } from './main';
 
 // init
 const audio = new Audio().setup();
@@ -19,7 +20,7 @@ prompt.parser.subscribe(fretboard.notifyHandler.bind(fretboard))
 prompt.parser.subscribe(globalOptions.settings.notifyHandler.bind(globalOptions.settings))
 globalOptions.subscribe(fretboard.notifyHandler.bind(fretboard))
 
-function clear(){
+function clear() {
     database.clear();
     menu.chordSelector.clearSelectables();
 }

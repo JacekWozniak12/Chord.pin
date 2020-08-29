@@ -3,31 +3,20 @@ import { Note, Chord, Options } from "./definitions";
 
 export class Audio {
 
-    private instrument: PolySynth
-    private chord: Chord;
-    private options: Options;
-    private part: Part;
+    instrument: PolySynth
+    chord: Chord;
+    options: Options;
+    part: Part;
 
     constructor() {
         this.setup();
         this.part = new Part();
     }
 
-    setOptions(options : Options){
-        return this.options = options;
-    }
-
-    updateChord(chord: Chord): Chord {
-        return this.chord = chord;
-    }
-
-    setChord(chord): Chord {
-        return this.chord = chord;
-    }
-
-    getChord(): Chord {
-        return this.chord;
-    }
+    setOptions(options: Options): Options { return this.options = options; }
+    updateChord(chord: Chord): Chord { return this.chord = chord; }
+    setChord(chord): Chord { return this.chord = chord; }
+    getChord(): Chord { return this.chord; }
 
     addNote(note: Note): Chord {
         this.chord.notes.unshift(note);
@@ -63,26 +52,23 @@ export class Audio {
         this.instrument = null;
     }
 
-    play(chord: Chord = this.chord): void {     
+    play(chord: Chord = this.chord): void {
         let vol = this.options.volume as number;
         this.stop();
         this.part = new Part((x, y) => {
             this.instrument.triggerAttackRelease(
-                y.note,
-                y.dur,
-                x,
-                y.volume);
-            
+                y.note, y.dur, x, y.volume);
+
         }, [])
-        chord.notes.forEach(e => {           
+        chord.notes.forEach(e => {
             e.options = new Options().setValues(e.options);
             this.part.add(e.options.delay as number,
                 {
                     note: e.name,
                     dur: e.options.duration as number,
-                    volume : (e.options.volume as number) * vol as number
+                    volume: (e.options.volume as number) * vol as number
                 });
-                
+
         });
         Destination.mute = false;
         this.part.start(0);
@@ -90,7 +76,7 @@ export class Audio {
         Transport.start();
     }
 
-    stop(){
+    stop() {
         this.part.stop();
         Destination.mute = true;
         Transport.stop();

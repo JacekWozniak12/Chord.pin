@@ -1,5 +1,4 @@
 export module GUI {
-
     export class Element<T extends HTMLElement>{
 
         htmlElement: T;
@@ -7,47 +6,36 @@ export module GUI {
         children: HTMLElement[];
 
         constructor(
-            type: string,
-            className: string = null,
-            id: string = null,
-            parent: string = "body",
-            img: string = null,
-            trigger: string = null,
+            type: string, className: string = null, id: string = null,
+            parent: string = "body", img: string = null, trigger: string = null,
             f: EventListener = null
         ) {
             this.htmlElement = document.createElement(type) as T;
             this.setClassName(className).
-                setId(id).
-                addListener(trigger, f).
+                setId(id).addListener(trigger, f).
                 setImage(type, img);
-            
+
             this.children = [];
-            if(parent == "" || parent == null) parent = "body";    
+            if (parent == "" || parent == null) parent = "body";
             document.querySelector(parent).appendChild(this.htmlElement);
         }
 
-        private setId(id: string): this {
-            if (id != "" && id != null) {
-
-                this.htmlElement.id = id;
-            }
+        setId(id: string): this {
+            if (id != "" && id != null) { this.htmlElement.id = id; }
             return this;
         }
 
         setClassName(className: string): this {
-            if (className != "" && className != null)
-                this.htmlElement.className = className;
+            if (className != "" && className != null) this.htmlElement.className = className;
             return this;
         }
 
         setImage(type: string, img: string): this {
             if (img != "" && img != null && img != undefined) {
                 this.img = img;
-                if (type == "img") {
-                    this.htmlElement.setAttribute("src", this.img);
-                }
-                else
-                    this.htmlElement.style.background = `url(${this.img})`;
+                if (type == "img") this.htmlElement.setAttribute("src", this.img);
+
+                else this.htmlElement.style.background = `url(${this.img})`;
             }
             return this;
         }
@@ -73,7 +61,7 @@ export module GUI {
             return this;
         }
 
-        modifyAttribute(attribute: string, value: string){
+        modifyAttribute(attribute: string, value: string) {
             this.htmlElement.setAttribute(attribute, value);
             return this;
         }
@@ -85,34 +73,24 @@ export module GUI {
             return this;
         }
 
-        delete(){
-            this.htmlElement.remove();
-        }
+        delete() { this.htmlElement.remove(); }
     }
 
     export class InputElement<T extends HTMLInputElement> extends Element<T>{
-        
+
         constructor(
-            className: string = null,
-            id: string = null,
-            parent: string = "body",
-            img: string = null,
-            trigger: string = null,
-            f: EventListener = null
-        ) {
-            super("input", className, id, parent, img, trigger, f);
-        }
+            className: string = null, id: string = null,
+            parent: string = "body", img: string = null,
+            trigger: string = null, f: EventListener = null
+        ) { super("input", className, id, parent, img, trigger, f); }
 
-        getValue() : string{
-            return this.htmlElement.value;
-        }
+        getValue(): string { return this.htmlElement.value; }
 
-        setValue(value : string) : this{
+        setValue(value: string): this {
             this.htmlElement.value = value;
             return this;
         }
     }
-
 }
 
 

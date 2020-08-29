@@ -60,7 +60,6 @@ export class Parser implements INotify {
                     input = input.slice(0, search + 1).replace(">", "");
                 }
 
-
                 input = input.toUpperCase();
 
                 let chords: Chord[] = new Array();
@@ -122,12 +121,12 @@ export class Parser implements INotify {
             i = c.indexOf(this.S_CHORD_CONCAT);
             if (i < 2) i = f;
             let t = c.slice(0, i).replace(this.S_CHORD_CONCAT, "");
-            if(t.trim() != "")
-            r.notes.push(
-                this.parseNote(
-                    t, def
-                )
-            );
+            if (t.trim() != "")
+                r.notes.push(
+                    this.parseNote(
+                        t, def
+                    )
+                );
             c = c.slice(i + 1, f)
         }
         return r;

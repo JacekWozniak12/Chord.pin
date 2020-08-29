@@ -19,9 +19,7 @@ export class Database implements INotify {
             let x = JSON.parse(localStorage.getItem("ChordPin_Options")) as Options;
             this.globalOptions = new Options().setValues(x);
         }
-        catch{
-            console.log("LOADING FROM LOCAL STORAGE FAILED");
-        }
+        catch { console.log("LOADING FROM LOCAL STORAGE FAILED"); }
         if (this.chords == undefined || this.globalOptions == null) this.chords = new Array();
         if (this.globalOptions == undefined || this.globalOptions == null) this.globalOptions = new Options();
         return this;
@@ -64,22 +62,14 @@ export class Database implements INotify {
         return this;
     }
 
-    getChords(): Chord[] {
-        return this.chords;
-    }
-
-    getChord(name: string): Chord {
-        return this.chords.find(x => x.name === name);
-    }
+    getChords(): Chord[] { return this.chords; }
+    getChord(name: string): Chord { return this.chords.find(x => x.name === name); }
+    getOptions(): Options { return this.globalOptions; }
 
     setOptions(options: Options): this {
         this.globalOptions = options;
         this.saveToLocalStorage();
         return this;
-    }
-
-    getOptions(): Options {
-        return this.globalOptions;
     }
 
     clear() {

@@ -7,7 +7,7 @@ import { Database } from '../database';
 import { NoteDisplay, SettingsDisplay, ChordContainer } from './dataRepresentation';
 import { IObserve, INotify } from '../interfaces';
 
-export class Fretboard extends GUI.Element<HTMLDivElement> implements IObserve{
+export class Fretboard extends GUI.Element<HTMLDivElement> implements IObserve {
     stringAmount = 6;
     frets = 25;
     startingFrequencyNote = ["E2", "A2", "D3", "G3", "B3", "E4"];
@@ -73,16 +73,14 @@ export class Fretboard extends GUI.Element<HTMLDivElement> implements IObserve{
         })
     }
 
-    notifyHandler(object: Options | Chord){
-        if(object instanceof Options)
-            this.changeDefaults(object);
-        if(object instanceof Chord)
-            this.selectChord(object, true);
+    notifyHandler(object: Options | Chord) {
+        if (object instanceof Options) this.changeDefaults(object);
+        if (object instanceof Chord) this.selectChord(object, true);
     }
 
     selectChord(chord: Chord, setNote: boolean = true): this {
         try {
-            if(chord != null){
+            if (chord != null) {
                 this.clearSelection();
                 chord.notes.forEach(x => {
                     if (x.fretboardPosition != -1)
@@ -159,9 +157,7 @@ export class ChordSelector extends GUI.Element<HTMLSelectElement>{
         this?.select();
     }
 
-    getCurrentSelection(): string {
-        return this.htmlElement.selectedOptions[0]?.value;
-    }
+    getCurrentSelection(): string { return this.htmlElement.selectedOptions[0]?.value; }
 
     /*todo - bugging out selection*/
     getListFromDatabase(): this {
@@ -253,12 +249,12 @@ export class MenuPlayer extends GUI.Element<HTMLDivElement>{
     }
 }
 
-export class MenuSettings extends GUI.Element<HTMLDivElement> implements INotify{
+export class MenuSettings extends GUI.Element<HTMLDivElement> implements INotify {
 
     settings: SettingsDisplay;
     database: Database;
     audio: Audio;
-    
+
     constructor(database: Database, audio: Audio) {
         super("div");
         this.database = database;
@@ -266,24 +262,17 @@ export class MenuSettings extends GUI.Element<HTMLDivElement> implements INotify
         this.settings = new SettingsDisplay(database.getOptions());
         this.parentElements([this.settings.htmlElement]);
         this.toNotify = new Array<Function>();
-
-        this.settings.el_duration.addListener(
-            "change", this.registerChange.bind(this)
-        );
-        this.settings.el_delay.addListener(
-            "change", this.registerChange.bind(this)
-        );
-        this.settings.el_volume.addListener(
-            "change", this.registerChange.bind(this)
-        );
+        this.settings.el_duration.addListener("change", this.registerChange.bind(this));
+        this.settings.el_delay.addListener("change", this.registerChange.bind(this));
+        this.settings.el_volume.addListener("change", this.registerChange.bind(this));
     }
-    
-    toNotify : Function[];
+
+    toNotify: Function[];
 
     notify(y: Object): this {
         this.toNotify.forEach(x => { x(y); });
         return this;
-    } 
+    }
     subscribe(x: Function): this {
         this.toNotify.push(x);
         return this;
@@ -292,10 +281,8 @@ export class MenuSettings extends GUI.Element<HTMLDivElement> implements INotify
         this.toNotify = this.toNotify.filter(y => y.name != x.name)
         return this;
     }
-    
-    saveToDatabase(){
-        this.database.setOptions(this.settings.options);
-    }
+
+    saveToDatabase() { this.database.setOptions(this.settings.options); }
 
     registerChange() {
         this.notify(this.settings.options);
