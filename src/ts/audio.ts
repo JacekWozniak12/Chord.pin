@@ -61,7 +61,7 @@ export class Audio {
 
         }, [])
         chord.notes.forEach(e => {
-            e.options = new Options().setValues(e.options);
+            e.options = new Options().setValuesOf(e.options);
             this.part.add(e.options.delay as number,
                 {
                     note: e.name,

@@ -1,7 +1,8 @@
 export interface INotify {
     notify(y: Object): this;
-    subscribe(x: Function): this;
-    unsubscribe(x: Function): this;
+    subscribe(x: IObserve): this;
+    unsubscribe(x: IObserve): this;
+    toNotify : IObserve[];
 }
 
 export interface IObserve {

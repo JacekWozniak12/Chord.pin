@@ -1,7 +1,6 @@
 import { Options, Note, Chord } from "./definitions";
 import { Database } from './database';
-import { Fretboard } from "./components/elements";
-import { INotify } from './interfaces';
+import { INotify, IObserve } from './interfaces';
 
 // Delimiters
 enum D_START {
@@ -249,15 +248,15 @@ export class Parser implements INotify {
 
     static getOptions(input: string, def: Options = new Options()): Options {
         input = input.toLowerCase();
-        let r = def;
+        let result = def;
         let t = this.getOptionNumberValue(this.S_DURATION, input);
         let d = this.getOptionNumberValue(this.S_DELAY, input);
         let v = this.getOptionNumberValue(this.S_VOLUME, input);
 
-        if (t != "" && t != null) r.duration = (this.getDuration(t));
-        if (d != "" && d != null) r.delay = (this.getDelay(d));
-        if (v != "" && v != null) r.volume = (this.getVolume(v));
-        return r;
+        if (t != "" && t != null) result.duration = (this.getDuration(t));
+        if (d != "" && d != null) result.delay = (this.getDelay(d));
+        if (v != "" && v != null) result.volume = (this.getVolume(v));
+        return result;
     }
 
     private static getOptionNumberValue(symbol: string, input: string): string {
@@ -293,20 +292,20 @@ export class Parser implements INotify {
         return new Options();
     }
 
-    toNotify: Function[];
+    toNotify: IObserve[];
 
     notify(y: Object = null) {
         this.toNotify.forEach(x => x(y))
         return this;
     }
 
-    subscribe(x: Function) {
+    subscribe(x: IObserve) {
         this.toNotify.push(x);
         return this;
     }
 
-    unsubscribe(f: Function) {
-        this.toNotify = this.toNotify.filter(y => y.name != f.name)
+    unsubscribe(x: IObserve) {
+        this.toNotify = this.toNotify.filter(y => y != x)
         return this;
     }
 

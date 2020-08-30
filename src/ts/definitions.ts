@@ -1,19 +1,11 @@
 import { Frequency } from "Tone";
 import { Library } from './lib';
 
-export {
-    Note, Chord, Options
-}
+export { Note, Chord, Options }
 
 class Note {
 
-    constructor(
-        name: string,
-        options: Options = new Options(),
-        position: number = -1,
-        transposition: number = null
-
-    ) {
+    constructor(name: string, options: Options = new Options(), position: number = -1, transposition: number = null) {
         if (this.isValidName(name)) {
             this.name = Frequency(name).transpose(transposition).toNote();
             this.options = options;
@@ -27,9 +19,7 @@ class Note {
     fretboardPosition: number = -1;
 
     isValidName(name: string): boolean {
-        let temp = name.
-            toUpperCase().
-            trim().
+        let temp = name.toUpperCase().trim().
             replace(
                 /([^ABCDEFG][^#b][^0-9]|[^ABCDEFG][^0-9])/g, ""
             );
@@ -40,11 +30,7 @@ class Note {
 
 class Chord {
 
-    constructor(
-        notes: Note[],
-        name: string = "",
-        description: string = "",
-        options: Options = null) {
+    constructor(notes: Note[], name: string = "", description: string = "") {
         this.name = name;
         this.notes = notes;
         this.description = description;
@@ -56,18 +42,19 @@ class Chord {
 
     returnContent(): string {
         let s = "";
-
-        this.notes.forEach(element => {
-            s = s.concat(element.name, " ^ ")
-        });
-
+        this.notes.forEach(element => { s = s.concat(element.name, " ^ ") });
         return s.slice(0, s.length - 2)
     }
 
     addChord(chord: Chord): this {
-        chord.notes.forEach(x =>
-            this.notes.push(x)
-        );
+        chord.notes.forEach(x => this.notes.push(x));
+        return this;
+    }
+
+    setValuesOf(chord: Chord): this {
+        this.name = chord.name;
+        this.notes = chord.notes;
+        this.description = chord.description;
         return this;
     }
 }
@@ -75,9 +62,7 @@ class Chord {
 class Options {
 
     constructor(
-        volume: string | number = 0.5,
-        duration: string | number = 1,
-        delay: string | number = 0
+        volume: string | number = 0.5, duration: string | number = 1, delay: string | number = 0
     ) {
         try {
             this.volume = Number.parseFloat(volume as string);
@@ -87,6 +72,7 @@ class Options {
         catch (e) {
             this.duration = 1;
             this.delay = 0;
+            this.volume = 0.5;
             throw "Argument Exception - Writing default options"
         }
     }
@@ -123,7 +109,7 @@ class Options {
     private _duration: number = 1;
     private _delay: number = 0;
 
-    setValues(options: Options): this {
+    setValuesOf(options: Options): this {
         this.delay = options.delay ?? options._delay;
         this.duration = options.duration ?? options._duration;
         this.volume = options.volume ?? options._volume;

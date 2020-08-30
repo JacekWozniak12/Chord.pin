@@ -132,7 +132,7 @@ export class SettingsDisplay extends GUI.Element<HTMLElement> implements IObserv
     }
 
     setOptions(options: Options): this {
-        this.options.setValues(options);
+        this.options.setValuesOf(options);
         this.el_volume.htmlElement.value = <any>this.options.volume;
         this.el_delay.htmlElement.value = <any>this.options.delay;
         this.el_duration.htmlElement.value = <any>this.options.duration;

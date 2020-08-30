@@ -1,34 +1,55 @@
 import { Chord, Options } from "./definitions";
-import { INotify } from './interfaces';
+import { INotify, IObserve } from './interfaces';
 
-export class Database implements INotify {
+export class Database {
 
-    private chords: Chord[];
-    private toNotify: Function[];
-    globalOptions: Options;
     storage = localStorage;
+
+    
 
     constructor() {
         this.loadFromLocalStorage();
-        this.toNotify = new Array();
     }
 
     loadFromLocalStorage() {
         try {
             this.chords = JSON.parse(localStorage.getItem("ChordPin_Chord")) as Chord[];
             let x = JSON.parse(localStorage.getItem("ChordPin_Options")) as Options;
-            this.globalOptions = new Options().setValues(x);
+            this.globalOptions = new Options().setValuesOf(x);
         }
-        catch { console.log("LOADING FROM LOCAL STORAGE FAILED"); }
+        catch {
+            console.log("LOADING FROM LOCAL STORAGE FAILED");
+            alert("FAIL");
+        }
         if (this.chords == undefined || this.globalOptions == null) this.chords = new Array();
         if (this.globalOptions == undefined || this.globalOptions == null) this.globalOptions = new Options();
         return this;
     }
 
     saveToLocalStorage() {
-        let x = this.globalOptions.serialize();
         this.storage.setItem("ChordPin_Chord", JSON.stringify(this.chords));
-        this.storage.setItem("ChordPin_Options", x);
+        this.storage.setItem("ChordPin_Options", this.globalOptions.serialize());
+        return this;
+    }
+
+    clear() {
+        this.chords = new Array();
+        this.globalOptions = new Options();
+        this.saveToLocalStorage();
+    }
+}
+
+export class Database_Chords implements INotify {
+
+    toNotify: IObserve[];
+
+    subscribe(x: IObserve): this {
+        this.toNotify.push(x);
+        return this;
+    }
+
+    unsubscribe(x: IObserve) {
+        this.toNotify = this.toNotify.filter(y => y != x)
         return this;
     }
 
@@ -47,34 +68,20 @@ export class Database implements INotify {
         return this;
     }
 
-    notify() {
-        this.toNotify.forEach(x => { x(); });
-        return this;
-    }
-
-    subscribe(f: Function): this {
-        this.toNotify.push(f);
-        return this;
-    }
-
-    unsubscribe(f: Function) {
-        this.toNotify = this.toNotify.filter(y => y.name != f.name)
-        return this;
-    }
-
     getChords(): Chord[] { return this.chords; }
     getChord(name: string): Chord { return this.chords.find(x => x.name === name); }
+
+}
+
+export class Database_Options implements INotify {
+
+    toNotify: IObserve[];
+
     getOptions(): Options { return this.globalOptions; }
 
     setOptions(options: Options): this {
         this.globalOptions = options;
         this.saveToLocalStorage();
         return this;
-    }
-
-    clear() {
-        this.chords = new Array();
-        this.globalOptions = new Options();
-        this.saveToLocalStorage();
     }
 }

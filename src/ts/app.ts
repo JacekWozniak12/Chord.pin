@@ -3,7 +3,7 @@ import { Audio } from './audio';
 import { GUI as G } from './gui';
 import { Database } from './database';
 import { MenuSettings, Fretboard, MenuPlayer, Prompt } from './components/elements';
-import { Main_Chord, Main_Options } from './main';
+import { Main_Chord, Main_Options } from './communication';
 
 // init
 const audio = new Audio().setup();

@@ -42,7 +42,7 @@ export class Fretboard extends GUI.Element<HTMLDivElement> implements IObserve {
                 replace("#", "S").
                 concat(`-string-${i}`),
             part, null, null,
-            new Note(currentNote, new Options().setValues(options), position));
+            new Note(currentNote, new Options().setValuesOf(options), position));
 
         this.setDefaultOptions(noteDisplay, options);
 
