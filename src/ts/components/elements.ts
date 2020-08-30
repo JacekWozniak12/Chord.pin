@@ -150,7 +150,7 @@ export class ChordSelector extends GUI.Element<HTMLSelectElement>{
         super("select", "");
         this.database = database;
         this.fretboard = fretboard;
-        this.database.subscribe(this.getListFromDatabase.bind(this));
+        this.database.subscribeToChordChanges(this.getListFromDatabase.bind(this));
         this.getListFromDatabase();
         this.addListener("change", this.select.bind(this));
         this.addListener("change", audio.stop.bind(audio));
@@ -249,7 +249,7 @@ export class MenuPlayer extends GUI.Element<HTMLDivElement>{
     }
 }
 
-export class MenuSettings extends GUI.Element<HTMLDivElement> implements INotify {
+export class MenuSettings extends GUI.Element<HTMLDivElement> {
 
     settings: SettingsDisplay;
     database: Database;
@@ -261,31 +261,14 @@ export class MenuSettings extends GUI.Element<HTMLDivElement> implements INotify
         this.audio = audio;
         this.settings = new SettingsDisplay(database.getOptions());
         this.parentElements([this.settings.htmlElement]);
-        this.toNotify = new Array<Function>();
         this.settings.el_duration.addListener("change", this.registerChange.bind(this));
         this.settings.el_delay.addListener("change", this.registerChange.bind(this));
         this.settings.el_volume.addListener("change", this.registerChange.bind(this));
     }
 
-    toNotify: Function[];
-
-    notify(y: Object): this {
-        this.toNotify.forEach(x => { x(y); });
-        return this;
-    }
-    subscribe(x: Function): this {
-        this.toNotify.push(x);
-        return this;
-    }
-    unsubscribe(x: Function): this {
-        this.toNotify = this.toNotify.filter(y => y.name != x.name)
-        return this;
-    }
-
     saveToDatabase() { this.database.setOptions(this.settings.options); }
 
     registerChange() {
-        this.notify(this.settings.options);
         this.audio.setOptions(this.settings.options);
         this.saveToDatabase();
     }
@@ -306,9 +289,5 @@ export class Prompt extends GUI.Element<HTMLInputElement>{
 
     notify(info: string) {
         this.htmlElement.value = info;
-    }
-
-    apply(): this {
-        return this;
     }
 }

@@ -1,7 +1,7 @@
 export class Library{
-
-    static checkStringForNull(value : string | null): boolean{
-        return value != "" && value != null;
+  
+    static isNullOrEmpty(value : number | string | null | undefined): boolean{
+        return value == "" && value == null && value == undefined;
     }
 
     static clamp(value: number, min: number, max: number): number {
@@ -10,3 +10,11 @@ export class Library{
         return value;
     }
 }
+
+Object.defineProperty(String.prototype, "isNullOrEmpty", {
+    value: function isNullOrEmpty() {
+        return this == "" && this == null && this == undefined;
+    },
+    writable: true,
+    configurable: true
+});

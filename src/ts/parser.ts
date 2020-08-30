@@ -39,7 +39,7 @@ export class Parser implements INotify {
                     this.getOutput(event, this.prompt.value)
                 }) as EventListener, true);
         this.database = database;
-        this.toNotify = new Array<Function>();
+        this.toNotify = new Array<IObserve>();
     }
 
     getOutput(e: KeyboardEvent, input: string): void {
@@ -99,12 +99,12 @@ export class Parser implements INotify {
                 }
 
                 if (chord.notes.length > 0) {
-                    this.notify(chord);
+                    this.notifySubscribersWith(chord);
                 }
 
                 else if (globalSettings) {
                     this.database.setOptions(settings);
-                    this.notify(settings);
+                    this.notifySubscribersWith(settings);
                 }
             }
         }
@@ -209,7 +209,6 @@ export class Parser implements INotify {
     }
 
     private static calculateTransposition(input: string, transpose: number) {
-
         input = input.trim();
         if (input.length > 0) {
             let arithmeticBuffer = 0;
@@ -294,8 +293,8 @@ export class Parser implements INotify {
 
     toNotify: IObserve[];
 
-    notify(y: Object = null) {
-        this.toNotify.forEach(x => x(y))
+    notifySubscribersWith(y: Object = null) {
+        this.toNotify.forEach(x => x.notifyHandler(y));
         return this;
     }
 

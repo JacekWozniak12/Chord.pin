@@ -1,31 +1,30 @@
 import '../scss/main.scss';
 import { Audio } from './audio';
-import { GUI as G } from './gui';
-import { Database } from './database';
+import { GUI } from './gui';
 import { MenuSettings, Fretboard, MenuPlayer, Prompt } from './components/elements';
-import { Main_Chord, Main_Options } from './communication';
+import { Main } from './communication';
+import { Note } from './definitions';
 
 // init
 const audio = new Audio().setup();
-const database = new Database();
-audio.setOptions(database.getOptions());
+const main = new Main();
+audio.setOptions(main.database.getOptions());
 
-const title = new G.Element("h1").setText("Chord.pin");
-const globalOptions = new MenuSettings(database, audio);
-const fretboard = new Fretboard(database, audio);
-const menu = new MenuPlayer(database, audio, fretboard);
-const prompt = new Prompt("prompt", audio, database);
+const title = new GUI.Element("h1").setText("Chord.pin");
+const globalOptions = new MenuSettings(main.database, audio);
+const fretboard = new Fretboard(main.database, audio);
+const menu = new MenuPlayer(main.database, audio, fretboard);
+const prompt = new Prompt("prompt", audio, main.database);
 
 prompt.parser.subscribe(fretboard.notifyHandler.bind(fretboard))
 prompt.parser.subscribe(globalOptions.settings.notifyHandler.bind(globalOptions.settings))
-globalOptions.subscribe(fretboard.notifyHandler.bind(fretboard))
 
 function clear() {
-    database.clear();
+    main.database.clear();
     menu.chordSelector.clearSelectables();
 }
 
-const container = new G.Element("div", "", "chord-pin")
+const container = new GUI.Element("div", "", "chord-pin")
     .parentElements(
         [
             title.htmlElement,
@@ -38,5 +37,5 @@ const container = new G.Element("div", "", "chord-pin")
     )
 
 // destroy 
-window.addEventListener("beforeunload", database.saveToLocalStorage);
+window.addEventListener("beforeunload", main.database.saveToLocalStorage);
 window.addEventListener("beforeunload", audio.dispose);

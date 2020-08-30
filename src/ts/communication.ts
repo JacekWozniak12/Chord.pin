@@ -1,18 +1,21 @@
 import { Options, Chord } from "./definitions";
 import { INotify, IObserve } from './interfaces';
+import { Database } from './database';
+
+
 
 export class Main_Chord extends Chord implements INotify, IObserve {
 
     notifyHandler(y: object) {
         if (y instanceof Chord) {
             this.setValuesOf(y);
-            this.notify(this);
+            this.notifySubscribersWith(this);
         }
     }
 
-    toNotify: IObserve[];
+    toNotify: IObserve[] = new Array<IObserve>();
 
-    notify(y: Object): this {
+    notifySubscribersWith(y: Object): this {
         if (y instanceof Chord) {
             this.toNotify.forEach(x => x.notifyHandler(y));
         }
@@ -33,13 +36,13 @@ export class Main_Options extends Options implements INotify, IObserve {
     notifyHandler(y: object) {
         if (y instanceof Options) {
             this.setValuesOf(y);
-            this.notify(this);
+            this.notifySubscribersWith(this);
         }
     }
 
-    toNotify: IObserve[];
+    toNotify: IObserve[] = new Array<IObserve>();
 
-    notify(y: Object): this {
+    notifySubscribersWith(y: Object): this {
         if (y instanceof Options) {
             this.toNotify.forEach(x => x.notifyHandler(y));
         }
@@ -56,9 +59,15 @@ export class Main_Options extends Options implements INotify, IObserve {
 }
 
 export class Main {
-    Options: Main_Options;
-    Chord: Main_Chord;
+    options: Main_Options;
+    chord: Main_Chord;
+    database: Database;
 
+    constructor(){
+        this.database = new Database();
+        this.chord = this.database.getChord() as Main_Chord;
+        this.options = this.database.getOptions() as Main_Options;
+    }
 
 
     // database - both options / chord
