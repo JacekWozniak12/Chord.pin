@@ -3,7 +3,6 @@ import { Audio } from './audio';
 import { GUI } from './gui';
 import { MenuSettings, Fretboard, MenuPlayer, Prompt } from './components/elements';
 import { Main } from './communication';
-import { Note } from './definitions';
 
 // init
 const audio = new Audio().setup();

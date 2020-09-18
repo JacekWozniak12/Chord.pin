@@ -1,22 +1,21 @@
 import { Frequency } from "Tone";
 import { Library } from './lib';
+import { Fretboard } from './components/elements';
 
 export { Note, Chord, Options }
 
 class Note {
 
-    constructor(name: string, options: Options = new Options(), position: number = -1, transposition: number = null) {
+    constructor(name: string, options: Options = new Options(), transposition: number = null) {
         if (this.isValidName(name)) {
             this.name = Frequency(name).transpose(transposition).toNote();
             this.options = options;
-            this.fretboardPosition = position;
         }
         else throw "Invalid note name";
     }
 
     name: string;
     options: Options;
-    fretboardPosition: number = -1;
 
     isValidName(name: string): boolean {
         let temp = name.toUpperCase().trim().
@@ -25,6 +24,27 @@ class Note {
             );
         if (temp.length > 1 && temp.length < 4) return true;
         else return false;
+    }
+}
+
+class PositionedNote extends Note {
+    noteSet: NoteSet;
+    position: Number;
+
+    constructor(name: string, options: Options = new Options(), noteSet : NoteSet, transposition: number = null) {
+        super(name, options, transposition);
+        if(noteSet.findPosition(this)){
+            this.noteSet = noteSet; 
+        }
+        else throw "Note doesn't exist in this note set"      
+    }
+}
+
+class NoteSet {
+    noteArray: Note[];
+
+    findPosition(note: Note): Number {
+        return this.noteArray.indexOf(note);
     }
 }
 
@@ -77,6 +97,10 @@ class Options {
         }
     }
 
+    private _volume: number = 0.5;
+    private _duration: number = 1;
+    private _delay: number = 0;
+
     get volume(): number | string {
         return this._volume;
     }
@@ -104,10 +128,6 @@ class Options {
     serialize() {
         return JSON.stringify({ volume: this.volume, duration: this.duration, delay: this.delay })
     }
-
-    private _volume: number = 0.5;
-    private _duration: number = 1;
-    private _delay: number = 0;
 
     setValuesOf(options: Options): this {
         this.delay = options.delay ?? options._delay;

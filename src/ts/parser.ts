@@ -174,7 +174,6 @@ export class Parser implements INotify {
         chord.name = name;
         chord.description = description;
         this.database.addChord(chord);
-
     }
 
     loadChordFromDatabase(input: string, s: number): Chord {
@@ -285,10 +284,6 @@ export class Parser implements INotify {
 
     static getVolume(input: string): number {
         return Number.parseFloat(input);
-    }
-
-    static getGlobals(input: string = null): Options {
-        return new Options();
     }
 
     toNotify: IObserve[];
