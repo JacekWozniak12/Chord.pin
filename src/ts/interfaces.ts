@@ -1,10 +1,6 @@
 export interface INotify {
-    notifySubscribersWith(y: Object): this;
-    subscribe(x: IObserve): this;
-    unsubscribe(x: IObserve): this;
-    toNotify : IObserve[];
-}
-
-export interface IObserve {
-    notifyHandler(y: object);
+    notify(): this;
+    subscribe(x: Function): this;
+    unsubscribe(x: Function): this;
+    toNotify : Function[];
 }

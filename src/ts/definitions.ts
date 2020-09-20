@@ -1,12 +1,16 @@
 import { Frequency } from "Tone";
 import { Library } from './lib';
-import { Fretboard } from './components/elements';
+import { INotify } from './interfaces';
 
-export { Note, Chord, Options }
+export { Note, Chord, Options, DisplayableChord, DisplayableNote, NoteSet }
+
+const MAX_DELAY = 10;
+const MAX_DURATION = 10;
+const MAX_VOLUME = 1;
 
 class Note {
 
-    constructor(name: string, options: Options = new Options(), transposition: number = null) {
+    constructor(name: string, transposition: number = null, options: Options = new Options()) {
         if (this.isValidName(name)) {
             this.name = Frequency(name).transpose(transposition).toNote();
             this.options = options;
@@ -27,55 +31,103 @@ class Note {
     }
 }
 
-class PositionedNote extends Note {
+class DisplayableNote extends Note {
     noteSet: NoteSet;
     position: Number;
 
-    constructor(name: string, options: Options = new Options(), noteSet : NoteSet, transposition: number = null) {
-        super(name, options, transposition);
-        if(noteSet.findPosition(this)){
-            this.noteSet = noteSet; 
+    constructor(name: string, transposition: number = null, options: Options = new Options(), noteSet: NoteSet) {
+        super(name, transposition, options);
+        if (noteSet.findPosition(this)) {
+            this.noteSet = noteSet;
         }
-        else throw "Note doesn't exist in this note set"      
-    }
-}
-
-class NoteSet {
-    noteArray: Note[];
-
-    findPosition(note: Note): Number {
-        return this.noteArray.indexOf(note);
+        else throw "Note doesn't exist in this note set"
     }
 }
 
 class Chord {
 
     constructor(notes: Note[], name: string = "", description: string = "") {
-        this.name = name;
-        this.notes = notes;
-        this.description = description;
+        this.name = new VariableNotifier(name);
+        this.notes = new VariableNotifier(notes);
+        this.description = new VariableNotifier(description);
     }
 
-    name: string;
-    description: string;
-    notes: Note[];
+    name: VariableNotifier<string>;
+    description: VariableNotifier<string>;
+    notes: VariableNotifier<Note[]>;
 
     returnContent(): string {
         let s = "";
-        this.notes.forEach(element => { s = s.concat(element.name, " ^ ") });
+        this.notes.var.forEach(element => { s = s.concat(element.name, " ^ ") });
         return s.slice(0, s.length - 2)
     }
 
     addChord(chord: Chord): this {
-        chord.notes.forEach(x => this.notes.push(x));
+        chord.notes.var.forEach(x => this.notes.var.push(x));
         return this;
     }
 
     setValuesOf(chord: Chord): this {
-        this.name = chord.name;
-        this.notes = chord.notes;
-        this.description = chord.description;
+        this.name.var = chord.name.var;
+        this.setNotes(chord.notes.var);
+        this.description.var = chord.description.var;
         return this;
+    }
+
+    setNotes(notes: Note[]) {
+        this.notes.var = notes;
+    }
+}
+
+class DisplayableChord extends Chord {
+
+    notes: VariableNotifier<DisplayableNote[]>;
+    noteSet: VariableNotifier<NoteSet>;
+
+    constructor(notes: Note[], noteSet: NoteSet, name: string = "", description: string = "") {
+        super(notes, name, description);
+        this.noteSet = new VariableNotifier(noteSet);
+    }
+
+    addNote(note: DisplayableNote | Note, noteSet: NoteSet = null): this {
+        if (note instanceof Note) {
+            note = new DisplayableNote(note.name, 0, note.options, noteSet);
+        }
+        this.notes.var.unshift(note as DisplayableNote);
+        return this;
+    }
+
+    deleteNote(note: DisplayableNote): this {
+        this.notes.var = this.notes.var.filter(x => x.position != note.position);
+        return this;
+    }
+
+    deleteAllNoteInstances(note: Note): this {
+        this.notes.var = this.notes.var.filter(x => x.name != note.name);
+        return this;
+    }
+
+    setNotes(notes: Note[] | DisplayableNote[]) {
+        this.notes = null;
+        notes.forEach(element => {
+            notes.push(new DisplayableNote(element.name, 0, element.options, this.noteSet.var));
+        });
+    }
+}
+
+class NoteSet {
+    private noteArray: VariableNotifier<Note[]>;
+
+    findPosition(note: Note): number {
+        return this.noteArray.var.indexOf(note);
+    }
+
+    constructor(startingNote: string, amount: number) {
+        this.noteArray = new VariableNotifier(new Array<Note>());
+        let noteName = startingNote;
+        for (let i = 0; i < amount; i++) {
+            this.noteArray.var.push(new Note(noteName));
+        }
     }
 }
 
@@ -85,55 +137,87 @@ class Options {
         volume: string | number = 0.5, duration: string | number = 1, delay: string | number = 0
     ) {
         try {
-            this.volume = Number.parseFloat(volume as string);
-            this.delay = Number.parseFloat(delay as string);
-            this.duration = Number.parseFloat(duration as string);
+            this.volume = new VariableNotifier(Library.clamp(Number.parseFloat(volume as string), 0, MAX_VOLUME));
+            this.delay = new VariableNotifier(Library.clamp(Number.parseFloat(delay as string), 0, MAX_DELAY));
+            this.duration = new VariableNotifier(Library.clamp(Number.parseFloat(duration as string), 0, MAX_DURATION));
         }
         catch (e) {
-            this.duration = 1;
-            this.delay = 0;
-            this.volume = 0.5;
-            throw "Argument Exception - Writing default options"
+            this.volume = new VariableNotifier(1);
+            this.delay = new VariableNotifier(0);
+            this.duration = new VariableNotifier(0.5);
+            console.log(e + "\nWriting default options")
         }
     }
 
-    private _volume: number = 0.5;
-    private _duration: number = 1;
-    private _delay: number = 0;
-
-    get volume(): number | string {
-        return this._volume;
+    getVolume() : number{
+        return this.volume.var;
     }
 
-    get delay(): number | string {
-        return this._delay;
+    getDelay() : number {
+        return this.delay.var;
     }
 
-    get duration(): number | string {
-        return this._duration;
+    getDuration() : number {
+        return this.duration.var;
     }
 
-    set volume(value: number | string) {
-        this._volume = Library.clamp(Number.parseFloat(value as string), 0, 1) ?? 0.5;
+    setVolume(value: string | number) {
+        this.volume.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_VOLUME);
     }
 
-    set delay(value: number | string) {
-        this._delay = Library.clamp(Number.parseFloat(value as string), 0, 10) ?? 0;
+    setDelay(value: string | number) {
+        this.delay.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_DELAY);
     }
 
-    set duration(value: number | string) {
-        this._duration = Library.clamp(Number.parseFloat(value as string), 0, 10) ?? 1;
+    setDuration(value: string | number) {
+        this.duration.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_DURATION);
     }
 
-    serialize() {
-        return JSON.stringify({ volume: this.volume, duration: this.duration, delay: this.delay })
+    private duration: VariableNotifier<number>;
+    private delay: VariableNotifier<number>;
+    private volume: VariableNotifier<number>;
+
+}
+
+class VariableNotifier<T> implements INotify {
+
+    constructor(value: T) {
+        this.toNotify = new Array<Function>();
+        value = value;
     }
 
-    setValuesOf(options: Options): this {
-        this.delay = options.delay ?? options._delay;
-        this.duration = options.duration ?? options._duration;
-        this.volume = options.volume ?? options._volume;
+    private _var: T;
+
+    get var(): T {
+        return this._var;
+    }
+
+    set var(value: T) {
+        if (this._var === value) return;
+        else {
+            this._var = value;
+            this.notify();
+        }
+    }
+
+    notify(): this {
+        this.toNotify.forEach(element => {
+            element();
+        });
         return this;
     }
+
+    subscribe(x: Function): this {
+        this.toNotify.push(x);
+        return this;
+    }
+
+    unsubscribe(x: Function): this {
+        this.toNotify = this.toNotify.filter(x);
+        return this;
+    }
+
+    toNotify: Function[];
 }
+
 
