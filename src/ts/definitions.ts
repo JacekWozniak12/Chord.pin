@@ -1,6 +1,6 @@
 import { Frequency } from "Tone";
 import { Library } from './lib';
-import { INotify } from './interfaces';
+import { Notifier } from './observer';
 
 export { Note, Chord, Options, DisplayableChord, DisplayableNote, NoteSet }
 
@@ -32,8 +32,10 @@ class Note {
 }
 
 class DisplayableNote extends Note {
-    noteSet: NoteSet;
-    position: Number;
+    private noteSet: NoteSet;
+    private position: number;
+
+    getPosition() { return this.position };
 
     constructor(name: string, transposition: number = null, options: Options = new Options(), noteSet: NoteSet) {
         super(name, transposition, options);
@@ -57,9 +59,9 @@ class Chord {
     notes: VariableNotifier<Note[]>;
 
     returnContent(): string {
-        let s = "";
-        this.notes.var.forEach(element => { s = s.concat(element.name, " ^ ") });
-        return s.slice(0, s.length - 2)
+        let content = "";
+        this.notes.var.forEach(element => { content = content.concat(element.name, " ^ ") });
+        return content.slice(0, content.length - 2)
     }
 
     addChord(chord: Chord): this {
@@ -98,7 +100,7 @@ class DisplayableChord extends Chord {
     }
 
     deleteNote(note: DisplayableNote): this {
-        this.notes.var = this.notes.var.filter(x => x.position != note.position);
+        this.notes.var = this.notes.var.filter(x => x.getPosition() != note.getPosition());
         return this;
     }
 
@@ -149,28 +151,38 @@ class Options {
         }
     }
 
-    getVolume() : number{
+    getVolume(): number {
         return this.volume.var;
     }
 
-    getDelay() : number {
+    getDelay(): number {
         return this.delay.var;
     }
 
-    getDuration() : number {
+    getDuration(): number {
         return this.duration.var;
     }
 
     setVolume(value: string | number) {
         this.volume.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_VOLUME);
+        return this;
     }
 
     setDelay(value: string | number) {
         this.delay.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_DELAY);
+        return this;
     }
 
     setDuration(value: string | number) {
         this.duration.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_DURATION);
+        return this;
+    }
+
+    setValuesOf(options : Options){
+        this.setVolume(options.volume.var);
+        this.setDelay(options.delay.var);
+        this.setDuration(options.duration.var);
+        return this;
     }
 
     private duration: VariableNotifier<number>;
@@ -179,10 +191,10 @@ class Options {
 
 }
 
-class VariableNotifier<T> implements INotify {
+class VariableNotifier<T> extends Notifier {
 
     constructor(value: T) {
-        this.toNotify = new Array<Function>();
+        super();
         value = value;
     }
 
@@ -199,25 +211,6 @@ class VariableNotifier<T> implements INotify {
             this.notify();
         }
     }
-
-    notify(): this {
-        this.toNotify.forEach(element => {
-            element();
-        });
-        return this;
-    }
-
-    subscribe(x: Function): this {
-        this.toNotify.push(x);
-        return this;
-    }
-
-    unsubscribe(x: Function): this {
-        this.toNotify = this.toNotify.filter(x);
-        return this;
-    }
-
-    toNotify: Function[];
 }
 
 
