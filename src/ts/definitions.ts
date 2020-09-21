@@ -124,11 +124,22 @@ class NoteSet {
         return this.noteArray.var.indexOf(note);
     }
 
-    constructor(startingNote: string, amount: number) {
+    constructor(startingNote: string | Note | DisplayableNote, amount: number) {
+        
         this.noteArray = new VariableNotifier(new Array<Note>());
-        let noteName = startingNote;
+        let noteName = this.getNoteName(startingNote);
+
         for (let i = 0; i < amount; i++) {
-            this.noteArray.var.push(new Note(noteName));
+            this.noteArray.var.push(new Note(noteName, i));
+        }
+    }
+
+    private getNoteName(startingNote: string | Note | DisplayableNote) : string {
+        if (startingNote instanceof Note) {
+            return startingNote.name;
+        }
+        else {
+            return startingNote;
         }
     }
 }
@@ -178,7 +189,7 @@ class Options {
         return this;
     }
 
-    setValuesOf(options : Options){
+    setValuesOf(options: Options) {
         this.setVolume(options.volume.var);
         this.setDelay(options.delay.var);
         this.setDuration(options.duration.var);

@@ -1,3 +1,5 @@
+import { getTypeParameterOwner } from "typescript";
+
 export module GUI {
     export class Element<T extends HTMLElement>{
 
@@ -6,7 +8,7 @@ export module GUI {
         children: HTMLElement[];
 
         constructor(
-            type: string, className: string = null, id: string = null,
+            type: string = "div", className: string = null, id: string = null,
             parent: string = "body", img: string = null, trigger: string = null,
             f: EventListener = null
         ) {

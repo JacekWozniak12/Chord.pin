@@ -1,5 +1,5 @@
 import { Destination, PolySynth, Synth, Transport, Part } from 'Tone';
-import { Note, Chord, Options } from "./definitions";
+import { Chord, Options } from "./definitions";
 
 export class Audio {
 
@@ -17,21 +17,6 @@ export class Audio {
     updateChord(chord: Chord): Chord { return this.chord = chord; }
     setChord(chord): Chord { return this.chord = chord; }
     getChord(): Chord { return this.chord; }
-
-    addNote(note: Note): Chord {
-        this.chord.notes.unshift(note);
-        return this.chord;
-    }
-
-    deleteNote(note: Note): Chord {
-        this.chord.notes = this.chord.notes.filter(x => x.fretboardPosition != note.fretboardPosition);
-        return this.chord;
-    }
-
-    deleteAllNoteInstances(note: Note): Chord {
-        this.chord.notes = this.chord.notes.filter(x => x.name != note.name);
-        return this.chord;
-    }
 
     setup(): this {
         this.chord = new Chord([])
@@ -53,20 +38,20 @@ export class Audio {
     }
 
     play(chord: Chord = this.chord): void {
-        let vol = this.options.volume as number;
+        let vol = this.options.getVolume();
         this.stop();
         this.part = new Part((x, y) => {
             this.instrument.triggerAttackRelease(
                 y.note, y.dur, x, y.volume);
 
         }, [])
-        chord.notes.forEach(e => {
+        chord.notes.var.forEach(e => {
             e.options = new Options().setValuesOf(e.options);
-            this.part.add(e.options.delay as number,
+            this.part.add(e.options.getDelay(),
                 {
                     note: e.name,
-                    dur: e.options.duration as number,
-                    volume: (e.options.volume as number) * vol as number
+                    dur: e.options.getDuration(),
+                    volume: (e.options.getVolume()) * vol as number
                 });
 
         });

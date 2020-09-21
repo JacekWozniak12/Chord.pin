@@ -14,6 +14,10 @@ export class Main {
     getChord(str : string) : Chord{
         return this.chords.filter(x => x.name.var == str)[0];
     }
+
+    constructor(){
+        
+    }
 }
 
 

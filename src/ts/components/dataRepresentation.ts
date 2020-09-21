@@ -1,55 +1,22 @@
 import { GUI } from "../gui";
-import { Audio } from '../audio';
-import { Options, Chord, Note } from "../definitions";
-import { IObserve } from '../interfaces';
-
-export class ChordContainer extends GUI.Element<HTMLOptionElement>{
-
-    chord: Chord;
-
-    constructor(chord: Chord) {
-        super("option");
-        this.chord = chord;
-        this.modifyAttribute("value", `${chord.name}`);
-        this.setText(`${chord.name}`);
-    }
-}
+import { Options, Note, DisplayableNote } from "../definitions";
+import { Notifier } from "../observer";
 
 export class NoteDisplay extends GUI.Element<HTMLDivElement> {
 
     note: Note;
-    add: GUI.Element<HTMLDivElement>;
-    del: GUI.Element<HTMLDivElement>;
-    settings: SettingsDisplay;
-    audio: Audio;
-    selected: boolean = false;
+    selectedEvent: Notifier<DisplayableNote | Note>;
+    deselectedEvent: Notifier<DisplayableNote | Note>;
+    el_settings : SettingsDisplay;
 
     constructor(className: string, id: string = null, parent: string = "body", trigger: string, f: EventListener, note: Note) {
         super("div", className, id, parent, "", trigger, f);
-        this.settings = new SettingsDisplay(note.options).
+        this.el_settings = new SettingsDisplay(note.options).
             addListener("click", function (event) { event.stopPropagation() });
-        this.settings.htmlElement.classList.add("hidden");
+        this.el_settings.htmlElement.classList.add("hidden");
         this.note = note;
     }
 
-    updateOptions(options: Options) {
-        this.note.options = options;
-        this.settings.setOptions(options);
-    }
-
-    setup(audio: Audio): this {
-        this.audio = audio;
-        this.parentElements([this.settings.htmlElement]);
-        return this;
-    }
-
-    showOptions() {
-        this.settings.htmlElement.classList.remove("hidden");
-    }
-
-    hideOptions() {
-        this.settings.htmlElement.classList.add("hidden");
-    }
 
     clear() {
         let found = document.querySelectorAll("note-selected");
@@ -65,12 +32,8 @@ export class NoteDisplay extends GUI.Element<HTMLDivElement> {
         found.forEach(x => {
             x.classList.add("note-selected");
         });
-        
-        if (note != null) {
-            this.note = note;           
-            this.settings.setOptions(note.options);
-        }  
-        this.audio.addNote(this.note);
+        if (note != null) { this.note = note; }
+        this.selectedEvent.notify(this.note);
     }
 
     deselect() {
@@ -82,7 +45,7 @@ export class NoteDisplay extends GUI.Element<HTMLDivElement> {
                 x.classList.remove("note-selected");
             });
         }
-        this.audio.deleteNote(this.note);
+        this.deselectedEvent.notify(this.note);
     }
 
     toggle() {
@@ -93,7 +56,7 @@ export class NoteDisplay extends GUI.Element<HTMLDivElement> {
     }
 }
 
-export class SettingsDisplay extends GUI.Element<HTMLElement> implements IObserve{
+export class SettingsDisplay extends GUI.Element<HTMLElement> {
 
     el_title: GUI.Element<HTMLDivElement>;
     el_volume: GUI.Element<HTMLInputElement>;
@@ -102,65 +65,59 @@ export class SettingsDisplay extends GUI.Element<HTMLElement> implements IObserv
 
     options: Options;
 
-    constructor(
-        options: Options,
-        type: string = "div",
-        className: string = "settings",
-        id: string = null,
-        parent: string = "body",
+    constructor(options: Options, type: string = "div", className: string = "settings", id: string = null, parent: string = "body",
     ) {
         super(type, className, id, parent);
 
-        if (options != null)
-            this.options = options;
+        if (options != null) this.options = options;
         else this.options = new Options();
 
         this.createVolume();
         this.createDuration();
         this.createDelay();
 
-        this.el_delay.modifyAttribute("placeholder", `${this.options.delay}`);
-        this.el_duration.modifyAttribute("placeholder", `${this.options.duration}`);
+        this.el_delay.modifyAttribute("placeholder", `${this.options.getDelay()}`);
+        this.el_duration.modifyAttribute("placeholder", `${this.options.getDuration()}`);
 
         this.setOptions(this.options);
     }
 
-    notifyHandler(object : Object){
-        if(object instanceof Options){
+    notifyHandler(object: Object) {
+        if (object instanceof Options) {
             this.setOptions(object);
         }
     }
 
     setOptions(options: Options): this {
         this.options.setValuesOf(options);
-        this.el_volume.htmlElement.value = <any>this.options.volume;
-        this.el_delay.htmlElement.value = <any>this.options.delay;
-        this.el_duration.htmlElement.value = <any>this.options.duration;
+        this.el_volume.htmlElement.value = <any>this.options.getVolume();
+        this.el_delay.htmlElement.value = <any>this.options.getDelay();
+        this.el_duration.htmlElement.value = <any>this.options.getDuration();
         return this;
     }
- 
+
     private updateVolume(): this {
-        this.options.volume = this.el_volume.htmlElement.value;
+        this.options.setVolume(this.el_volume.htmlElement.value);
         return this;
     }
 
     private updateDuration(): this {
-        this.options.duration = this.el_duration.htmlElement.value;
+        this.options.setDuration(this.el_duration.htmlElement.value);
         return this;
     }
 
     private updateDelay(): this {
-        this.options.delay = this.el_delay.htmlElement.value
+        this.options.setDelay(this.el_delay.htmlElement.value);
         return this;
     }
 
     private createSettings(type: string, className: string, id: string, img: string): GUI.Element<HTMLElement> {
-        let i = new GUI.Element("img").modifyAttribute("src", img);
-        let r = new GUI.Element(type, className, id);
-        let u = new GUI.Element("div", "setting-container");
-        u.parentElements([i.htmlElement, r.htmlElement]);
-        this.parentElements([u.htmlElement]);
-        return r;
+        let el_image = new GUI.Element("img").modifyAttribute("src", img);
+        let el_settings = new GUI.Element(type, className, id);
+        let el_container = new GUI.Element("div", "setting-container");
+        el_container.parentElements([el_image.htmlElement, el_settings.htmlElement]);
+        this.parentElements([el_container.htmlElement]);
+        return el_settings;
     }
 
     private createDelay() {

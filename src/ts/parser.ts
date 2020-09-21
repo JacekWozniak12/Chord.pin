@@ -1,6 +1,6 @@
 import { Options, Note, Chord } from "./definitions";
-import { Database } from './database';
-import { INotify, IObserve } from './interfaces';
+import { Main } from './communication';
+import { Notifier } from './observer';
 
 // Delimiters
 enum D_START {
@@ -12,34 +12,28 @@ enum D_END {
     S_OPTIONS = ")"
 }
 
-export class Parser implements INotify {
+export class Parser{
 
-    database: Database;
+    current : Main;
     prompt: HTMLInputElement;
-    chord: Chord;
-    options: Options;
 
-    // symbols start
-    static readonly S_LOADING = "<<";
-    static readonly S_SAVE = ">>";
-    static readonly S_DELAY = "d:";
-    static readonly S_DURATION = "t:";
-    static readonly S_VOLUME = "v:";
-    static readonly S_CHORD_CONCAT = "^";
-    static readonly S_STEP_SUB = "-";
-    static readonly S_STEP_ADD = "+";
-    static readonly S_PARAMETER_NEXT = ",";
-    // symbols stop
+    parseEvent : Notifier<Chord | Options>
+    saveEvent : Notifier<Chord | Options>;
+    loadEvent : Notifier<Chord | Options>;
 
-    constructor(prompt: HTMLInputElement, database: Database) {
+    main : Main;
+
+    constructor(prompt: HTMLInputElement) {
         this.prompt = prompt;
         this.prompt.addEventListener
             ("keydown",
                 ((event: KeyboardEvent) => {
                     this.getOutput(event, this.prompt.value)
                 }) as EventListener, true);
-        this.database = database;
-        this.toNotify = new Array<IObserve>();
+
+        this.loadEvent = new Notifier<Chord | Options>();
+        this.saveEvent = new Notifier<Chord | Options>();
+        this.parseEvent = new Notifier<Chord | Options>();
     }
 
     getOutput(e: KeyboardEvent, input: string): void {
@@ -52,10 +46,10 @@ export class Parser implements INotify {
             else {
                 let globalSettings = false;
                 let search = input.indexOf(Parser.S_SAVE);
-                let NameDescriptionPart = "";
+                let nameDescriptionPart = "";
 
                 if (search >= 2) {
-                    NameDescriptionPart = input.slice(search + Parser.S_SAVE.length, input.length);
+                    nameDescriptionPart = input.slice(search + Parser.S_SAVE.length, input.length);
                     input = input.slice(0, search + 1).replace(">", "");
                 }
 
@@ -64,10 +58,10 @@ export class Parser implements INotify {
                 let chords: Chord[] = new Array();
                 search = input.indexOf(D_START.S_CHORD);
 
-                let settings = this.database.getOptions();
+                let settings = this.main.options;
                 while (search != -1) {
-                    let t = Parser.getGroup(input, D_START.S_CHORD, D_END.S_CHORD);
-                    input = input.replace(t, "");
+                    let part = Parser.getGroup(input, D_START.S_CHORD, D_END.S_CHORD);
+                    input = input.replace(part, "");
 
                     search = input.indexOf(D_START.S_CHORD);
                     let o = input.indexOf(D_START.S_OPTIONS);
@@ -77,7 +71,7 @@ export class Parser implements INotify {
                         input = input.replace(r, "");
                         settings = Parser.getOptions(r, settings);
                     }
-                    chords.unshift(Parser.parseChord(t, settings));
+                    chords.unshift(Parser.parseChord(part, settings));
                     console.log(chords);
                 }
 
@@ -94,17 +88,14 @@ export class Parser implements INotify {
                     chord.addChord(element);
                 });
 
-                if (NameDescriptionPart.length > 0) {
-                    this.saveChordToDatabase(chord, NameDescriptionPart)
+                if (nameDescriptionPart.length > 0) {
+                    this.saveChord(chord, nameDescriptionPart)
                 }
 
-                if (chord.notes.length > 0) {
-                    this.notifySubscribersWith(chord);
+                if (chord.notes.var.length > 0) {
                 }
 
                 else if (globalSettings) {
-                    this.database.setOptions(settings);
-                    this.notifySubscribersWith(settings);
                 }
             }
         }
@@ -121,7 +112,7 @@ export class Parser implements INotify {
             if (i < 2) i = f;
             let t = c.slice(0, i).replace(this.S_CHORD_CONCAT, "");
             if (t.trim() != "")
-                r.notes.push(
+                r.notes.var.push(
                     this.parseNote(
                         t, def
                     )
@@ -146,22 +137,22 @@ export class Parser implements INotify {
         input = input.replace(name, "").replace(D_START.S_CHORD, "").replace(D_END.S_CHORD, "");
 
         let transpose = Parser.calculateTransposition(input, 0);
-        return new Note(name, options, -1, transpose);
+        return new Note(name, transpose, options);
     }
 
     private HandleLoadProcedure(input: string): boolean {
         let search = input.indexOf(Parser.S_LOADING);
 
         if (search >= 0) {
-            this.chord = this.loadChordFromDatabase(input, search);
+            this.loadEvent.notify(this.loadChord(input, search));
             return true;
         }
         return false;
     }
 
-    saveChordToDatabase(chord: Chord, input: string): void {
+    saveChord(chord: Chord, input: string): void {
 
-        if (chord == null || chord.notes.length < 1) throw "EMPTY CHORD";
+        if (chord == null || chord.notes.var.length < 1) throw "EMPTY CHORD";
         let search = input.search(Parser.S_PARAMETER_NEXT)
         let description = "";
 
@@ -171,33 +162,33 @@ export class Parser implements INotify {
         else search = input.length;
 
         let name = input.slice(2, search).trim();
-        chord.name = name;
-        chord.description = description;
-        this.database.addChord(chord);
+        chord.name.var = name;
+        chord.description.var = description;
+        this.saveEvent.notify(chord);
     }
 
-    loadChordFromDatabase(input: string, s: number): Chord {
+    loadChord(input: string, s: number): Chord {
         let t = input.slice(s, Parser.S_LOADING.length);
         let i = input.replace(t, "").trim();
-        return this.database.getChord(i);
+        return this.main.getChord(i);
     }
 
     static getGroup(input: string, delimiter_start: D_START, delimiter_end: D_END): string {
-        let x = "";
-        let s = input.indexOf(delimiter_start);
-        let e = input.indexOf(delimiter_end);
-        if (s == -1) {
-            s = 0;
-            if (e == -1) {
+        let part = "";
+        let startIndex = input.indexOf(delimiter_start);
+        let endIndex = input.indexOf(delimiter_end);
+        if (startIndex == -1) {
+            startIndex = 0;
+            if (endIndex == -1) {
                 return "";
             }
-            else e = input.length;
+            else endIndex = input.length;
         }
-        else if (e == -1) {
-            e = input.length;
+        else if (endIndex == -1) {
+            endIndex = input.length;
         }
-        x = input.slice(s, e + 1);
-        return x;
+        part = input.slice(startIndex, endIndex + 1);
+        return part;
     }
 
     private static getNoteName(input: string) {
@@ -236,8 +227,8 @@ export class Parser implements INotify {
                         transpose += parseInt(buffer.trim().replace(/[^0-9]/g, "")) * arithmeticBuffer;
                     }
                 }
-                catch (e) {
-                    alert(e);
+                catch (error) {
+                    alert(error);
                 }
             }
         }
@@ -246,30 +237,31 @@ export class Parser implements INotify {
 
     static getOptions(input: string, def: Options = new Options()): Options {
         input = input.toLowerCase();
+        
         let result = def;
-        let t = this.getOptionNumberValue(this.S_DURATION, input);
-        let d = this.getOptionNumberValue(this.S_DELAY, input);
-        let v = this.getOptionNumberValue(this.S_VOLUME, input);
+        
+        let duration = this.getOptionNumberValue(this.S_DURATION, input);
+        let delay = this.getOptionNumberValue(this.S_DELAY, input);
+        let volume = this.getOptionNumberValue(this.S_VOLUME, input);
 
-        if (t != "" && t != null) result.duration = (this.getDuration(t));
-        if (d != "" && d != null) result.delay = (this.getDelay(d));
-        if (v != "" && v != null) result.volume = (this.getVolume(v));
+        if (duration != "" && duration != null) result.setDuration(this.getDuration(duration));
+        if (delay != "" && delay != null) result.setDelay(this.getDelay(delay));
+        if (volume != "" && volume != null) result.setVolume(this.getVolume(volume));
+
         return result;
     }
 
     private static getOptionNumberValue(symbol: string, input: string): string {
-        let t = input.indexOf(symbol);
-        if (t >= 0) {
-            let i = input.slice(t, input.length);
-            let b = i.search(this.S_PARAMETER_NEXT);
+        let startIndex = input.indexOf(symbol);
+        if (startIndex >= 0) {
+            let part = input.slice(startIndex, input.length);
+            let endIndex = part.search(this.S_PARAMETER_NEXT);
 
-            if (b >= 0) {
-                let r = input.slice(t + symbol.length - 1, b).replace(/([^0-9.])/g, "").trim();
-                return r;
+            if (endIndex >= 0) {
+                return input.slice(startIndex + symbol.length - 1, endIndex).replace(/([^0-9.])/g, "").trim();
             }
             else {
-                let r = input.slice(t + symbol.length - 1, input.length).replace(/([^0-9.])/g, "").trim();
-                return r;
+                return input.slice(startIndex + symbol.length - 1, input.length).replace(/([^0-9.])/g, "").trim();
             }
         }
     }
@@ -286,21 +278,14 @@ export class Parser implements INotify {
         return Number.parseFloat(input);
     }
 
-    toNotify: IObserve[];
-
-    notifySubscribersWith(y: Object = null) {
-        this.toNotify.forEach(x => x.notifyHandler(y));
-        return this;
-    }
-
-    subscribe(x: IObserve) {
-        this.toNotify.push(x);
-        return this;
-    }
-
-    unsubscribe(x: IObserve) {
-        this.toNotify = this.toNotify.filter(y => y != x)
-        return this;
-    }
+    static readonly S_LOADING = "<<";
+    static readonly S_SAVE = ">>";
+    static readonly S_DELAY = "d:";
+    static readonly S_DURATION = "t:";
+    static readonly S_VOLUME = "v:";
+    static readonly S_CHORD_CONCAT = "^";
+    static readonly S_STEP_SUB = "-";
+    static readonly S_STEP_ADD = "+";
+    static readonly S_PARAMETER_NEXT = ",";
 
 }
