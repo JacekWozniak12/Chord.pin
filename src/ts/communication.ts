@@ -1,4 +1,6 @@
-import { Options, Chord, Note } from "./definitions";
+import { Options } from "./definitions/Options";
+import { Chord } from "./definitions/Chord";
+import { Note } from "./definitions/Note";
 import { Database } from './database';
 
 // database - both options / chord

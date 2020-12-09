@@ -50,11 +50,24 @@ export module GUI {
             return this;
         }
 
-        parentElements(el: HTMLElement[]): this {
-            el.forEach(e => {
+        parentElements(el: HTMLElement[] | GUI.Element<HTMLElement>[]): this {
+            let array = new Array<HTMLElement>();
+
+            if(el[0] instanceof Element)
+            {
+                el = el as Element<HTMLElement>[];
+                el.forEach(e => {
+                    this.htmlElement.appendChild(e.htmlElement);
+                    console.log(e);
+                })
+            }
+            else array = el as Array<HTMLElement>;
+            
+            array.forEach(e => {
                 this.htmlElement.appendChild(e)
             });
-            this.children = this.children.concat(el);
+
+            this.children = this.children.concat(array);
             return this;
         }
 

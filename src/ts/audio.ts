@@ -1,5 +1,6 @@
 import { Destination, PolySynth, Synth, Transport, Part } from 'Tone';
-import { Chord, Options } from "./definitions";
+import { Options } from "./definitions/Options";
+import { Chord } from "./definitions/Chord";
 
 export class Audio {
 

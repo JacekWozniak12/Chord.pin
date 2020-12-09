@@ -15,6 +15,6 @@
     },
     "include":[
         "node_modules/tone/*",
-        "src/ts/*", 
+        "src/ts/*", "src/ts/definitions/Note.ts", "src/ts/definitions/chord.ts", "src/ts/definitions/DisplayableChord.ts", "src/ts/definitions/DisplayableNote.ts", "src/ts/definitions/NoteSet.ts", "src/ts/definitions/Options.ts", "src/ts/definitions/Const.ts", "src/ts/definitions/Tuning.ts", "src/ts/definitions/VariableNotifier.ts", "src/ts/gui/NoteDisplay.ts", "src/ts/definitions/observer.ts, "src/ts/gui/GuitarString.ts"", ", "src/ts/gui/Fretboard.ts"src/ts/gui/SettingsDisplay.ts", 
     ]
 }

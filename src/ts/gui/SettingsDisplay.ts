@@ -1,60 +1,6 @@
 import { GUI } from "../gui";
-import { Options, Note, DisplayableNote } from "../definitions";
-import { Notifier } from "../observer";
+import { Options } from "../definitions/Options";
 
-export class NoteDisplay extends GUI.Element<HTMLDivElement> {
-
-    note: Note;
-    selectedEvent: Notifier<DisplayableNote | Note>;
-    deselectedEvent: Notifier<DisplayableNote | Note>;
-    el_settings : SettingsDisplay;
-
-    constructor(className: string, id: string = null, parent: string = "body", trigger: string, f: EventListener, note: Note) {
-        super("div", className, id, parent, "", trigger, f);
-        this.el_settings = new SettingsDisplay(note.options).
-            addListener("click", function (event) { event.stopPropagation() });
-        this.el_settings.htmlElement.classList.add("hidden");
-        this.note = note;
-    }
-
-
-    clear() {
-        let found = document.querySelectorAll("note-selected");
-        found.forEach(x => {
-            x.classList.remove("note-selected");
-            x.classList.remove("important-note-selected");
-        });
-    }
-
-    select(note: Note = null) {
-        this.htmlElement.classList.add("note-selected", "important-note-selected");
-        let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-        found.forEach(x => {
-            x.classList.add("note-selected");
-        });
-        if (note != null) { this.note = note; }
-        this.selectedEvent.notify(this.note);
-    }
-
-    deselect() {
-        this.htmlElement.classList.remove("note-selected", "important-note-selected")
-        let found = document.querySelectorAll(`div.important-note-selected[id*="${this.note.name.replace("#", "S")}"]`);
-        if (found.length == 0) {
-            found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-            found.forEach(x => {
-                x.classList.remove("note-selected");
-            });
-        }
-        this.deselectedEvent.notify(this.note);
-    }
-
-    toggle() {
-        if (this.htmlElement.classList.contains("important-note-selected")) {
-            this.deselect();
-        }
-        else this.select()
-    }
-}
 
 export class SettingsDisplay extends GUI.Element<HTMLElement> {
 
@@ -65,12 +11,14 @@ export class SettingsDisplay extends GUI.Element<HTMLElement> {
 
     options: Options;
 
-    constructor(options: Options, type: string = "div", className: string = "settings", id: string = null, parent: string = "body",
+    constructor(options: Options, type: string = "div", className: string = "settings", id: string = null, parent: string = "body"
     ) {
         super(type, className, id, parent);
 
-        if (options != null) this.options = options;
-        else this.options = new Options();
+        if (options != null)
+            this.options = options;
+        else
+            this.options = new Options();
 
         this.createVolume();
         this.createDuration();
