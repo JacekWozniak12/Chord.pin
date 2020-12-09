@@ -1,8 +1,8 @@
-import { GUI } from "../gui";
-import { NotePosition } from "../definitions/NotePosition";
-import { Tuning } from "../definitions/Tuning";
-import { NoteSet } from "../definitions/NoteSet";
-import { Note } from "../definitions/Note";
+import { GUI } from "./GUI";
+import { NotePosition } from "../Definitions/NotePosition";
+import { Tuning } from "../Definitions/Tuning";
+import { NoteSet } from "../Definitions/NoteSet";
+import { Note } from "../Definitions/Note";
 import { GuitarString } from "./GuitarString";
 
 export class Fretboard extends GUI.Element<HTMLDivElement>

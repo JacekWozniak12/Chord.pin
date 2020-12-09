@@ -1,7 +1,7 @@
-import { GUI } from "../gui";
-import { Notifier } from "../definitions/Observer";
-import { NotePosition } from "../definitions/NotePosition";
-import { Note } from "../definitions/Note";
+import { GUI } from "./GUI";
+import { Notifier } from "../Definitions/Observer";
+import { NotePosition } from "../Definitions/NotePosition";
+import { Note } from "../Definitions/Note";
 import { SettingsDisplay } from "../gui/SettingsDisplay";
 
 // private SetupNote(note: NoteDisplay, currentNote: string, audio: Audio): NoteDisplay {

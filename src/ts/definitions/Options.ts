@@ -1,4 +1,4 @@
-import { Library } from '../lib';
+import { Library } from '../Library';
 import { MAX_VOLUME, MAX_DELAY, MAX_DURATION } from './Const';
 import { VariableNotifier } from './Observer';
 

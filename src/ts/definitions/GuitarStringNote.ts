@@ -1,4 +1,4 @@
-import { GUI } from "./gui";
+import { GUI } from "../gui/GUI";
 
 
 export class GuitarStringNote extends GUI.Element<HTMLDivElement>

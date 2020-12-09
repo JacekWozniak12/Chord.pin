@@ -36,7 +36,6 @@ export module GUI {
             if (img != "" && img != null && img != undefined) {
                 this.img = img;
                 if (type == "img") this.htmlElement.setAttribute("src", this.img);
-
                 else this.htmlElement.style.background = `url(${this.img})`;
             }
             return this;
@@ -53,20 +52,13 @@ export module GUI {
         parentElements(el: HTMLElement[] | GUI.Element<HTMLElement>[]): this {
             let array = new Array<HTMLElement>();
 
-            if(el[0] instanceof Element)
-            {
+            if (el[0] instanceof Element) {
                 el = el as Element<HTMLElement>[];
-                el.forEach(e => {
-                    this.htmlElement.appendChild(e.htmlElement);
-                    console.log(e);
-                })
+                el.forEach(e => { this.htmlElement.appendChild(e.htmlElement); })
             }
             else array = el as Array<HTMLElement>;
-            
-            array.forEach(e => {
-                this.htmlElement.appendChild(e)
-            });
 
+            array.forEach(e => { this.htmlElement.appendChild(e) });
             this.children = this.children.concat(array);
             return this;
         }
@@ -92,7 +84,6 @@ export module GUI {
     }
 
     export class InputElement<T extends HTMLInputElement> extends Element<T>{
-
         constructor(
             className: string = null, id: string = null,
             parent: string = "body", img: string = null,

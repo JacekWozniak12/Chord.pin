@@ -1,7 +1,6 @@
-import { Options } from "./definitions/Options";
-import { Chord } from "./definitions/Chord";
-import { Note } from "./definitions/Note";
-import { Database } from './database';
+import { Chord } from '../Definitions/Chord';
+import { Options } from '../definitions/Options';
+import { Database } from './Database';
 
 // database - both options / chord
 // settings changer - options 

@@ -1,8 +1,8 @@
-import { Options } from "./definitions/Options";
-import { Chord } from "./definitions/Chord";
-import { Note } from "./definitions/Note";
-import { Main } from './communication';
-import { Notifier } from './definitions/Observer';
+import { Options } from "../Definitions/Options";
+import { Chord } from "../Definitions/Chord";
+import { Note } from "../Definitions/Note";
+import { Main } from './Communication';
+import { Notifier } from '../Definitions/Observer';
 
 // Delimiters
 enum D_START {

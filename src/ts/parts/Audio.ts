@@ -1,6 +1,6 @@
 import { Destination, PolySynth, Synth, Transport, Part } from 'Tone';
-import { Options } from "./definitions/Options";
-import { Chord } from "./definitions/Chord";
+import { Options } from "../Definitions/Options";
+import { Chord } from "../Definitions/Chord";
 
 export class Audio {
 
@@ -24,12 +24,8 @@ export class Audio {
         this.instrument = new PolySynth(
             Synth,
             {
-                oscillator: {
-                    type: 'triangle8'
-
-                }
-            }
-        ).toDestination();
+                oscillator: { type: 'triangle8' }
+            }).toDestination();
         return this;
     }
 
@@ -41,11 +37,11 @@ export class Audio {
     play(chord: Chord = this.chord): void {
         let vol = this.options.getVolume();
         this.stop();
-        this.part = new Part((x, y) => {
-            this.instrument.triggerAttackRelease(
-                y.note, y.dur, x, y.volume);
 
+        this.part = new Part((x, y) => {
+            this.instrument.triggerAttackRelease(y.note, y.dur, x, y.volume);
         }, [])
+
         chord.notes.var.forEach(e => {
             e.options = new Options().setValuesOf(e.options);
             this.part.add(e.options.getDelay(),
@@ -54,8 +50,8 @@ export class Audio {
                     dur: e.options.getDuration(),
                     volume: (e.options.getVolume()) * vol as number
                 });
-
         });
+        
         Destination.mute = false;
         this.part.start(0);
         this.part.loop = 0

@@ -1,6 +1,6 @@
-import { Options } from "./definitions/Options";
-import { Chord } from "./definitions/Chord";
-import { Notifier } from './definitions/observer';
+import { Chord } from "../Definitions/Chord";
+import { Notifier } from "../definitions/Observer";
+import { Options } from "../definitions/Options";
 
 export class Database {
 
