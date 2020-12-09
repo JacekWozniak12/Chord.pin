@@ -1,5 +1,5 @@
 import { Note } from "./Note";
-import { VariableNotifier } from "./VariableNotifier";
+import { VariableNotifier } from "./Observer";
 
 export class Chord {
 

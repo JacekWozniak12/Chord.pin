@@ -1,11 +1,11 @@
 import { GUI } from "../gui";
-import { DisplayableNote } from "../definitions/DisplayableNote";
+import { NotePosition } from "../definitions/NotePosition";
 import { Tuning } from "../definitions/Tuning";
 import { NoteSet } from "../definitions/NoteSet";
 import { Note } from "../definitions/Note";
 import { GuitarString } from "./GuitarString";
 
-class Fretboard extends GUI.Element<HTMLDivElement>
+export class Fretboard extends GUI.Element<HTMLDivElement>
 {
     noteSet: NoteSet;
     tuning: Tuning;
@@ -15,7 +15,7 @@ class Fretboard extends GUI.Element<HTMLDivElement>
 
     el_guitarStrings: GuitarString[];
 
-    constructor(tuning: Tuning, frets: number, startingNote: string | Note | DisplayableNote, endingNote: string | Note | DisplayableNote) {
+    constructor(tuning: Tuning, frets: number, startingNote: string | Note | NotePosition, endingNote: string | Note | NotePosition) {
         super();
 
         this.frets = frets;

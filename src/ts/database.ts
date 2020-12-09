@@ -1,6 +1,6 @@
 import { Options } from "./definitions/Options";
 import { Chord } from "./definitions/Chord";
-import { Notifier } from './definitions/Observer';
+import { Notifier } from './definitions/observer';
 
 export class Database {
 
@@ -38,8 +38,6 @@ export class Database {
         this.saveEvent.notify();
         return this;
     }
-
-    
 }
 
 

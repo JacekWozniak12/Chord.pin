@@ -1,6 +1,6 @@
 import { Library } from '../lib';
 import { MAX_VOLUME, MAX_DELAY, MAX_DURATION } from './Const';
-import { VariableNotifier } from "./VariableNotifier";
+import { VariableNotifier } from './Observer';
 
 
 export class Options {

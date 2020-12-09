@@ -3,7 +3,7 @@ import { NoteSet } from "./NoteSet";
 import { Options } from './Options';
 
 
-export class DisplayableNote extends Note {
+export class NotePosition extends Note {
     private noteSet: NoteSet;
     private position: number;
 

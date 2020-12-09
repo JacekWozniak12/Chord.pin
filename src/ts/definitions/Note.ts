@@ -9,7 +9,7 @@ export class Note {
             this.options = options;
         }
         else
-            throw "Invalid note name";
+            throw "Invalid note name"
     }
 
     name: string;
@@ -21,6 +21,9 @@ export class Note {
         if (temp.length > 1 && temp.length < 4)
             return true;
         else
+        {
+            console.log(name);
             return false;
+        }
     }
 }

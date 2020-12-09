@@ -1,12 +1,12 @@
 import { Note } from "./Note";
 import { Chord } from "./Chord";
 import { NoteSet } from "./NoteSet";
-import { VariableNotifier } from "./VariableNotifier";
-import { DisplayableNote } from "./DisplayableNote";
+import { NotePosition } from "./NotePosition";
+import { VariableNotifier } from "./Observer";
 
-class DisplayableChord extends Chord {
+export class DisplayableChord extends Chord {
 
-    notes: VariableNotifier<DisplayableNote[]>;
+    notes: VariableNotifier<NotePosition[]>;
     noteSet: VariableNotifier<NoteSet>;
 
     constructor(notes: Note[], noteSet: NoteSet, name: string = "", description: string = "") {
@@ -14,15 +14,15 @@ class DisplayableChord extends Chord {
         this.noteSet = new VariableNotifier(noteSet);
     }
 
-    addNote(note: DisplayableNote | Note, noteSet: NoteSet = null): this {
+    addNote(note: NotePosition | Note, noteSet: NoteSet = null): this {
         if (note instanceof Note) {
-            note = new DisplayableNote(note.name, 0, note.options, noteSet);
+            note = new NotePosition(note.name, 0, note.options, noteSet);
         }
-        this.notes.var.unshift(note as DisplayableNote);
+        this.notes.var.unshift(note as NotePosition);
         return this;
     }
 
-    deleteNote(note: DisplayableNote): this {
+    deleteNote(note: NotePosition): this {
         this.notes.var = this.notes.var.filter(x => x.getPosition() != note.getPosition());
         return this;
     }
@@ -32,10 +32,10 @@ class DisplayableChord extends Chord {
         return this;
     }
 
-    setNotes(notes: Note[] | DisplayableNote[]) {
+    setNotes(notes: Note[] | NotePosition[]) {
         this.notes = null;
         notes.forEach(element => {
-            notes.push(new DisplayableNote(element.name, 0, element.options, this.noteSet.var));
+            notes.push(new NotePosition(element.name, 0, element.options, this.noteSet.var));
         });
     }
 }

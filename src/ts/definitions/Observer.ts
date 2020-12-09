@@ -6,12 +6,12 @@ export interface INotify {
 }
 
 export class Notifier<T = null> implements INotify {
-    
-    constructor(){
+
+    constructor() {
         this.toNotify = new Array<Function>();
     }
 
-    notify(obj : T = null): this {
+    notify(obj: T = null): this {
         this.toNotify.forEach(element => {
             element();
         });
@@ -29,4 +29,27 @@ export class Notifier<T = null> implements INotify {
     }
 
     toNotify: Function[];
+}
+
+export class VariableNotifier<T> extends Notifier {
+
+    constructor(value: T) {
+        super();
+        this.var = value;
+    }
+
+    private _var: T;
+
+    get var(): T {
+        return this._var;
+    }
+
+    set var(value: T) {
+        if (this._var === value)
+            return;
+        else {
+            this._var = value;
+            this.notify();
+        }
+    }
 }

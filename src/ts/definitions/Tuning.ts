@@ -1,12 +1,12 @@
 import { NoteSet } from "./NoteSet";
-import { VariableNotifier } from "./VariableNotifier";
+import { VariableNotifier } from "./Observer";
 
 export class Tuning {
 
     notes: VariableNotifier<string[]>;
 
-    constructor(...params: string[]) {
-        this.notes.var = params;
+    constructor(notes: string[]) {
+        this.notes = new VariableNotifier(notes);
     }
 
     canBeInNoteSet(noteset: NoteSet): boolean {

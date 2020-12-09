@@ -1,8 +1,8 @@
 import { GUI } from "../gui";
 import { Notifier } from "../definitions/Observer";
-import { DisplayableNote } from "../definitions/DisplayableNote";
+import { NotePosition } from "../definitions/NotePosition";
 import { Note } from "../definitions/Note";
-import { SettingsDisplay } from "../elements";
+import { SettingsDisplay } from "../gui/SettingsDisplay";
 
 // private SetupNote(note: NoteDisplay, currentNote: string, audio: Audio): NoteDisplay {
 //     note.addListener("click", note.toggle.bind(note)).
@@ -16,8 +16,8 @@ import { SettingsDisplay } from "../elements";
 export class NoteDisplay extends GUI.Element<HTMLDivElement> {
 
     note: Note;
-    selectedEvent: Notifier<DisplayableNote | Note>;
-    deselectedEvent: Notifier<DisplayableNote | Note>;
+    selectedEvent: Notifier<NotePosition | Note>;
+    deselectedEvent: Notifier<NotePosition | Note>;
     el_settings: SettingsDisplay;
 
     constructor(className: string, id: string = null, parent: string = "body", trigger: string, f: EventListener, note: Note) {

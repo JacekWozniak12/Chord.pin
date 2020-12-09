@@ -17,11 +17,11 @@ export class GuitarString extends GUI.Element<HTMLDivElement> {
 
     private createOpenStringNote(openString: string, stratingNote: string) {
         document.querySelector(openString);
-
     }
 
     private createFretNotes(startingNote: string, frets: Number) {
         for (let i = 1; i < frets; i++) {
+
         }
     }
 }
