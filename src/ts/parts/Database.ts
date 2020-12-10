@@ -1,4 +1,4 @@
-import { Chord } from "../Definitions/Chord";
+import { Chord } from "../definitions/Chord";
 import { Notifier } from "../definitions/Observer";
 import { Options } from "../definitions/Options";
 

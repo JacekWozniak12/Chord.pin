@@ -1,7 +1,7 @@
 import '../scss/main.scss';
 import { Fretboard } from "./gui/Fretboard";
 import { GUI } from './gui/GUI';
-import { Tuning } from "./Definitions/Tuning";
+import { Tuning } from "./definitions/Tuning";
 import { Parser } from './parts/Parser';
 
 let tuning = new Tuning(["E2", "A2", "D3", "G3", "B4", "E4"])

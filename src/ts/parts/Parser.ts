@@ -1,9 +1,16 @@
-import { Options } from "../Definitions/Options";
-import { Chord } from "../Definitions/Chord";
-import { Note } from "../Definitions/Note";
+import { Options } from "../definitions/Options";
+import { Chord } from "../definitions/Chord";
+import { Note } from "../definitions/Note";
 import { Main } from './Communication';
-import { Notifier } from '../Definitions/Observer';
-import { D_END, D_START, S_PARSER_CHORD_CONCAT, S_PARSER_DELAY, S_PARSER_DURATION, S_PARSER_LOADING, S_PARSER_PARAMETER_NEXT, S_PARSER_SAVE, S_PARSER_VOLUME } from "../definitions/Const";
+import { Notifier } from '../definitions/Observer';
+import { 
+    D_END, D_START, 
+    S_PARSER_CHORD_CONCAT, 
+    S_PARSER_DELAY, S_PARSER_DURATION, 
+    S_PARSER_LOADING, S_PARSER_PARAMETER_NEXT, 
+    S_PARSER_SAVE, S_PARSER_VOLUME 
+} 
+from "../definitions/Const";
 
 export class Parser {
 

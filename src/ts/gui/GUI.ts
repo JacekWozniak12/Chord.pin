@@ -6,14 +6,14 @@ export module GUI {
         children: HTMLElement[];
 
         constructor(
-            type: string = "div", className: string = null, id: string = null,
-            parent: string = "body", img: string = null, trigger: string = null,
-            f: EventListener = null
+            type: string = "div", 
+            className: string = null, 
+            id: string = null,
+            parent: string = "body", 
+            img: string = null
         ) {
             this.html = document.createElement(type) as T;
-            this.setClassName(className).
-                setId(id).addListener(trigger, f).
-                setImage(type, img);
+            this.setClassName(className).setId(id).setImage(type, img);
 
             this.children = [];
             if (parent == "" || parent == null) parent = "body";
@@ -84,9 +84,9 @@ export module GUI {
     export class InputElement<T extends HTMLInputElement> extends Element<T>{
         constructor(
             className: string = null, id: string = null,
-            parent: string = "body", img: string = null,
-            trigger: string = null, f: EventListener = null
-        ) { super("input", className, id, parent, img, trigger, f); }
+            parent: string = "body", img: string = null
+
+        ) { super("input", className, id, parent, img); }
 
         getValue(): string { return this.html.value; }
 

@@ -1,4 +1,4 @@
-import { Chord } from '../Definitions/Chord';
+import { Chord } from '../definitions/Chord';
 import { Options } from '../definitions/Options';
 import { Database } from './Database';
 

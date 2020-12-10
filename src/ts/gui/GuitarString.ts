@@ -1,5 +1,5 @@
 import { GUI } from "./GUI";
-import { NoteSet } from "../Definitions/NoteSet";
+import { NoteSet } from "../definitions/NoteSet";
 import { GuitarStringNote } from "./GuitarStringNote";
 
 export class GuitarString extends GUI.Element<HTMLDivElement> {

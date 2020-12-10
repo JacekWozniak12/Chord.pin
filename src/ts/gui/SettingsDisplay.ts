@@ -1,5 +1,5 @@
 import { GUI } from "./GUI";
-import { Options } from "../Definitions/Options";
+import { Options } from "../definitions/Options";
 
 
 export class SettingsDisplay extends GUI.Element<HTMLElement> {

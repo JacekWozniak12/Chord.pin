@@ -1,6 +1,6 @@
 import { Destination, PolySynth, Synth, Transport, Part } from 'Tone';
-import { Options } from "../Definitions/Options";
-import { Chord } from "../Definitions/Chord";
+import { Options } from "../definitions/Options";
+import { Chord } from "../definitions/Chord";
 
 export class Audio {
 
@@ -42,7 +42,7 @@ export class Audio {
             this.instrument.triggerAttackRelease(y.note, y.dur, x, y.volume);
         }, [])
 
-        chord.notes.var.forEach(e => {
+        chord.notes.variable.forEach(e => {
             e.options = new Options().setValuesOf(e.options);
             this.part.add(e.options.getDelay(),
                 {
