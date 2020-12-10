@@ -16,18 +16,20 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
     el_guitarStrings: GuitarString[];
 
     constructor(tuning: Tuning, frets: number, startingNote: string | Note | NotePosition, endingNote: string | Note | NotePosition) {
-        super();
-
+        super("div", "fretboard", "fretboard");
         this.frets = frets;
         this.el_guitarStrings = new Array<GuitarString>();
         this.noteSet = new NoteSet(startingNote, endingNote);
         this.tuning = tuning;
+        let openString = new GUI.Element("div", this.zeroFretName, this.zeroFretName);
 
-        if (!tuning.canBeInNoteSet(this.noteSet))
-            throw "Tuning can't be handled by current set of notes";
-        else {
+        if (tuning.canBeInNoteSet(this.noteSet)) {
             for (let i = 0; i < tuning.notes.var.length; i++) {
+                this.el_guitarStrings.push(new GuitarString(this.noteSet, tuning.notes.var[i], openString.htmlElement, 24));
             }
         }
+        else throw "Tuning can't be handled by current set of notes";
+
+        this.parentElements([openString].concat(this.el_guitarStrings));
     }
 }

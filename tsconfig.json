@@ -34,6 +34,6 @@
         "src/ts/Definitions/observer.ts",
         "src/ts/gui/GuitarString.ts",
         "src/ts/gui/Fretboard.ts",
-        "src/ts/gui/SettingsDisplay.ts", "src/ts/definitions/GuitarStringNote.ts", "src/ts/gui/GUI.ts", "src/ts/parts/Parser.ts",
+        "src/ts/gui/SettingsDisplay.ts", "src/ts/gui/GuitarStringNote.ts", "src/ts/gui/GUI.ts", "src/ts/parts/Parser.ts",
     ]
 }

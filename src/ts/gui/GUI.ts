@@ -1,5 +1,3 @@
-import { getTypeParameterOwner } from "typescript";
-
 export module GUI {
     export class Element<T extends HTMLElement>{
 

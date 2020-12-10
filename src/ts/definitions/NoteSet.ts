@@ -9,7 +9,6 @@ export class NoteSet {
 
     private noteArray: VariableNotifier<Note[]>;
     
-
     findPosition(note: Note | string): number {
         if (note instanceof Note)
             return this.noteArray.var.indexOf(note);
@@ -38,11 +37,7 @@ export class NoteSet {
     }
 
     private getNoteName(startingNote: string | Note | NotePosition): string {
-        if (startingNote instanceof Note) {
-            return startingNote.name;
-        }
-        else {
-            return startingNote;
-        }
+        if (startingNote instanceof Note) return startingNote.name;
+        else return startingNote;
     }
 }

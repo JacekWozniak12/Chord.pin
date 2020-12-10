@@ -3,27 +3,18 @@ import { Chord } from "../Definitions/Chord";
 import { Note } from "../Definitions/Note";
 import { Main } from './Communication';
 import { Notifier } from '../Definitions/Observer';
+import { D_END, D_START, S_PARSER_CHORD_CONCAT, S_PARSER_DELAY, S_PARSER_DURATION, S_PARSER_LOADING, S_PARSER_PARAMETER_NEXT, S_PARSER_SAVE, S_PARSER_VOLUME } from "../definitions/Const";
 
-// Delimiters
-enum D_START {
-    S_CHORD = "{",
-    S_OPTIONS = "("
-}
-enum D_END {
-    S_CHORD = "}",
-    S_OPTIONS = ")"
-}
+export class Parser {
 
-export class Parser{
-
-    current : Main;
+    current: Main;
     prompt: HTMLInputElement;
 
-    parseEvent : Notifier<Chord | Options>
-    saveEvent : Notifier<Chord | Options>;
-    loadEvent : Notifier<Chord | Options>;
+    parseEvent: Notifier<Chord | Options>
+    saveEvent: Notifier<Chord | Options>;
+    loadEvent: Notifier<Chord | Options>;
 
-    main : Main;
+    main: Main;
 
     constructor(prompt: HTMLInputElement) {
         this.prompt = prompt;
@@ -47,11 +38,11 @@ export class Parser{
             if (isFinished) return;
             else {
                 let globalSettings = false;
-                let search = input.indexOf(Parser.S_SAVE);
+                let search = input.indexOf(S_PARSER_SAVE);
                 let nameDescriptionPart = "";
 
                 if (search >= 2) {
-                    nameDescriptionPart = input.slice(search + Parser.S_SAVE.length, input.length);
+                    nameDescriptionPart = input.slice(search + S_PARSER_SAVE.length, input.length);
                     input = input.slice(0, search + 1).replace(">", "");
                 }
 
@@ -110,9 +101,9 @@ export class Parser{
         let r = new Chord([]);
 
         while (i < f) {
-            i = c.indexOf(this.S_CHORD_CONCAT);
+            i = c.indexOf(S_PARSER_CHORD_CONCAT);
             if (i < 2) i = f;
-            let t = c.slice(0, i).replace(this.S_CHORD_CONCAT, "");
+            let t = c.slice(0, i).replace(S_PARSER_CHORD_CONCAT, "");
             if (t.trim() != "")
                 r.notes.var.push(
                     this.parseNote(
@@ -143,7 +134,7 @@ export class Parser{
     }
 
     private HandleLoadProcedure(input: string): boolean {
-        let search = input.indexOf(Parser.S_LOADING);
+        let search = input.indexOf(S_PARSER_LOADING);
 
         if (search >= 0) {
             this.loadEvent.notify(this.loadChord(input, search));
@@ -155,7 +146,7 @@ export class Parser{
     saveChord(chord: Chord, input: string): void {
 
         if (chord == null || chord.notes.var.length < 1) throw "EMPTY CHORD";
-        let search = input.search(Parser.S_PARAMETER_NEXT)
+        let search = input.search(S_PARSER_PARAMETER_NEXT)
         let description = "";
 
         if (search >= 0) {
@@ -170,7 +161,7 @@ export class Parser{
     }
 
     loadChord(input: string, s: number): Chord {
-        let t = input.slice(s, Parser.S_LOADING.length);
+        let t = input.slice(s, S_PARSER_LOADING.length);
         let i = input.replace(t, "").trim();
         return this.main.getChord(i);
     }
@@ -239,12 +230,12 @@ export class Parser{
 
     static getOptions(input: string, def: Options = new Options()): Options {
         input = input.toLowerCase();
-        
+
         let result = def;
-        
-        let duration = this.getOptionNumberValue(this.S_DURATION, input);
-        let delay = this.getOptionNumberValue(this.S_DELAY, input);
-        let volume = this.getOptionNumberValue(this.S_VOLUME, input);
+
+        let duration = this.getOptionNumberValue(S_PARSER_DURATION, input);
+        let delay = this.getOptionNumberValue(S_PARSER_DELAY, input);
+        let volume = this.getOptionNumberValue(S_PARSER_VOLUME, input);
 
         if (duration != "" && duration != null) result.setDuration(this.getDuration(duration));
         if (delay != "" && delay != null) result.setDelay(this.getDelay(delay));
@@ -257,7 +248,7 @@ export class Parser{
         let startIndex = input.indexOf(symbol);
         if (startIndex >= 0) {
             let part = input.slice(startIndex, input.length);
-            let endIndex = part.search(this.S_PARAMETER_NEXT);
+            let endIndex = part.search(S_PARSER_PARAMETER_NEXT);
 
             if (endIndex >= 0) {
                 return input.slice(startIndex + symbol.length - 1, endIndex).replace(/([^0-9.])/g, "").trim();
@@ -279,15 +270,4 @@ export class Parser{
     static getVolume(input: string): number {
         return Number.parseFloat(input);
     }
-
-    static readonly S_LOADING = "<<";
-    static readonly S_SAVE = ">>";
-    static readonly S_DELAY = "d:";
-    static readonly S_DURATION = "t:";
-    static readonly S_VOLUME = "v:";
-    static readonly S_CHORD_CONCAT = "^";
-    static readonly S_STEP_SUB = "-";
-    static readonly S_STEP_ADD = "+";
-    static readonly S_PARAMETER_NEXT = ",";
-
 }

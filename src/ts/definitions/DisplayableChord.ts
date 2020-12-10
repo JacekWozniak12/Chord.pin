@@ -15,9 +15,7 @@ export class DisplayableChord extends Chord {
     }
 
     addNote(note: NotePosition | Note, noteSet: NoteSet = null): this {
-        if (note instanceof Note) {
-            note = new NotePosition(note.name, 0, note.options, noteSet);
-        }
+        if (note instanceof Note) { note = new NotePosition(note.name, 0, note.options, noteSet); }
         this.notes.var.unshift(note as NotePosition);
         return this;
     }
