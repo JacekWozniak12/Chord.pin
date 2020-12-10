@@ -13,17 +13,17 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     note: NotePosition;
     selectedEvent: Notifier<NotePosition | Note>;
     deselectedEvent: Notifier<NotePosition | Note>;
-    el_settings: SettingsDisplay;
+    element_settings: SettingsDisplay;
 
     constructor(noteName: string, index: number, set: NoteSet, toneString: string) {
         let note = new NotePosition(noteName, index, new Options(), set);
         super("div", "note", note.name.replace("#", "S") + "-on-" + toneString);
         this.note = note;
-        this.el_settings = new SettingsDisplay(note.options).
+        this.element_settings = new SettingsDisplay(note.options).
             addListener("click", function (event) { event.stopPropagation(); });
-        this.el_settings.htmlElement.classList.add("hidden");
+        this.element_settings.html.classList.add("hidden");
         this.setText(note.name);
-        this.parentElements([this.el_settings]);
+        this.parentElements([this.element_settings]);
         this.SetupEvents();
     }
 
@@ -34,11 +34,11 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     }
 
     showOptions() {
-        this.el_settings.htmlElement.classList.remove("hidden");
+        this.element_settings.html.classList.remove("hidden");
     }
 
     hideOptions() {
-        this.el_settings.htmlElement.classList.add("hidden");
+        this.element_settings.html.classList.add("hidden");
     }
 
     clear() {
@@ -50,7 +50,7 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     }
 
     select(note: Note = null) {
-        this.htmlElement.classList.add("note-selected", "important-note-selected");
+        this.html.classList.add("note-selected", "important-note-selected");
         let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
         found.forEach(x => {x.classList.add("note-selected"); });
         if (note != null) { this.note = new NotePosition(note.name, 0, new Options, this.note.getNoteSet()); }
@@ -58,7 +58,7 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     }
 
     deselect() {
-        this.htmlElement.classList.remove("note-selected", "important-note-selected");
+        this.html.classList.remove("note-selected", "important-note-selected");
         let found = document.querySelectorAll(`div.important-note-selected[id*="${this.note.name.replace("#", "S")}"]`);
         if (found.length == 0) {
             found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
@@ -68,7 +68,7 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     }
 
     toggle() {
-        if (this.htmlElement.classList.contains("important-note-selected")) this.deselect();
+        if (this.html.classList.contains("important-note-selected")) this.deselect();
         else this.select();
     }
 }

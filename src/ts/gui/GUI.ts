@@ -1,7 +1,7 @@
 export module GUI {
     export class Element<T extends HTMLElement>{
 
-        htmlElement: T;
+        html: T;
         img: string;
         children: HTMLElement[];
 
@@ -10,38 +10,38 @@ export module GUI {
             parent: string = "body", img: string = null, trigger: string = null,
             f: EventListener = null
         ) {
-            this.htmlElement = document.createElement(type) as T;
+            this.html = document.createElement(type) as T;
             this.setClassName(className).
                 setId(id).addListener(trigger, f).
                 setImage(type, img);
 
             this.children = [];
             if (parent == "" || parent == null) parent = "body";
-            document.querySelector(parent).appendChild(this.htmlElement);
+            document.querySelector(parent).appendChild(this.html);
         }
 
         setId(id: string): this {
-            if (id != "" && id != null) { this.htmlElement.id = id; }
+            if (id != "" && id != null) { this.html.id = id; }
             return this;
         }
 
         setClassName(className: string): this {
-            if (className != "" && className != null) this.htmlElement.className = className;
+            if (className != "" && className != null) this.html.className = className;
             return this;
         }
 
         setImage(type: string, img: string): this {
             if (img != "" && img != null && img != undefined) {
                 this.img = img;
-                if (type == "img") this.htmlElement.setAttribute("src", this.img);
-                else this.htmlElement.style.background = `url(${this.img})`;
+                if (type == "img") this.html.setAttribute("src", this.img);
+                else this.html.style.background = `url(${this.img})`;
             }
             return this;
         }
 
         clearParenting(): this {
             this.children.forEach(e => {
-                this.htmlElement.removeChild(e);
+                this.html.removeChild(e);
             })
             this.children = null;
             return this;
@@ -52,33 +52,33 @@ export module GUI {
 
             if (el[0] instanceof Element) {
                 el = el as Element<HTMLElement>[];
-                el.forEach(e => { this.htmlElement.appendChild(e.htmlElement); })
+                el.forEach(e => { this.html.appendChild(e.html); })
             }
             else array = el as Array<HTMLElement>;
 
-            array.forEach(e => { this.htmlElement.appendChild(e) });
+            array.forEach(e => { this.html.appendChild(e) });
             this.children = this.children.concat(array);
             return this;
         }
 
         setText(text: string): this {
-            this.htmlElement.innerText = text;
+            this.html.innerText = text;
             return this;
         }
 
         modifyAttribute(attribute: string, value: string) {
-            this.htmlElement.setAttribute(attribute, value);
+            this.html.setAttribute(attribute, value);
             return this;
         }
 
         addListener(trigger: string, f: EventListener): this {
             if (f != null && trigger != "" && trigger != null) {
-                this.htmlElement.addEventListener(trigger, f);
+                this.html.addEventListener(trigger, f);
             }
             return this;
         }
 
-        delete() { this.htmlElement.remove(); }
+        delete() { this.html.remove(); }
     }
 
     export class InputElement<T extends HTMLInputElement> extends Element<T>{
@@ -88,10 +88,10 @@ export module GUI {
             trigger: string = null, f: EventListener = null
         ) { super("input", className, id, parent, img, trigger, f); }
 
-        getValue(): string { return this.htmlElement.value; }
+        getValue(): string { return this.html.value; }
 
         setValue(value: string): this {
-            this.htmlElement.value = value;
+            this.html.value = value;
             return this;
         }
     }

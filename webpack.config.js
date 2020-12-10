@@ -11,7 +11,7 @@ module.exports = {
         extensions: [".tsx", ".ts", ".js", ".json"]
     },
     
-    entry: path.resolve(__dirname, 'src') + "/ts/app.ts",
+    entry: path.resolve(__dirname, 'src') + "/ts/App.ts",
     
     output:{
         filename: "index.js",

@@ -10,7 +10,7 @@ const app = new GUI.Element("div", null, "chord.pin");
 const title = new GUI.Element("h1").setText("chord.pin");
 const fretboard = new Fretboard(tuning, 24, "E2", "E4");
 const prompt = new GUI.InputElement("prompt", "prompt");
-prompt.htmlElement.placeholder = "...write here";
-const parser = new Parser(prompt.htmlElement);
+prompt.html.placeholder = "...write here";
+const parser = new Parser(prompt.html);
 
 app.parentElements([prompt, title, fretboard]);

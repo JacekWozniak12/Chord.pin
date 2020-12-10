@@ -17,7 +17,7 @@ export class GuitarString extends GUI.Element<HTMLDivElement> {
 
     private createOpenStringNote(openString: HTMLElement, startingNote: string, set: NoteSet, id: string) {
         let note = new GuitarStringNote(startingNote, 0, set, id);
-        openString.appendChild(note.htmlElement);
+        openString.appendChild(note.html);
         this.notes.push(note);
     }
 

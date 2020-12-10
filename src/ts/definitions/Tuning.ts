@@ -10,7 +10,7 @@ export class Tuning {
     }
 
     canBeInNoteSet(noteset: NoteSet): boolean {
-        this.notes.var.forEach(e => {
+        this.notes.variable.forEach(e => {
             if (noteset.findPosition(e) == -1)
                 return false;
         });
@@ -18,7 +18,7 @@ export class Tuning {
     }
 
     toString(): string {
-        return this.notes.var.join("-");
+        return this.notes.variable.join("-");
     }
 
 }

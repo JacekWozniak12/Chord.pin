@@ -16,22 +16,22 @@ export class DisplayableChord extends Chord {
 
     addNote(note: NotePosition | Note, noteSet: NoteSet = null): this {
         if (note instanceof Note) { note = new NotePosition(note.name, 0, note.options, noteSet); }
-        this.notes.var.unshift(note as NotePosition);
+        this.notes.variable.unshift(note as NotePosition);
         return this;
     }
 
     deleteNote(note: NotePosition): this {
-        this.notes.var = this.notes.var.filter(x => x.getPosition() != note.getPosition());
+        this.notes.variable = this.notes.variable.filter(x => x.getPosition() != note.getPosition());
         return this;
     }
 
     deleteAllNoteInstances(note: Note): this {
-        this.notes.var = this.notes.var.filter(x => x.name != note.name);
+        this.notes.variable = this.notes.variable.filter(x => x.name != note.name);
         return this;
     }
 
     setNotes(notes: Note[] | NotePosition[]) {
         this.notes = null;
-        notes.forEach(e => {notes.push(new NotePosition(e.name, 0, e.options, this.noteSet.var)); });
+        notes.forEach(e => {notes.push(new NotePosition(e.name, 0, e.options, this.noteSet.variable)); });
     }
 }

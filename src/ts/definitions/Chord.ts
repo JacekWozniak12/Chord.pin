@@ -15,23 +15,23 @@ export class Chord {
 
     returnContent(): string {
         let content = "";
-        this.notes.var.forEach(element => { content = content.concat(element.name, " ^ "); });
+        this.notes.variable.forEach(e => { content = content.concat(e.name, " ^ "); });
         return content.slice(0, content.length - 2);
     }
 
     addChord(chord: Chord): this {
-        chord.notes.var.forEach(x => this.notes.var.push(x));
+        chord.notes.variable.forEach(x => this.notes.variable.push(x));
         return this;
     }
 
     setValuesOf(chord: Chord): this {
-        this.name.var = chord.name.var;
-        this.setNotes(chord.notes.var);
-        this.description.var = chord.description.var;
+        this.name.variable = chord.name.variable;
+        this.setNotes(chord.notes.variable);
+        this.description.variable = chord.description.variable;
         return this;
     }
 
     setNotes(notes: Note[]) {
-        this.notes.var = notes;
+        this.notes.variable = notes;
     }
 }

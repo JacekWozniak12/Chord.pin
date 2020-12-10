@@ -11,9 +11,9 @@ export class NoteSet {
     
     findPosition(note: Note | string): number {
         if (note instanceof Note)
-            return this.noteArray.var.indexOf(note);
+            return this.noteArray.variable.indexOf(note);
         else
-            return this.noteArray.var.indexOf((this.noteArray.var.filter(e => e.name == note)[0]));
+            return this.noteArray.variable.indexOf((this.noteArray.variable.filter(e => e.name == note)[0]));
     }
 
     constructor(startingNote: string | Note | NotePosition, endingNote: string | Note | NotePosition) {
@@ -31,7 +31,7 @@ export class NoteSet {
         let noteName = startingNote;
 
         while (index < MAX_NOTESET_SIZE && Frequency(startingNote).transpose(index).toNote() != endingNote) {
-            this.noteArray.var.push(new NotePosition(noteName, index, new Options(), this));
+            this.noteArray.variable.push(new NotePosition(noteName, index, new Options(), this));
             index++;
         }
     }

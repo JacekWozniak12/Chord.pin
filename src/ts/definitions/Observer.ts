@@ -35,16 +35,16 @@ export class VariableNotifier<T> extends Notifier {
 
     constructor(value: T) {
         super();
-        this.var = value;
+        this.variable = value;
     }
 
     private _var: T;
 
-    get var(): T {
+    get variable(): T {
         return this._var;
     }
 
-    set var(value: T) {
+    set variable(value: T) {
         if (this._var === value)
             return;
         else {

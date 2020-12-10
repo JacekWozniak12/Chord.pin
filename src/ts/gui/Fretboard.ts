@@ -26,8 +26,8 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
         let stringCollection = new GUI.Element("div", "", "tuning--"+tuning)
 
         if (tuning.canBeInNoteSet(this.noteSet)) {
-            for (let i = 0; i < tuning.notes.var.length; i++) {
-                this.el_guitarStrings.push(new GuitarString(this.noteSet, tuning.notes.var[i], openString.htmlElement, 24));
+            for (let i = 0; i < tuning.notes.variable.length; i++) {
+                this.el_guitarStrings.push(new GuitarString(this.noteSet, tuning.notes.variable[i], openString.html, 24));
             }
         }
         else throw "Tuning can't be handled by current set of notes";

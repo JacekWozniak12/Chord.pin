@@ -22,36 +22,36 @@ export class Options {
     }
 
     getVolume(): number {
-        return this.volume.var;
+        return this.volume.variable;
     }
 
     getDelay(): number {
-        return this.delay.var;
+        return this.delay.variable;
     }
 
     getDuration(): number {
-        return this.duration.var;
+        return this.duration.variable;
     }
 
     setVolume(value: string | number) {
-        this.volume.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_VOLUME);
+        this.volume.variable = Library.clamp(Number.parseFloat(value as string), 0, MAX_VOLUME);
         return this;
     }
 
     setDelay(value: string | number) {
-        this.delay.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_DELAY);
+        this.delay.variable = Library.clamp(Number.parseFloat(value as string), 0, MAX_DELAY);
         return this;
     }
 
     setDuration(value: string | number) {
-        this.duration.var = Library.clamp(Number.parseFloat(value as string), 0, MAX_DURATION);
+        this.duration.variable = Library.clamp(Number.parseFloat(value as string), 0, MAX_DURATION);
         return this;
     }
 
     setValuesOf(options: Options) {
-        this.setVolume(options.volume.var);
-        this.setDelay(options.delay.var);
-        this.setDuration(options.duration.var);
+        this.setVolume(options.volume.variable);
+        this.setDelay(options.delay.variable);
+        this.setDuration(options.duration.variable);
         return this;
     }
 

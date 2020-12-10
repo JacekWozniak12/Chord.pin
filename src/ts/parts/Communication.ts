@@ -13,7 +13,7 @@ export class Main {
     chords: Chord[];
 
     getChord(str : string) : Chord{
-        return this.chords.filter(x => x.name.var == str)[0];
+        return this.chords.filter(x => x.name.variable == str)[0];
     }
 
     constructor(){

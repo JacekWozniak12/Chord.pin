@@ -85,7 +85,7 @@ export class Parser {
                     this.saveChord(chord, nameDescriptionPart)
                 }
 
-                if (chord.notes.var.length > 0) {
+                if (chord.notes.variable.length > 0) {
                 }
 
                 else if (globalSettings) {
@@ -105,7 +105,7 @@ export class Parser {
             if (i < 2) i = f;
             let t = c.slice(0, i).replace(S_PARSER_CHORD_CONCAT, "");
             if (t.trim() != "")
-                r.notes.var.push(
+                r.notes.variable.push(
                     this.parseNote(
                         t, def
                     )
@@ -145,7 +145,7 @@ export class Parser {
 
     saveChord(chord: Chord, input: string): void {
 
-        if (chord == null || chord.notes.var.length < 1) throw "EMPTY CHORD";
+        if (chord == null || chord.notes.variable.length < 1) throw "EMPTY CHORD";
         let search = input.search(S_PARSER_PARAMETER_NEXT)
         let description = "";
 
@@ -155,8 +155,8 @@ export class Parser {
         else search = input.length;
 
         let name = input.slice(2, search).trim();
-        chord.name.var = name;
-        chord.description.var = description;
+        chord.name.variable = name;
+        chord.description.variable = description;
         this.saveEvent.notify(chord);
     }
 
