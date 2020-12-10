@@ -3,7 +3,7 @@
   "name": "chord.pin",
   "version": "0.0.1",
   "description": "Chord building app.",
-  "main": "./build/index",
+  "main": "./docs/index",
   "scripts": {
     "test": "jest",
     "start": "npx webpack-dev-server --content-base src",

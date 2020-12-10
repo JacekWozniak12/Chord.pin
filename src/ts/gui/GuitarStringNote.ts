@@ -24,6 +24,21 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
         this.el_settings.htmlElement.classList.add("hidden");
         this.setText(note.name);
         this.parentElements([this.el_settings]);
+        this.SetupEvents();
+    }
+
+    private SetupEvents() {
+        this.addListener("click", this.toggle.bind(this)).
+            addListener("mouseover", this.showOptions.bind(this)).
+            addListener("mouseout", this.hideOptions.bind(this))
+    }
+
+    showOptions() {
+        this.el_settings.htmlElement.classList.remove("hidden");
+    }
+
+    hideOptions() {
+        this.el_settings.htmlElement.classList.add("hidden");
     }
 
     clear() {
@@ -37,9 +52,7 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     select(note: Note = null) {
         this.htmlElement.classList.add("note-selected", "important-note-selected");
         let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-        found.forEach(x => {
-            x.classList.add("note-selected");
-        });
+        found.forEach(x => {x.classList.add("note-selected"); });
         if (note != null) { this.note = new NotePosition(note.name, 0, new Options, this.note.getNoteSet()); }
         this.selectedEvent.notify(this.note);
     }
@@ -49,9 +62,7 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
         let found = document.querySelectorAll(`div.important-note-selected[id*="${this.note.name.replace("#", "S")}"]`);
         if (found.length == 0) {
             found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
-            found.forEach(x => {
-                x.classList.remove("note-selected");
-            });
+            found.forEach(x => { x.classList.remove("note-selected"); });
         }
         this.deselectedEvent.notify(this.note);
     }
