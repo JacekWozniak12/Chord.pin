@@ -17,4 +17,8 @@ export class Tuning {
         return true;
     }
 
+    toString(): string {
+        return this.notes.var.join("-");
+    }
+
 }

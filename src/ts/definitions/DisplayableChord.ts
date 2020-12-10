@@ -32,8 +32,6 @@ export class DisplayableChord extends Chord {
 
     setNotes(notes: Note[] | NotePosition[]) {
         this.notes = null;
-        notes.forEach(element => {
-            notes.push(new NotePosition(element.name, 0, element.options, this.noteSet.var));
-        });
+        notes.forEach(e => {notes.push(new NotePosition(e.name, 0, e.options, this.noteSet.var)); });
     }
 }

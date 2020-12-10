@@ -17,7 +17,7 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
 
     constructor(noteName: string, index: number, set: NoteSet, toneString: string) {
         let note = new NotePosition(noteName, index, new Options(), set);
-        super("div", "", note.name.replace("#", "S") + "-on-" + toneString);
+        super("div", "note", note.name.replace("#", "S") + "-on-" + toneString);
         this.note = note;
         this.el_settings = new SettingsDisplay(note.options).
             addListener("click", function (event) { event.stopPropagation(); });

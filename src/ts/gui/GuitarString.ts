@@ -8,7 +8,7 @@ export class GuitarString extends GUI.Element<HTMLDivElement> {
 
     constructor(set: NoteSet, startingNote: string, openString: HTMLElement, frets: Number) {
         let id = "guitar-string-" + startingNote;
-        super("div", "", id);
+        super("div", "string", id);
         frets = frets;
         this.notes = new Array<GuitarStringNote>();
         this.createOpenStringNote(openString, startingNote, set, id);
