@@ -5,8 +5,6 @@ import { Chord } from "../definitions/Chord";
 export class Audio {
 
     instrument: PolySynth
-    chord: Chord;
-    options: Options;
     part: Part;
 
     constructor() {
@@ -14,18 +12,13 @@ export class Audio {
         this.part = new Part();
     }
 
-    setOptions(options: Options): Options { return this.options = options; }
-    updateChord(chord: Chord): Chord { return this.chord = chord; }
-    setChord(chord): Chord { return this.chord = chord; }
-    getChord(): Chord { return this.chord; }
-
     setup(): this {
-        this.chord = new Chord([])
         this.instrument = new PolySynth(
             Synth,
             {
                 oscillator: { type: 'triangle8' }
             }).toDestination();
+
         return this;
     }
 
@@ -34,9 +27,10 @@ export class Audio {
         this.instrument = null;
     }
 
-    play(chord: Chord = this.chord): void {
-        let vol = this.options.getVolume();
+    play(chord: Chord, options : Options): void {
         this.stop();
+        let vol = options.getVolume();
+        
 
         this.part = new Part((x, y) => {
             this.instrument.triggerAttackRelease(y.note, y.dur, x, y.volume);

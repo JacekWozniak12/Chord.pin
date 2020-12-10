@@ -17,13 +17,13 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
 
     constructor(tuning: Tuning, frets: number, startingNote: string | Note | NotePosition, endingNote: string | Note | NotePosition) {
         
-        super("div", "fretboard", "fretboard");
+        super("div", "tuning-"+tuning);
         this.frets = frets;
         this.element_guitarStrings = new Array<GuitarString>();
         this.noteSet = new NoteSet(startingNote, endingNote);
         this.tuning = tuning;
         let openString = new GUI.Element("div", this.zeroFretName, this.zeroFretName);
-        let stringCollection = new GUI.Element("div", "", "tuning--"+tuning)
+        let stringCollection = new GUI.Element("div", "", "fretboard")
 
         if (tuning.canBeInNoteSet(this.noteSet)) {
             for (let i = 0; i < tuning.notes.variable.length; i++) {

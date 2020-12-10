@@ -14,7 +14,6 @@ from "../definitions/Const";
 
 export class Parser {
 
-    current: Main;
     prompt: HTMLInputElement;
 
     parseEvent: Notifier<Chord | Options>
@@ -23,8 +22,9 @@ export class Parser {
 
     main: Main;
 
-    constructor(prompt: HTMLInputElement) {
+    constructor(prompt: HTMLInputElement, main : Main) {
         this.prompt = prompt;
+        this.main = main;
         this.prompt.addEventListener
             ("keydown",
                 ((event: KeyboardEvent) => {
@@ -41,6 +41,7 @@ export class Parser {
         let save = false;
 
         if (e.key == "Enter" && input != null && input != "") {
+            console.log("enter");
             let isFinished = this.HandleLoadProcedure(input);
             if (isFinished) return;
             else {

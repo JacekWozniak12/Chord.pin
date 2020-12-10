@@ -8,10 +8,7 @@ export class Note {
             this.name = Frequency(name).transpose(transposition).toNote();
             this.options = options;
         }
-        else {
-            console.log(name);
-            throw "Invalid note name";
-        }
+        else throw "Invalid note name";
     }
 
     name: string;
@@ -21,11 +18,8 @@ export class Note {
         let temp = name.toUpperCase().trim()
             .replace(/([^ABCDEFG][^#b][^0-9]|[^ABCDEFG][^0-9])/g, "");
 
-        if (temp.length > 1 && temp.length < 4)
-            return true;
-        else {
-            console.log(name);
-            return false;
-        }
+        if (temp.length > 1 && temp.length < 4) return true;
+        else return false;
+        
     }
 }

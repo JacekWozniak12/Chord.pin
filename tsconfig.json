@@ -23,7 +23,7 @@
         "src/ts/*",
         "src/ts/definitions/Note.ts",
         "src/ts/definitions/Chord.ts",
-        "src/ts/definitions/DisplayableChord.ts",
+        "src/ts/definitions/ChordPosition.ts",
         "src/ts/definitions/NotePosition.ts",
         "src/ts/definitions/NoteSet.ts",
         "src/ts/definitions/Options.ts",

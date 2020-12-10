@@ -1,5 +1,6 @@
 import { Chord } from '../definitions/Chord';
 import { Options } from '../definitions/Options';
+import { Audio } from './Audio';
 import { Database } from './Database';
 
 // database - both options / chord
@@ -9,6 +10,7 @@ import { Database } from './Database';
 
 export class Main {
     database: Database;
+    audio : Audio;
     options: Options;
     chords: Chord[];
 
@@ -17,8 +19,18 @@ export class Main {
     }
 
     constructor(){
-        
+        this.database = new Database();
+        this.audio = new Audio();
+        this.options = this.database.options;
+        this.chords = this.database.chords;
     }
+
+
+    
+
+    
+
+
 }
 
 

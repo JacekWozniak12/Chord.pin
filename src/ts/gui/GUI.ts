@@ -43,7 +43,7 @@ export module GUI {
             this.children.forEach(e => {
                 this.html.removeChild(e);
             })
-            this.children = null;
+            this.children = new Array();
             return this;
         }
 

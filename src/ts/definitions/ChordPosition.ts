@@ -4,7 +4,7 @@ import { NoteSet } from "./NoteSet";
 import { NotePosition } from "./NotePosition";
 import { VariableNotifier } from "./Observer";
 
-export class DisplayableChord extends Chord {
+export class ChordPosition extends Chord {
 
     notes: VariableNotifier<NotePosition[]>;
     noteSet: VariableNotifier<NoteSet>;

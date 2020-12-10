@@ -1,5 +1,7 @@
+import { GUI } from "../gui/GUI";
 import { Note } from "./Note";
 import { VariableNotifier } from "./Observer";
+import { ChordList } from "../gui/ChordList";
 
 export class Chord {
 
@@ -33,5 +35,13 @@ export class Chord {
 
     setNotes(notes: Note[]) {
         this.notes.variable = notes;
+    }
+
+    createSelectable(list: ChordList): GUI.Element<HTMLOptionElement> {
+        let chordName = this.returnContent();
+        let selectable = new GUI.Element<HTMLOptionElement>("option", chordName);
+        selectable.modifyAttribute("value", chordName);
+        selectable.setText(chordName);
+        return selectable;
     }
 }
