@@ -3,14 +3,14 @@ import { Chord } from "../definitions/Chord";
 import { Note } from "../definitions/Note";
 import { Main } from './Communication';
 import { Notifier } from '../definitions/Observer';
-import { 
-    D_END, D_START, 
-    S_PARSER_CHORD_CONCAT, 
-    S_PARSER_DELAY, S_PARSER_DURATION, 
-    S_PARSER_LOADING, S_PARSER_PARAMETER_NEXT, 
-    S_PARSER_SAVE, S_PARSER_VOLUME 
-} 
-from "../definitions/Const";
+import {
+    D_END, D_START,
+    S_PARSER_CHORD_CONCAT,
+    S_PARSER_DELAY, S_PARSER_DURATION,
+    S_PARSER_LOADING, S_PARSER_PARAMETER_NEXT,
+    S_PARSER_SAVE, S_PARSER_VOLUME
+}
+    from "../definitions/Const";
 
 export class Parser {
 
@@ -22,7 +22,7 @@ export class Parser {
 
     main: Main;
 
-    constructor(prompt: HTMLInputElement, main : Main) {
+    constructor(prompt: HTMLInputElement, main: Main) {
         this.prompt = prompt;
         this.main = main;
         this.prompt.addEventListener
@@ -41,7 +41,6 @@ export class Parser {
         let save = false;
 
         if (e.key == "Enter" && input != null && input != "") {
-            console.log("enter");
             let isFinished = this.HandleLoadProcedure(input);
             if (isFinished) return;
             else {
@@ -59,7 +58,7 @@ export class Parser {
                 let chords: Chord[] = new Array();
                 search = input.indexOf(D_START.S_CHORD);
 
-                let settings = this.main.options;
+                let settings = this.main.options.variable;
                 while (search != -1) {
                     let part = Parser.getGroup(input, D_START.S_CHORD, D_END.S_CHORD);
                     input = input.replace(part, "");

@@ -12,15 +12,16 @@ export class ChordList extends GUI.Element<HTMLSelectElement>
     {
         super("select", "chordSelection");
         this.selectEvent = new Notifier<Chord>();
+        
         this.main = main;
-        this.update(main.chords);
-        this.html.onselect = e => this.select();
+        this.update(this.main.chords.variable);
+        this.main.chords.subscribe(this.update);
         this.select();
+        this.html.onselect = e => this.select();
     }
 
-    update(chords: Chord[])
+    update(chords : Chord[])
     {
-        this.main.chords = chords;
         this.clearParenting();
         chords.forEach(e => 
             {

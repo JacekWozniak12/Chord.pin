@@ -1,7 +1,11 @@
 import { Chord } from '../definitions/Chord';
+import { NotePosition } from '../definitions/NotePosition';
+import { VariableNotifier } from '../Definitions/Observer';
 import { Options } from '../definitions/Options';
+import { GUI } from '../gui/GUI';
 import { Audio } from './Audio';
 import { Database } from './Database';
+import { Parser } from './Parser';
 
 // database - both options / chord
 // settings changer - options 
@@ -10,25 +14,32 @@ import { Database } from './Database';
 
 export class Main {
     database: Database;
-    audio : Audio;
-    options: Options;
-    chords: Chord[];
+    audio: Audio;
+    options: VariableNotifier<Options>;
+    chords: VariableNotifier<Chord[]>;
+    selectedNotes: NotePosition[];
+    parser: Parser;
 
-    getChord(str : string) : Chord{
-        return this.chords.filter(x => x.name.variable == str)[0];
+    getChord(str: string): Chord {
+        return this.chords.variable.filter(x => x.name.variable == str)[0];
     }
 
-    constructor(){
+    constructor() {
         this.database = new Database();
         this.audio = new Audio();
-        this.options = this.database.options;
-        this.chords = this.database.chords;
+        this.options = new VariableNotifier(this.database.options);
+        this.chords = new VariableNotifier(this.database.chords);
+        const prompt = new GUI.InputElement("prompt", "prompt");
+        prompt.html.placeholder = "...write here";
+        this.parser = new Parser(prompt.html, this);
     }
 
 
-    
 
-    
+
+
+
+
 
 
 }

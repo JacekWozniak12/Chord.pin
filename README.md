@@ -35,7 +35,7 @@ Application, that let's you create by using **custom** syntax. It lets an user c
 - Frequency based on [equal-tempered scales](https://pages.mtu.edu/~suits/notefreqs.html)
 
 ## How To Run
-Use *index.html* in *build* folder.
+- Simply go [here](docs/index.html)
 
 ## How To Use
 
@@ -72,6 +72,8 @@ Settings for
 
 ### Text prompt syntax
 (wip)
+
+
 #### Rules
 
 * Case insensitive

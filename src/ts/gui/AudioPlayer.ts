@@ -45,7 +45,7 @@ export class Player extends GUI.Element<HTMLDivElement>{
     }
 
     private setupSettings() {
-        this.element_settings = new SettingsDisplay(this.main.options);
+        this.element_settings = new SettingsDisplay(this.main.options.variable);
     }
 
     private setupPlay() {
@@ -54,7 +54,7 @@ export class Player extends GUI.Element<HTMLDivElement>{
             "click", 
             e => this.audio.play(
                 this.chord, 
-                this.main.options));
+                this.main.options.variable));
     }
 
     private setupStop() {
