@@ -2,10 +2,10 @@
     "compilerOptions": {
         "lib": [
             "dom",
-            "es6"
+            "es5"
         ],
         "module": "commonjs",
-        "target": "es6",
+        "target": "es5",
         "removeComments": true,
         "allowSyntheticDefaultImports": true,
         "baseUrl": "./",
@@ -37,5 +37,8 @@
         "src/ts/gui/GuitarStringNote.ts", 
         "src/ts/gui/GUI.ts", 
         "src/ts/parts/Parser.ts",
+        "src/ts/parts/Audio.ts",
+        "src/ts/parts/Database.ts",
+        "src/ts/parts/Communication.ts"
     ]
 }

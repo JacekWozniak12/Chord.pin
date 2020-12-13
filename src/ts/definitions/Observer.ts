@@ -35,7 +35,7 @@ export class VariableNotifier<T> extends Notifier {
 
     constructor(value: T) {
         super();
-        this.variable = value;
+        this._var = value;
     }
 
     private _var: T;

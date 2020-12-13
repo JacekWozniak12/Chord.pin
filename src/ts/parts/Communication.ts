@@ -14,7 +14,6 @@ import { Parser } from './Parser';
 
 export class Main {
     database: Database;
-    audio: Audio;
     options: VariableNotifier<Options>;
     chords: VariableNotifier<Chord[]>;
     selectedNotes: NotePosition[];
@@ -26,7 +25,6 @@ export class Main {
 
     constructor() {
         this.database = new Database();
-        this.audio = new Audio();
         this.options = new VariableNotifier(this.database.options);
         this.chords = new VariableNotifier(this.database.chords);
         const prompt = new GUI.InputElement("prompt", "prompt");

@@ -5,12 +5,12 @@ import { NoteSet } from "../definitions/NoteSet";
 import { Note } from "../definitions/Note";
 import { GuitarString } from "./GuitarString";
 import { Chord } from "../definitions/Chord";
-import { Notifier } from "../Definitions/Observer";
+import { Notifier } from "../definitions/Observer";
 
 export class Fretboard extends GUI.Element<HTMLDivElement>
 {
     noteSet: NoteSet;
-    notes : NotePosition[];
+    selectedNotes : NotePosition[];
     tuning: Tuning;
     frets: number;
     addEvent: Notifier<Chord>;
@@ -33,7 +33,7 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
     }
 
     addNotesFromFretboard() {
-        let chord = new Chord(this.notes);
+        let chord = new Chord(this.selectedNotes);
         this.addEvent.notify(chord);
         return chord;
     }

@@ -17,8 +17,8 @@ export class GuitarString extends GUI.Element<HTMLDivElement>{
 
     private createOpenStringNote(openString: HTMLElement, startingNote: string, set: NoteSet, id: string, fretboard: Fretboard) {
         let note = new GuitarStringNote(startingNote, 0, set, id);
-        note.selectedEvent.subscribe(x => fretboard.notes.push(x));
-        note.deselectedEvent.subscribe(x => fretboard.notes.find(x));
+        note.selectedEvent.subscribe(x => fretboard.selectedNotes.push(x));
+        note.deselectedEvent.subscribe(x => fretboard.selectedNotes.find(x));
         openString.appendChild(note.html);
     }
 

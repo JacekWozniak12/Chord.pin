@@ -1,4 +1,5 @@
 import { Chord } from "../definitions/Chord";
+import { Options } from "../definitions/Options";
 import { Audio } from "../parts/Audio";
 import { Main } from "../parts/Communication";
 import { ChordList } from "./ChordList";
@@ -8,28 +9,29 @@ import { SettingsDisplay } from "./SettingsDisplay";
 export class Player extends GUI.Element<HTMLDivElement>{
 
     audio: Audio;
-    chord : Chord;
-    chordList : ChordList;
+    current_chord : Chord;
     main: Main;
+    
     element_play: GUI.Element<HTMLButtonElement>;
     element_stop: GUI.Element<HTMLButtonElement>;
+    element_chordList : ChordList;
     element_settings: SettingsDisplay;
 
     constructor(main: Main, chordList : ChordList) {
         super();
         this.main = main;
-        this.audio = main.audio;
+        this.audio = new Audio();
         this.setup();
         this.getChordList(chordList);
     }
 
     private getChordList(chordList : ChordList)
     {
-        if(this.chordList != null) 
-            this.chordList.selectEvent.unsubscribe(this.setChord);
+        if(this.element_chordList != null) 
+            this.element_chordList.selectEvent.unsubscribe(this.setChord);
 
-        this.chordList = chordList
-        this.chordList?.selectEvent.subscribe(this.setChord);
+        this.element_chordList = chordList
+        this.element_chordList?.selectEvent.subscribe(this.setChord);
     }
 
     private setup() {
@@ -41,10 +43,11 @@ export class Player extends GUI.Element<HTMLDivElement>{
 
     private setChord(chord : Chord)
     {
-        this.chord = chord;
+        this.current_chord = chord;
     }
 
     private setupSettings() {
+        console.log(this.main.options);
         this.element_settings = new SettingsDisplay(this.main.options.variable);
     }
 
@@ -53,7 +56,7 @@ export class Player extends GUI.Element<HTMLDivElement>{
         this.element_play.addListener(
             "click", 
             e => this.audio.play(
-                this.chord, 
+                this.current_chord, 
                 this.main.options.variable));
     }
 

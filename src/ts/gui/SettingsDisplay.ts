@@ -12,14 +12,16 @@ export class SettingsDisplay extends GUI.Element<HTMLElement> {
     options: Options;
 
     constructor(options: Options, type: string = "div",
-        className: string = "settings", 
+        className: string = "settings",
         id: string = null, parent: string = "body") {
         super(type, className, id, parent);
-
+        
         if (options != null)
             this.options = options;
         else
             this.options = new Options();
+
+        console.log(this.options);
 
         this.createVolume();
         this.createDuration();
