@@ -1,7 +1,6 @@
 import { GUI } from "./GUI";
 import { Options } from "../definitions/Options";
 
-
 export class SettingsDisplay extends GUI.Element<HTMLElement> {
 
     element_title: GUI.Element<HTMLDivElement>;
@@ -15,50 +14,43 @@ export class SettingsDisplay extends GUI.Element<HTMLElement> {
         className: string = "settings",
         id: string = null, parent: string = "body") {
         super(type, className, id, parent);
-        
+
         if (options != null)
             this.options = options;
         else
             this.options = new Options();
 
-        console.log(this.options);
-
         this.createVolume();
         this.createDuration();
         this.createDelay();
-
-        this.element_delay.modifyAttribute("placeholder", `${this.options.getDelay()}`);
-        this.element_duration.modifyAttribute("placeholder", `${this.options.getDuration()}`);
-
-        this.setOptions(this.options);
+        this.element_delay.modifyAttribute("placeholder", `${this.options.delay.variable}`);
+        this.element_duration.modifyAttribute("placeholder", `${this.options.duration.variable}`);
     }
 
     notifyHandler(object: Object) {
-        if (object instanceof Options) {
-            this.setOptions(object);
-        }
+        if (object instanceof Options) { this.setOptions(object); }
     }
 
     setOptions(options: Options): this {
-        this.options.setValuesOf(options);
-        this.element_volume.html.value = <any>this.options.getVolume();
-        this.element_delay.html.value = <any>this.options.getDelay();
-        this.element_duration.html.value = <any>this.options.getDuration();
+        this.options = options;
+        this.element_volume.html.value = <any>this.options.volume;
+        this.element_delay.html.value = <any>this.options.delay;
+        this.element_duration.html.value = <any>this.options.duration;
         return this;
     }
 
     private updateVolume(): this {
-        this.options.setVolume(this.element_volume.html.value);
+        this.options.volume.variable = parseFloat(this.element_volume.html.value);
         return this;
     }
 
     private updateDuration(): this {
-        this.options.setDuration(this.element_duration.html.value);
+        this.options.duration.variable = parseFloat(this.element_duration.html.value);
         return this;
     }
 
     private updateDelay(): this {
-        this.options.setDelay(this.element_delay.html.value);
+        this.options.delay.variable = parseFloat(this.element_delay.html.value);
         return this;
     }
 

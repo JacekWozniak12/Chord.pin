@@ -19,18 +19,9 @@ export class Options {
             this.duration = new VariableNotifier(0.5);
             console.log(e + "\nWriting default options");
         }
-    }
-
-    getVolume(): number {
-        return this.volume.variable;
-    }
-
-    getDelay(): number {
-        return this.delay.variable;
-    }
-
-    getDuration(): number {
-        return this.duration.variable;
+        this.volume.subscribe(x => this.setVolume(this.volume.variable));
+        this.delay.subscribe(x => this.setDelay(this.delay.variable));
+        this.duration.subscribe(x => this.setDuration(this.duration.variable));
     }
 
     setVolume(value: string | number) {
@@ -48,15 +39,8 @@ export class Options {
         return this;
     }
 
-    setValuesOf(options: Options) {
-        this.setVolume(options.volume.variable);
-        this.setDelay(options.delay.variable);
-        this.setDuration(options.duration.variable);
-        return this;
-    }
-
-    private duration: VariableNotifier<number>;
-    private delay: VariableNotifier<number>;
-    private volume: VariableNotifier<number>;
+    duration: VariableNotifier<number>;
+    delay: VariableNotifier<number>;
+    volume: VariableNotifier<number>;
 
 }

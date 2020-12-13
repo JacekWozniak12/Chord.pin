@@ -47,7 +47,7 @@ export class Player extends GUI.Element<HTMLDivElement>{
     }
 
     private setupSettings() {
-        console.log(this.main.options);
+        console.log(this.main.options.variable);
         this.element_settings = new SettingsDisplay(this.main.options.variable);
     }
 

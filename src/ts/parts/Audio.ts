@@ -29,7 +29,7 @@ export class Audio {
 
     play(chord: Chord, options : Options): void {
         this.stop();
-        let vol = options.getVolume();
+        let vol = options.volume;
         
 
         this.part = new Part((x, y) => {
@@ -37,12 +37,11 @@ export class Audio {
         }, [])
 
         chord.notes.variable.forEach(e => {
-            e.options = new Options().setValuesOf(e.options);
-            this.part.add(e.options.getDelay(),
+            this.part.add(e.options.delay.variable,
                 {
                     note: e.name,
-                    dur: e.options.getDuration(),
-                    volume: (e.options.getVolume()) * vol as number
+                    dur: e.options.duration.variable,
+                    volume: (e.options.volume.variable) * vol.variable as number
                 });
         });
         
