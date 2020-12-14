@@ -16,9 +16,9 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     selected : boolean;
     element_settings: SettingsDisplay;
 
-    constructor(noteName: string, index: number, set: NoteSet, toneString: string) {
+    constructor(noteName: string, index: number, set: NoteSet) {
         let note = new NotePosition(noteName, index, new Options(), set);
-        super("div", "note", note.name.replace("#", "S") + "-on-" + toneString);
+        super("div", "note", note.name.replace("#", "S"));
         this.note = note;
         this.setSettings(note);
         this.setText(note.name);
@@ -67,7 +67,7 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     }
 
     deselect() {
-        this.html.classList.remove("note-selected", "important-note-selected");
+        this.html.classList.remove("important-note-selected");
         this.findAnotherNoteInstances();
         this.deselectedEvent.notify(this.note);
         this.selected = false;

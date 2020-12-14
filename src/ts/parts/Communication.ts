@@ -32,14 +32,6 @@ export class Main {
         this.parser = new Parser(prompt.html, this);
     }
 
-
-
-
-
-
-
-
-
 }
 
 

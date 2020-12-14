@@ -8,23 +8,22 @@ export class GuitarString extends GUI.Element<HTMLDivElement>{
     frets: number;
 
     constructor(set: NoteSet, startingNote: string, openString: HTMLElement, frets: Number, fretboard: Fretboard) {
-        let id = "guitar-string-" + startingNote;
-        super("div", "string", id);
+        super("div", "string");
         frets = frets;
-        this.createOpenStringNote(openString, startingNote, set, id, fretboard);
-        this.createFretNotes(startingNote, frets, set, id, fretboard);
+        this.createOpenStringNote(openString, startingNote, set, fretboard);
+        this.createFretNotes(startingNote, frets, set, fretboard);
     }
 
-    private createOpenStringNote(openString: HTMLElement, startingNote: string, set: NoteSet, id: string, fretboard: Fretboard) {
-        let note = new GuitarStringNote(startingNote, 0, set, id);
+    private createOpenStringNote(openString: HTMLElement, startingNote: string, set: NoteSet, fretboard: Fretboard) {
+        let note = new GuitarStringNote(startingNote, 0, set);
         note.selectedEvent.subscribe(x => fretboard.selectedNotes.push(x));
         note.deselectedEvent.subscribe(x => fretboard.selectedNotes.find(x));
         openString.appendChild(note.html);
     }
 
-    private createFretNotes(startingNote: string, frets: Number, set: NoteSet, id: string, fretboard: Fretboard) {
+    private createFretNotes(startingNote: string, frets: Number, set: NoteSet, fretboard: Fretboard) {
         for (let i = 1; i < frets; i++) {
-            let note = new GuitarStringNote(startingNote, i, set, id);
+            let note = new GuitarStringNote(startingNote, i, set);
             this.parentElements([note]);
         }
     }
