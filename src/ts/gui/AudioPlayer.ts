@@ -58,10 +58,12 @@ export class Player extends GUI.Element<HTMLDivElement>{
             e => this.audio.play(
                 this.current_chord, 
                 this.main.options.variable));
+        this.element_play.setText("Play");
     }
 
     private setupStop() {
         this.element_stop = new GUI.Element("button", "stop");
         this.element_stop.addListener("click", e => this.audio.stop());
+        this.element_stop.setText("Stop");
     }
 }

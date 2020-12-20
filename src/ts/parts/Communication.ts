@@ -1,6 +1,6 @@
 import { Chord } from '../definitions/Chord';
 import { NotePosition } from '../definitions/NotePosition';
-import { VariableNotifier } from '../Definitions/Observer';
+import { VariableNotifier } from '../definitions/Observer';
 import { Options } from '../definitions/Options';
 import { GUI } from '../gui/GUI';
 import { Audio } from './Audio';
@@ -21,6 +21,10 @@ export class Main {
 
     getChord(str: string): Chord {
         return this.chords.variable.filter(x => x.name.variable == str)[0];
+    }
+
+    addChord(chord: Chord) {
+        this.chords.variable.push(chord);
     }
 
     constructor() {

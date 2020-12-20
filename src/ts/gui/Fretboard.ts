@@ -6,7 +6,7 @@ import { Note } from "../definitions/Note";
 import { GuitarString } from "./GuitarString";
 import { Chord } from "../definitions/Chord";
 import { Notifier } from "../definitions/Observer";
-import { debug } from "webpack";
+import { Main } from "../parts/Communication";
 
 export class Fretboard extends GUI.Element<HTMLDivElement>
 {
@@ -18,7 +18,13 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
 
     readonly zeroFretName: string = "openString";
 
-    constructor(tuning: Tuning, frets: number, startingNote: string | Note | NotePosition, endingNote: string | Note | NotePosition) {
+    constructor(
+        tuning: Tuning, 
+        frets: number, 
+        startingNote: string | Note | NotePosition, 
+        endingNote: string | Note | NotePosition,
+        main : Main
+        ) {
         super("div", "tuning-" + tuning);
         this.frets = frets;
         this.noteSet = new NoteSet(startingNote, endingNote);
@@ -27,10 +33,11 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
         this.addEvent = new Notifier<Chord>();
         this.createAddButton();
         this.createCollections(tuning);
+        this.addEvent.subscribe(main.addChord.bind(main));
     }
 
     private createAddButton() {
-        let btn = new GUI.Element("button").setText("add");
+        let btn = new GUI.Element("button").setText("Add");
         btn.addListener("click", this.addNotesFromFretboard.bind(this));
     }
 
