@@ -42,6 +42,7 @@ export class Chord {
         let selectable = new GUI.Element<HTMLOptionElement>("option", chordName);
         selectable.modifyAttribute("value", chordName);
         selectable.setText(chordName);
+        list.parentElements([selectable]);
         return selectable;
     }
 }

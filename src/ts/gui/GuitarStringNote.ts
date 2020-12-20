@@ -6,6 +6,7 @@ import { NoteSet } from "../definitions/NoteSet";
 import { Notifier } from "../definitions/Observer";
 import { SettingsDisplay } from "./SettingsDisplay";
 import { Note } from "../definitions/Note";
+import { Fretboard } from "./Fretboard";
 //#endregion
 
 export class GuitarStringNote extends GUI.Element<HTMLDivElement>
@@ -33,8 +34,8 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
     }
 
     private setupEvents() {
-        this.selectedEvent = new Notifier<NotePosition | Note>();
-        this.deselectedEvent = new Notifier<NotePosition | Note>();
+        this.selectedEvent = new Notifier<NotePosition>();
+        this.deselectedEvent = new Notifier<NotePosition>();
 
         this.addListener("click", this.toggle.bind(this)).
             addListener("mouseover", this.showOptions.bind(this)).
@@ -57,7 +58,7 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
         });
     }
 
-    select(note: Note = null) {
+    select(note: Note) {
         this.html.classList.add("note-selected", "important-note-selected");
         let found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
         found.forEach(x => {x.classList.add("note-selected"); });
@@ -68,12 +69,12 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
 
     deselect() {
         this.html.classList.remove("important-note-selected");
-        this.findAnotherNoteInstances();
+        this.findAnotherNoteInstancesAndHandleSuggested();
         this.deselectedEvent.notify(this.note);
         this.selected = false;
     }
 
-    private findAnotherNoteInstances() {
+    private findAnotherNoteInstancesAndHandleSuggested() {
         let found = document.querySelectorAll(`div.important-note-selected[id*="${this.note.name.replace("#", "S")}"]`);
         if (found.length == 0) {
             found = document.querySelectorAll(`div[id*="${this.note.name.replace("#", "S")}"]`);
@@ -83,6 +84,6 @@ export class GuitarStringNote extends GUI.Element<HTMLDivElement>
 
     toggle() {
         if (this.html.classList.contains("important-note-selected")) this.deselect();
-        else this.select();
+        else this.select(this.note);
     }
 }

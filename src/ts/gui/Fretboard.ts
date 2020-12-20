@@ -11,7 +11,7 @@ import { Main } from "../parts/Communication";
 export class Fretboard extends GUI.Element<HTMLDivElement>
 {
     noteSet: NoteSet;
-    selectedNotes : NotePosition[];
+    selectedNotes: NotePosition[];
     tuning: Tuning;
     frets: number;
     addEvent: Notifier<Chord>;
@@ -19,12 +19,12 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
     readonly zeroFretName: string = "openString";
 
     constructor(
-        tuning: Tuning, 
-        frets: number, 
-        startingNote: string | Note | NotePosition, 
+        tuning: Tuning,
+        frets: number,
+        startingNote: string | Note | NotePosition,
         endingNote: string | Note | NotePosition,
-        main : Main
-        ) {
+        main: Main
+    ) {
         super("div", "tuning-" + tuning);
         this.frets = frets;
         this.noteSet = new NoteSet(startingNote, endingNote);
@@ -36,14 +36,23 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
         this.addEvent.subscribe(main.addChord.bind(main));
     }
 
+    selectedNoteHandler(note: NotePosition) {
+        this.selectedNotes.push(note)
+    }
+
+    deselectedNoteHandler(note: NotePosition) {
+        this.selectedNotes = this.selectedNotes.filter(x => x != note);
+    }
+
     private createAddButton() {
         let btn = new GUI.Element("button").setText("Add");
         btn.addListener("click", this.addNotesFromFretboard.bind(this));
     }
 
     addNotesFromFretboard() {
-        console.log(this.addEvent);
+        console.log(this.selectedNotes);
         let chord = new Chord(this.selectedNotes);
+        console.log(chord);
         this.addEvent.notify(chord);
         return chord;
     }
@@ -60,7 +69,7 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
 
         if (tuning.canBeInNoteSet(this.noteSet)) {
             for (let i = 0; i < tuning.notes.variable.length; i++) {
-                collection.push(new GuitarString(this.noteSet, tuning.notes.variable[i], openString.html, 24, this));
+                collection.push(new GuitarString(this.noteSet, tuning.notes.variable[i], openString.html, this.frets, this));
             }
             stringCollection.parentElements(collection);
         }

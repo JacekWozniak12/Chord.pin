@@ -2,6 +2,7 @@ import { GUI } from "./GUI";
 import { Chord } from "../definitions/Chord";
 import { Notifier } from "../definitions/Observer";
 import { Main } from "../parts/Communication";
+import { debug } from "webpack";
 
 export class ChordList extends GUI.Element<HTMLSelectElement>
 {
@@ -11,7 +12,6 @@ export class ChordList extends GUI.Element<HTMLSelectElement>
     constructor(main: Main) {
         super("select", "chordSelection");
         this.selectEvent = new Notifier<Chord>();
-
         this.main = main;
         this.update(this.main.chords.variable);
         this.main.chords.subscribe(this.update);
@@ -20,14 +20,15 @@ export class ChordList extends GUI.Element<HTMLSelectElement>
     }
 
     update(chords: Chord[]) {
+        console.log(chords);
+        console.log(this);
         this.clearParenting();
-        chords.forEach(e => { this.parentElements([e.createSelectable(this)]); })
+        chords.forEach(e => { e.createSelectable(this) })
     }
 
     select(chord: Chord = null) {
         if (chord == null) {
             this.selectEvent.notify(this.main.chords[this.html.selectedIndex]);
-            console.log(this.main.chords[this.html.selectedIndex]);
         }
         else this.selectEvent.notify(chord);
     }

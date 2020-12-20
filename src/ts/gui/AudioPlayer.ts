@@ -1,5 +1,4 @@
 import { Chord } from "../definitions/Chord";
-import { Options } from "../definitions/Options";
 import { Audio } from "../parts/Audio";
 import { Main } from "../parts/Communication";
 import { ChordList } from "./ChordList";
@@ -47,7 +46,6 @@ export class Player extends GUI.Element<HTMLDivElement>{
     }
 
     private setupSettings() {
-        console.log(this.main.options.variable);
         this.element_settings = new SettingsDisplay(this.main.options.variable);
     }
 

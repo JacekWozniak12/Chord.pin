@@ -8,8 +8,8 @@ export class Database {
     readonly CHORD_STORAGE_OPTIONS = "chord.pin__options";
     chords : Chord[];
     options : Options;
-    loadEvent : Notifier;
-    saveEvent : Notifier;
+    loadEvent : Notifier<Chord | Options>;
+    saveEvent : Notifier<Chord | Options>;
     storage = localStorage;
 
     constructor() {

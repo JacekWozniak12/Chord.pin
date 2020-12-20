@@ -15,15 +15,20 @@ export class GuitarString extends GUI.Element<HTMLDivElement>{
     }
 
     private createOpenStringNote(openString: HTMLElement, startingNote: string, set: NoteSet, fretboard: Fretboard) {
-        let note = new GuitarStringNote(startingNote, 0, set);
-        note.selectedEvent.subscribe(x => fretboard.selectedNotes.push(x));
-        note.deselectedEvent.subscribe(x => fretboard.selectedNotes.find(x));
+        let note = this.createNote(startingNote, 0, set, fretboard);
         openString.appendChild(note.html);
+    }
+
+    private createNote(startingNote: string, index: number, set: NoteSet, fretboard: Fretboard) {
+        let note = new GuitarStringNote(startingNote, index, set);
+        note.selectedEvent.subscribe(fretboard.selectedNoteHandler.bind(fretboard));
+        note.deselectedEvent.subscribe(fretboard.deselectedNoteHandler.bind(fretboard));
+        return note;
     }
 
     private createFretNotes(startingNote: string, frets: Number, set: NoteSet, fretboard: Fretboard) {
         for (let i = 1; i < frets; i++) {
-            let note = new GuitarStringNote(startingNote, i, set);
+            let note = this.createNote(startingNote, i, set, fretboard);
             this.parentElements([note]);
         }
     }

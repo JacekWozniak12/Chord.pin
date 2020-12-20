@@ -13,7 +13,7 @@ export class Notifier<T = null> implements INotify {
 
     notify(obj: T = null): this {
         this.toNotify.forEach(element => {
-            element();
+            element(obj);
         });
         return this;
     }
