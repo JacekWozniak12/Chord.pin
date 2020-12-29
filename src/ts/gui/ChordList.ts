@@ -23,7 +23,7 @@ export class ChordList extends GUI.Element<HTMLSelectElement>
         console.log(chords);
         console.log(this);
         this.clearParenting();
-        chords.forEach(e => { e.createSelectable(this) })
+        chords.forEach(e => { e.createSelectable.bind(e, this) })
     }
 
     select(chord: Chord = null) {

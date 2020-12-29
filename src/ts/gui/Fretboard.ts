@@ -23,7 +23,6 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
         frets: number,
         startingNote: string | Note | NotePosition,
         endingNote: string | Note | NotePosition,
-        main: Main
     ) {
         super("div", "tuning-" + tuning);
         this.frets = frets;
@@ -33,7 +32,6 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
         this.addEvent = new Notifier<Chord>();
         this.createAddButton();
         this.createCollections(tuning);
-        this.addEvent.subscribe(main.addChord.bind(main));
     }
 
     selectedNoteHandler(note: NotePosition) {
@@ -50,9 +48,7 @@ export class Fretboard extends GUI.Element<HTMLDivElement>
     }
 
     addNotesFromFretboard() {
-        console.log(this.selectedNotes);
         let chord = new Chord(this.selectedNotes);
-        console.log(chord);
         this.addEvent.notify(chord);
         return chord;
     }

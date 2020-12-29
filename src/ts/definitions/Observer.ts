@@ -31,7 +31,7 @@ export class Notifier<T = null> implements INotify {
     toNotify: Function[];
 }
 
-export class VariableNotifier<T> extends Notifier {
+export class VariableNotifier<T> extends Notifier<T> {
 
     constructor(value: T) {
         super();
@@ -49,7 +49,7 @@ export class VariableNotifier<T> extends Notifier {
             return;
         else {
             this._var = value;
-            this.notify();
+            this.notify(value);
         }
     }
 }

@@ -24,6 +24,7 @@ export class Main {
     }
 
     addChord(chord: Chord) {
+        console.log(chord);
         this.chords.variable.push(chord);
     }
 
